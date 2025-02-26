@@ -14,7 +14,7 @@ jobs:
           zip -r reserve-mate.zip . -x ".git/*" ".github/*"
 
       - name: Upload ZIP as release asset
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.0.2
         with:
           upload_url: ${{ github.event.release.upload_url }} # Use the release's upload URL
           asset_path: ./reserve-mate.zip
