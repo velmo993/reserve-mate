@@ -1,0 +1,23 @@
+name: Release Plugin
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on tags like v1.0.0, v1.0.1, etc.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create ZIP file
+        run: |
+          zip -r reserve-mate.zip . -x ".git/*" ".github/*"
+
+      - name: Upload ZIP as release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./reserve-mate.zip
+          asset_name: reserve-mate.zip
+          asset_content_type: application/zip
