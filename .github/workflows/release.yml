@@ -16,4 +16,4 @@ jobs:
       - name: Upload ZIP as release asset (gh CLI)
         run: gh release upload ${{ github.event.release.tag_name }} reserve-mate.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.repoToken }}
+          GH_TOKEN: ${{ secrets.repoToken }}
