@@ -13,6 +13,7 @@ License: GPL2
 
 defined('ABSPATH') or die('No direct access!');
 define('RESERVE_MATE_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('TOKEN_FOR_RELEASES', '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');
 
 // Include the Plugin Update Checker library
 require_once plugin_dir_path(__FILE__) . 'plugin-update-checker/plugin-update-checker.php';
@@ -25,6 +26,8 @@ $myUpdateChecker = PucFactory::buildUpdateChecker(
     'reserve-mate'
 );
 $myUpdateChecker->setBranch('main');
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
+$myUpdateChecker->setAuthentication('TOKEN_FOR_RELEASES');
 
 require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
