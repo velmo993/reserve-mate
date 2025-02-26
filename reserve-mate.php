@@ -1,9 +1,12 @@
 <?php
 /*
 Plugin Name: Reserve Mate
-Description: A customizable booking plugin.
-Version: 1.0.1
+Plugin URI: https://github.com/velmo993/reserve-mate
+Description: A plugin for managing reservations.
+Version: 1.0.8-beta
 Author: velmoweb.com
+Author URI: https://example.com
+License: GPL2
 * Text Domain:       reserve-mate
 * Domain Path:       /assets/languages
 */
