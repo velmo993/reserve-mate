@@ -1,0 +1,181 @@
+# Copyright (C) 2025 velmoweb.com
+# This file is distributed under the same license as the Reserve Mate plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Reserve Mate 1.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/reserve-mate\n"
+"POT-Creation-Date: 2025-01-29T10:53:49+00:00\n"
+"PO-Revision-Date: 2025-01-29 16:05+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+"X-Domain: reserve-mate\n"
+
+#. Plugin Name of the plugin
+#: booking-system.php
+msgid "Reserve Mate"
+msgstr "Reserve Mate"
+
+#. Description of the plugin
+#: booking-system.php
+msgid "A customizable booking system with Google Calendar integration and payment options."
+msgstr "Egy testreszabható foglalási rendszer Google Naptár integrációval és fizetési lehetőségekkel."
+
+#. Author of the plugin
+#: booking-system.php
+msgid "velmoweb.com"
+msgstr "velmoweb.com"
+
+# Booking System Settings page
+msgid "Booking System Settings"
+msgstr "Foglalási rendszer beállításai"
+
+msgid "Settings saved."
+msgstr "Beállítások mentve."
+
+msgid "Google Calendar"
+msgstr "Google naptár"
+
+msgid "Google Calendar API Credentials (JSON)"
+msgstr "Google naptár API hitelesítő adatok (JSON)"
+
+msgid "Google Calendar ID"
+msgstr "Google naptár azonosító ID"
+
+msgid "Calendar Timezone"
+msgstr "Naptár időzóna"
+
+msgid "Currency"
+msgstr "Valuta"
+
+msgid "Latest Checkin Time"
+msgstr "Legkésőbbi bejelentkezési idő"
+
+msgid "Latest Checkout Time"
+msgstr "Legkésőbbi kijelentkezési idő"
+
+# Payment Settings page
+msgid "Payment Settings"
+msgstr "Fizetési beállítások"
+
+msgid "Enable Stripe"
+msgstr "Stripe engedélyezése"
+
+msgid "Stripe Secret Key"
+msgstr "Stripe secret Key"
+
+msgid "Stripe Public Key"
+msgstr "Stripe public Key"
+
+msgid "Enable PayPal"
+msgstr "PayPal engedélyezése"
+
+msgid "PayPal Client ID"
+msgstr "PayPal ügyfélazonosító ID"
+
+# Manage Messages page
+msgid "Manage Messages"
+msgstr "Üzenetek kezelése"
+
+msgid "Booking Successful Message"
+msgstr "Foglalás sikeres üzenet"
+
+msgid "Send Booking Email to Guest"
+msgstr "E-mail küldése a vendégnek"
+
+msgid "Email Subject"
+msgstr "E-mail tárgya"
+
+msgid "Email Content"
+msgstr "E-mail tartalma"
+
+# iCal Settings page
+msgid "iCal Settings"
+msgstr "iCal beállítások"
+
+msgid "Export iCal URL:"
+msgstr "iCal URL exportálása:"
+
+msgid "Import iCal"
+msgstr "iCal importálása"
+
+msgid "Import"
+msgstr "Importálás"
+
+# Additional Strings for Buttons or Notifications
+msgid "Save Messages"
+msgstr "Üzenetek mentése"
+
+msgid "Importing iCal..."
+msgstr "iCal importálása..."
+
+msgid "Messages updated successfully."
+msgstr "Üzenetek sikeresen frissítve."
+
+#: includes/admin/settings.php:25
+msgid "Property Name"
+msgstr "Ingatlan neve"
+
+#: includes/admin/settings.php:30
+msgid "Adults(Max)"
+msgstr "Felnőttek (Max)"
+
+#: includes/admin/settings.php:35
+msgid "Adult Rate (%s)"
+msgstr "Ár felnőttnek (%s)"
+
+#: includes/admin/settings.php:50
+msgid "Children Allowed"
+msgstr "Gyermekek engedélyezése"
+
+#: includes/admin/settings.php:55
+msgid "Children(Max)"
+msgstr "Gyermekek (Max)"
+
+#: includes/admin/settings.php:60
+msgid "Child Rate (%s)"
+msgstr "Ár gyereknek (%s)"
+
+#: includes/admin/settings.php:75
+msgid "Pets Allowed"
+msgstr "Háziállatok engedélyezése"
+
+#: includes/admin/settings.php:80
+msgid "Pets(Max)"
+msgstr "Háziállatok (Max)"
+
+#: includes/admin/settings.php:85
+msgid "Pet Rate (%s)"
+msgstr "Ár háziállatnak (%s)"
+
+#: includes/admin/settings.php:100
+msgid "Minimum Stay"
+msgstr "Minimális tartózkodás"
+
+#: includes/admin/settings.php:105
+msgid "Maximum Stay"
+msgstr "Maximális tartózkodás"
+
+#: includes/admin/settings.php:120
+msgid "Seasonal Rules"
+msgstr "Szezonális szabályok"
+
+#: includes/admin/settings.php:135
+msgid "Partial Booking Days / Half Days"
+msgstr "Részleges foglalási napok / Fél napok"
+
+#: includes/admin/settings.php:150
+msgid "Update Property"
+msgstr "Ingatlan frissítése"
+
+#: includes/admin/settings.php:155
+msgid "Save Property"
+msgstr "Ingatlan mentése"
+
+#: includes/admin/settings.php:160
+msgid "Cancel"
+msgstr "Mégse"

@@ -1,0 +1,173 @@
+table {
+  border-collapse: collapse;
+}
+
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none; 
+    margin: 0; 
+}
+
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.table-details{
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+}
+
+.table-details td:last-child > div:last-child {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.table-details-flex {
+    display: flex;
+    padding: 0.8rem;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.table-details-flex strong {
+    margin: 0 auto 0 0;
+}
+
+.table-details-flex .room-data {
+    padding: 0 1rem 0 0;
+}
+
+.toggle-details-booking,
+.toggle-details-property,
+#seasonal-rules-btn {
+    background-color: #0073aa;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.toggle-details-booking:hover,
+.toggle-details-property:hover,
+#seasonal-rules-btn:hover {
+    background-color: #005177;
+}
+
+.actions-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle:hover + .dropdown-menu,
+.dropdown-menu:hover {
+    display: block;
+}
+
+.dropdown-toggle {
+    background-color: #0073aa;
+    color: white;
+    padding: 6px 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 100px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.dropdown-menu li {
+    cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown-menu li a {
+    display: block;
+    max-width: 100%;
+    padding: 8px 12px;
+}
+
+.dropdown-menu li form input {
+    display: block;
+    max-width: 100%;
+    padding: 6px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.dropdown-menu .button-link-delete {
+    padding: 6px 12px;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.tab-button.active {
+    background: #fff;
+    font-weight: bold;
+    border-bottom: 2px solid #0073aa;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.star-required {
+    color: red;
+}
+
+.tax-input {
+    vertical-align: top;
+}
+
+@media screen and (min-width: 768px) {
+    .table-details-flex {
+        width: 40%;
+        margin: auto;
+        justify-content: space-between;
+    }
+    
+    .table-details-flex strong {
+        margin: 0;
+    }
+    
+    .table-details td:last-child > div:last-child {
+        text-align: center;   
+    }
+
+}
