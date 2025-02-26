@@ -3,7 +3,7 @@
 Plugin Name: Reserve Mate
 Plugin URI: https://github.com/velmo993/reserve-mate
 Description: A plugin for managing reservations.
-Version: 1.0.8-beta
+Version: 1.0.1
 Author: velmoweb.com
 Author URI: https://example.com
 License: GPL2
