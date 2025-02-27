@@ -14,6 +14,7 @@ License: GPL2
 defined('ABSPATH') or die('No direct access!');
 define('RESERVE_MATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TOKEN_FOR_RELEASES', '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');
+define('RESERVE_MATE_PLUGIN_SLUG', 'reserve-mate');
 
 // Include the Plugin Update Checker library
 require_once plugin_dir_path(__FILE__) . 'plugin-update-checker/plugin-update-checker.php';
@@ -23,11 +24,12 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $myUpdateChecker = PucFactory::buildUpdateChecker(
     'https://github.com/velmo993/reserve-mate/',
     __FILE__,
-    'reserve-mate'
+    RESERVE_MATE_PLUGIN_SLUG
 );
-$myUpdateChecker->setBranch('main');
+$myUpdateChecker->debugMode = true;
 $myUpdateChecker->getVcsApi()->enableReleaseAssets();
-$myUpdateChecker->setAuthentication('TOKEN_FOR_RELEASES');
+$myUpdateChecker->setBranch('main');
+$myUpdateChecker->setAuthentication(TOKEN_FOR_RELEASES);
 
 require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
