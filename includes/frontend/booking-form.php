@@ -8,7 +8,7 @@ require_once plugin_dir_path(__FILE__) . 'handlers/common-handler.php';
 
 function isDateTimeEnabled() {
     $booking_settings = get_option('booking_settings');
-    $datetime_select_enabled = intval($booking_settings['enable_hourly_booking']);
+    $datetime_select_enabled = $booking_settings['enable_hourly_booking'];
     $datetime_select_enabled === intval(1) ? true : false;
     error_log("datetimeselect enabled: $datetime_select_enabled");
     error_log("datetimeselect type:". gettype($datetime_select_enabled));

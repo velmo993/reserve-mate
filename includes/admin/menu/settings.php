@@ -65,22 +65,6 @@ function register_booking_settings() {
         'booking_settings'
     );
     
-    add_settings_field(
-        'check-in-time',
-        __('Latest Check-in Time', 'reserve-mate'),
-        'display_check_in_time',
-        'booking-settings',
-        'booking_settings'
-    );
-    
-    add_settings_field(
-        'check-out-time',
-        __('Latest Check-out Time', 'reserve-mate'),
-        'display_check_out_time',
-        'booking-settings',
-        'booking_settings'
-    );
-    
     add_settings_section(
         'hourly_booking_settings',
         __('Hourly Booking Settings', 'reserve-mate'),
@@ -209,40 +193,9 @@ function display_currency_field() {
     <?php
 }
 
-function display_check_in_time() {
-    $options = get_option('booking_settings');
-    $checkin_time = isset($options['checkin_time']) ? esc_attr($options['checkin_time']) : '14:00';
-    
-    echo '<select name="booking_settings[checkin_time]">';
-    generate_time_options($checkin_time);
-    echo '</select>';
-}
-
-function display_check_out_time() {
-    $options = get_option('booking_settings');
-    $checkout_time = isset($options['checkout_time']) ? esc_attr($options['checkout_time']) : '12:00';
-    
-    echo '<select name="booking_settings[checkout_time]">';
-    generate_time_options($checkout_time);
-    echo '</select>';
-}
-
-function generate_time_options($selected_time) {
-    $times = [];
-    for ($i = 0; $i < 24; $i++) {
-        $hour = str_pad($i, 2, '0', STR_PAD_LEFT);
-        $times[] = "$hour:00";
-        $times[] = "$hour:30";
-    }
-
-    foreach ($times as $time) {
-        echo '<option value="' . esc_attr($time) . '"' . selected($selected_time, $time, false) . '>' . esc_html($time) . '</option>';
-    }
-}
-
 function display_enable_hourly_booking_field() {
     $options = get_option('booking_settings');
-    $enabled = isset($options['enable_hourly_booking']) ? $options['enable_hourly_booking'] : 0;
+    $enabled = isset($options['enable_hourly_booking']) ? $options['enable_hourly_booking'] : $options['enable_hourly_booking'] = 0;
     ?>
     <input type="checkbox" name="booking_settings[enable_hourly_booking]" value="1" <?php checked(1, $enabled); ?>>
     <label><?php _e('Enable hourly-based booking instead of date range', 'reserve-mate'); ?></label>
@@ -369,3 +322,17 @@ function display_delete_after_days_field() {
     $days = isset($options['delete_after_days']) && $options['auto_delete_booking_enabled'] == 1 ? esc_attr($options['delete_after_days']) : '';
     echo '<input type="number" style="width: 50px;" name="booking_settings[delete_after_days]" value="' . $days . '" min="1">';
 } */
+
+function generate_time_options($selected_time) {
+    $times = [];
+    for ($i = 0; $i < 24; $i++) {
+        $hour = str_pad($i, 2, '0', STR_PAD_LEFT);
+        $times[] = "$hour:00";
+        $times[] = "$hour:30";
+    }
+
+    foreach ($times as $time) {
+        echo '<option value="' . esc_attr($time) . '"' . selected($selected_time, $time, false) . '>' . esc_html($time) . '</option>';
+    }
+}
+

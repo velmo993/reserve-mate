@@ -259,36 +259,6 @@ function payment_settings_page() {
     <?php
 }
 
-function display_stripe_enabled_field() {
-    $value = get_option('payment_settings')['stripe_enabled'] ?? '0';
-    echo '<input type="checkbox" name="payment_settings[stripe_enabled]" value="1" ' . checked(1, $value, false) . '> Enable';
-}
-
-function display_stripe_secret_key_field() {
-    $options = get_option('payment_settings');
-    ?>
-    <input type="text" name="payment_settings[stripe_secret_key]" value="<?php echo isset($options['stripe_secret_key']) ? esc_attr($options['stripe_secret_key']) : ''; ?>" class="regular-text">
-    <?php
-}
-
-function display_stripe_public_key_field() {
-    $options = get_option('payment_settings');
-    ?>
-    <input type="text" name="payment_settings[stripe_public_key]" value="<?php echo isset($options['stripe_public_key']) ? esc_attr($options['stripe_public_key']) : ''; ?>" class="regular-text">
-    <?php
-}
-
-function display_paypal_enabled_field() {
-    $value = get_option('payment_settings')['paypal_enabled'] ?? '0';
-    echo '<input type="checkbox" name="payment_settings[paypal_enabled]" value="1" ' . checked(1, $value, false) . '> Enable';
-}
-
-function display_paypal_client_id_field() {
-    $options = get_option('payment_settings');
-    ?>
-    <input type="text" name="payment_settings[paypal_client_id]" value="<?php echo isset($options['paypal_client_id']) ? esc_attr($options['paypal_client_id']) : ''; ?>" class="regular-text">
-    <?php
-}
 
 // function display_apple_pay_enabled_field() {
 //     $value = get_option('payment_settings')['apple_pay_enabled'] ?? '0';
@@ -315,6 +285,42 @@ function display_paypal_client_id_field() {
 //     echo '<input type="text" name="payment_settings[apple_pay_display_name]" value="' . esc_attr($value) . '" />';
 // }
 
+function display_stripe_enabled_field() {
+    $value = get_option('payment_settings')['stripe_enabled'] ?? '0';
+    echo '<input type="checkbox" name="payment_settings[stripe_enabled]" value="1" ' . checked(1, $value, false) . '> Enable';
+    echo '<p class="description">' . __('Enable Stripe as a payment method.', 'reserve-mate') . '</p>';
+}
+
+function display_stripe_secret_key_field() {
+    $options = get_option('payment_settings');
+    ?>
+    <input type="text" name="payment_settings[stripe_secret_key]" value="<?php echo isset($options['stripe_secret_key']) ? esc_attr($options['stripe_secret_key']) : ''; ?>" class="regular-text">
+    <p class="description"><?php _e('Enter your Stripe Secret Key. This is required to process payments via Stripe.', 'reserve-mate'); ?></p>
+    <?php
+}
+
+function display_stripe_public_key_field() {
+    $options = get_option('payment_settings');
+    ?>
+    <input type="text" name="payment_settings[stripe_public_key]" value="<?php echo isset($options['stripe_public_key']) ? esc_attr($options['stripe_public_key']) : ''; ?>" class="regular-text">
+    <p class="description"><?php _e('Enter your Stripe Publishable Key. This is used to securely collect payment details on the frontend.', 'reserve-mate'); ?></p>
+    <?php
+}
+
+function display_paypal_enabled_field() {
+    $value = get_option('payment_settings')['paypal_enabled'] ?? '0';
+    echo '<input type="checkbox" name="payment_settings[paypal_enabled]" value="1" ' . checked(1, $value, false) . '> Enable';
+    echo '<p class="description">' . __('Enable PayPal as a payment method.', 'reserve-mate') . '</p>';
+}
+
+function display_paypal_client_id_field() {
+    $options = get_option('payment_settings');
+    ?>
+    <input type="text" name="payment_settings[paypal_client_id]" value="<?php echo isset($options['paypal_client_id']) ? esc_attr($options['paypal_client_id']) : ''; ?>" class="regular-text">
+    <p class="description"><?php _e('Enter your PayPal Client ID. This is required to process payments via PayPal.', 'reserve-mate'); ?></p>
+    <?php
+}
+
 function display_advance_payment_type_field() {
     $options = get_option('payment_settings');
     $selected = isset($options['advance_payment_type']) ? $options['advance_payment_type'] : 'none';
@@ -324,6 +330,7 @@ function display_advance_payment_type_field() {
         <option value="percentage" <?php selected($selected, 'percentage'); ?>><?php _e('Percentage', 'reserve-mate'); ?></option>
         <option value="fixed" <?php selected($selected, 'fixed'); ?>><?php _e('Fixed Amount', 'reserve-mate'); ?></option>
     </select>
+    <p class="description"><?php _e('Choose the type of advance payment required (e.g., a percentage of the total or a fixed amount).', 'reserve-mate'); ?></p>
     <?php
 }
 
@@ -331,6 +338,7 @@ function display_advance_payment_percentage_field() {
     $options = get_option('payment_settings');
     ?>
     <input type="number" name="payment_settings[advance_payment_percentage]" value="<?php echo isset($options['advance_payment_percentage']) ? esc_attr($options['advance_payment_percentage']) : ''; ?>" class="small-text"> %
+    <p class="description"><?php _e('Enter the percentage of the total amount to be paid in advance.', 'reserve-mate'); ?></p>
     <?php
 }
 
@@ -338,17 +346,20 @@ function display_advance_payment_fixed_amount_field() {
     $options = get_option('payment_settings');
     ?>
     <input type="number" name="payment_settings[advance_payment_fixed_amount]" value="<?php echo isset($options['advance_payment_fixed_amount']) ? esc_attr($options['advance_payment_fixed_amount']) : ''; ?>" class="small-text">
+    <p class="description"><?php _e('Enter the fixed amount to be paid in advance.', 'reserve-mate'); ?></p>
     <?php
 }
 
 function display_pay_on_arrival_enabled_field() {
     $value = get_option('payment_settings')['pay_on_arrival_enabled'] ?? '0';
     echo '<input type="checkbox" name="payment_settings[pay_on_arrival_enabled]" value="1" ' . checked(1, $value, false) . '> Enable';
+    echo '<p class="description">' . __('Allow guests to pay on arrival.', 'reserve-mate') . '</p>';
 }
 
 function display_bank_transfer_enabled_field() {
     $value = get_option('payment_settings')['bank_transfer_enabled'] ?? '0';
     echo '<input type="checkbox" name="payment_settings[bank_transfer_enabled]" value="1" ' . checked(1, $value, false) . '> Enable';
+    echo '<p class="description">' . __('Enable bank transfer as a payment method.', 'reserve-mate') . '</p>';
 }
 
 function display_bank_account_number_field() {

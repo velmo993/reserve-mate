@@ -1,15 +1,20 @@
 <?php
 /*
 Plugin Name: Reserve Mate
-Description: A customizable booking plugin.
-Version: 1.0.1
+Plugin URI: https://github.com/velmo993/reserve-mate
+Description: A plugin for managing reservations.
+Version: 1.0.2
 Author: velmoweb.com
+Author URI: https://example.com
+License: GPL2
 * Text Domain:       reserve-mate
 * Domain Path:       /assets/languages
 */
 
 defined('ABSPATH') or die('No direct access!');
 define('RESERVE_MATE_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('TOKEN_FOR_RELEASES', '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');
+define('RESERVE_MATE_PLUGIN_SLUG', 'reserve-mate');
 
 // Include the Plugin Update Checker library
 require_once plugin_dir_path(__FILE__) . 'plugin-update-checker/plugin-update-checker.php';
@@ -19,9 +24,12 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $myUpdateChecker = PucFactory::buildUpdateChecker(
     'https://github.com/velmo993/reserve-mate/',
     __FILE__,
-    'reserve-mate'
+    RESERVE_MATE_PLUGIN_SLUG
 );
+$myUpdateChecker->debugMode = true;
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
 $myUpdateChecker->setBranch('main');
+$myUpdateChecker->setAuthentication(TOKEN_FOR_RELEASES);
 
 require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
@@ -71,14 +79,12 @@ function enqueue_admin_styles() {
 }
 
 function enqueue_admin_scripts() {
-    wp_enqueue_script(
-        'booking-plugin-scripts',
-        plugin_dir_url(__FILE__) . 'assets/js/admin.js',
-        array('jquery'),
-        '1.0.0',
-        true
-    );
+    wp_enqueue_style('flatpickr-css', plugins_url('assets/css/flatpickr.min.css', __FILE__));
+    wp_enqueue_script('flatpickr-js', plugins_url('assets/js/flatpickr.min.js', __FILE__), array(), null, true);
+    wp_enqueue_script('flatpickr-hu', plugins_url('assets/l10n/hu.js', __FILE__), ['flatpickr-js'], null, true);
+    wp_enqueue_script('booking-plugin-scripts', plugin_dir_url(__FILE__) . 'assets/js/admin.js', array('flatpickr-js', 'flatpickr-hu'), null, true);
 }
+
 
 function enqueue_flatpickr_scripts() {
     wp_enqueue_style('flatpickr-css', plugins_url('assets/css/flatpickr.min.css', __FILE__));

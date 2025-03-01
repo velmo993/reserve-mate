@@ -22,6 +22,10 @@ function create_properties_table() {
             min_stay int(11) NULL,
             max_stay int(11) NULL,
             partial_days tinyint(1) NOT NULL DEFAULT 0,
+            check_in_time_start TIME NULL,
+            check_in_time_end TIME NULL,
+            check_out_time_start TIME NULL,
+            check_out_time_end TIME NULL,
             seasonal_rules TEXT NULL,
             PRIMARY KEY  (id)
         ) ENGINE=InnoDB $charset_collate;";
@@ -73,6 +77,10 @@ function save_property($property_data, $property_id = null) {
         'min_stay'          => $property_data['min_stay'],
         'max_stay'          => $property_data['max_stay'],
         'partial_days'      => $property_data['partial_days'],
+        'check_in_time_start'     => $property_data['check_in_time_start'],
+        'check_in_time_end'     => $property_data['check_in_time_end'],
+        'check_out_time_start'    => $property_data['check_out_time_start'],
+        'check_out_time_end'    => $property_data['check_out_time_end'],
         'seasonal_rules'    => $seasonal_rules
     ];
     if ($property_id) {
@@ -93,17 +101,22 @@ function delete_property($property_id) {
 function get_properties() {
     global $wpdb;
     $table_name = get_properties_table_name();
-    
-    return $wpdb->get_results("SELECT * FROM $table_name", OBJECT);
+    $properties = $wpdb->get_results("SELECT * FROM $table_name", OBJECT);
+
+    if ($properties) {
+        foreach ($properties as $property) {
+            $property = format_property_times($property);
+        }
+    }
+
+    return $properties;
 }
 
 function get_property($property_id) {
     global $wpdb;
     $table_name = get_properties_table_name();
     $property = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", intval($property_id)));
-    if($property) {
-        return $property;
-    }
+    return format_property_times($property);
 }
 
 function get_property_ids() {
@@ -111,4 +124,15 @@ function get_property_ids() {
     $table_name = get_properties_table_name();
 
     return $wpdb->get_col("SELECT id FROM $table_name");
+}
+
+function format_property_times($property) {
+    if ($property) {
+        // Format time fields to exclude seconds
+        $property->check_in_time_start = !empty($property->check_in_time_start) ? date('H:i', strtotime($property->check_in_time_start)) : '';
+        $property->check_in_time_end = !empty($property->check_in_time_end) ? date('H:i', strtotime($property->check_in_time_end)) : '';
+        $property->check_out_time_start = !empty($property->check_out_time_start) ? date('H:i', strtotime($property->check_out_time_start)) : '';
+        $property->check_out_time_end = !empty($property->check_out_time_end) ? date('H:i', strtotime($property->check_out_time_end)) : '';
+    }
+    return $property;
 }

@@ -159,6 +159,35 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleSeasonalRules(seasonalRulesContainer, seasonalRulesBtn);
         });
         
+        console.log("flatpickr: ", flatpickr);
+        flatpickr("input[name='check_in_time_start']", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+    
+        flatpickr("input[name='check_in_time_end']", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+        
+        flatpickr("input[name='check_out_time_start']", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+    
+        flatpickr("input[name='check_out_time_end']", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+        
         setupToggleDetails('.toggle-details-property', 'property');
         
     }

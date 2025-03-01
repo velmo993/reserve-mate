@@ -1,16 +1,16 @@
     
-/*label:has(+ input:required):after,*/
-/*label:has(+ select:required):after {*/
-/*    content: ' *';*/
-/*    color: red;*/
-/*}*/
+label:has(+ input:required):after,
+label:has(+ select:required):after {
+    content: ' *';
+    color: red;
+}
 
 
 
 
 
 
-/* Style submit button */
+ Style submit button 
 #proceed-to-checkout {
     text-transform: none;
     color: #fff;
@@ -252,20 +252,20 @@ input[type="number"] {
     vertical-align: middle !important;
 }
 
-#booking-cost-summary p:last-child {
-    /*background-color: #f9f9f9;*/
-    font-size: 1.1rem;
-    line-height: 4em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-style: italic;
-}
+/*#booking-cost-summary p:last-child {*/
+/*    background-color: #f9f9f9;*/
+/*    font-size: 1.1rem;*/
+/*    line-height: 4em;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    font-weight: bold;*/
+/*    font-style: italic;*/
+/*}*/
 
 #booking-cost-summary p:hover,
 #booking-summary p:hover {
-    /*background-color: #f1f1f1;*/
+    background-color: #f1f1f1;
     transition: background-color 0.3s ease;
 }
 
@@ -285,7 +285,7 @@ input[type="number"] {
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 60px; /* Slightly wider for better visibility */
+    width: 60px;
     height: 30px;
 }
 
@@ -322,7 +322,7 @@ input[type="number"] {
 }
 
 input:checked + .slider {
-    background-color: #6B8E23; /* Change to your preferred color */
+    background-color: #6B8E23;
 }
 
 input:checked + .slider:before {
@@ -346,7 +346,7 @@ input:checked + .slider:before {
 }
 
 .toggle-label.active {
-    color: #6B8E23; /* Highlight the selected option */
+    color: #6B8E23;
     font-size: 1em;
 }
 
@@ -446,7 +446,7 @@ input[type="range"] {
     padding: 0.2rem 0.4rem;
 }
 
-/* Thumb (the draggable part) styling */
+
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -466,7 +466,7 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
-/* For Firefox */
+
 input[type="range"]::-ms-thumb {
     width: 1px;
     height: 25px;
@@ -475,7 +475,6 @@ input[type="range"]::-ms-thumb {
     cursor: pointer;
 }
 
-/* Styling for the track */
 input[type="range"]::-webkit-slider-runnable-track {
     background: #ddd;
     border-radius: 5px;
@@ -491,7 +490,6 @@ input[type="range"]::-ms-track {
     border-radius: 5px;
 }
 
-/* Hide default input styles for Internet Explorer */
 input[type="range"]::-ms-fill-lower {
     background: #ddd;
     border-radius: 5px;
@@ -586,67 +584,67 @@ input[type="range"]::-ms-fill-upper {
     display: none;
 }
 
-/********* Stripe  ************/
+/******** Stripe  ***********/
 
-#submit-pay-on-arrival,
-#submit-bank-transfer,
-#submit-stripe-payment {
-    height: 44px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    border: none;
-    background: #000;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: auto;
-    transition: all .9s;
-}
+/*#submit-pay-on-arrival,*/
+/*#submit-bank-transfer,*/
+/*#submit-stripe-payment {*/
+/*    height: 44px;*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    color: #fff;*/
+/*    border: none;*/
+/*    background: #000;*/
+/*    border-radius: 10px;*/
+/*    cursor: pointer;*/
+/*    font-size: 16px;*/
+/*    margin: auto;*/
+/*    transition: all .9s;*/
+/*}*/
 
-#submit-pay-on-arrival:hover,
-#submit-bank-transfer:hover,
-#submit-stripe-payment:hover {
-    background-color: #6B8E23;
-    transform: scale(0.95);
-}
+/*#submit-pay-on-arrival:hover,*/
+/*#submit-bank-transfer:hover,*/
+/*#submit-stripe-payment:hover {*/
+/*    background-color: #6B8E23;*/
+/*    transform: scale(0.95);*/
+/*}*/
 
-#submit-pay-on-arrival,
-#submit-bank-transfer,
-#stripe-payment-form,
-#paypal-payment-form {
-    padding: 1rem 0;
-}
+/*#submit-pay-on-arrival,*/
+/*#submit-bank-transfer,*/
+/*#stripe-payment-form,*/
+/*#paypal-payment-form {*/
+/*    padding: 1rem 0;*/
+/*}*/
 
-#stripe-payment-form strong, #paypal-payment-form strong {
-    padding: 0 1rem;
-}
+/*#stripe-payment-form strong, #paypal-payment-form strong {*/
+/*    padding: 0 1rem;*/
+/*}*/
 
-#card-element {
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: 100%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    background: var(--ast-comment-inputs-background); 
-}
+/*#card-element {*/
+/*    padding: 1rem;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 10px;*/
+/*    width: 100%;*/
+/*    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);*/
+/*    background: var(--ast-comment-inputs-background); */
+/*}*/
 
 
 /* Custom styling for the PayPal button */
-#paypal-button-container iframe {
-    border-radius: 10px !important;
-    transition: all 0.9s !important;
-}
+/*#paypal-button-container iframe {*/
+/*    border-radius: 10px !important;*/
+/*    transition: all 0.9s !important;*/
+/*}*/
 
-#paypal-button-container iframe:hover {
-    transform: scale(0.95);
-}
+/*#paypal-button-container iframe:hover {*/
+/*    transform: scale(0.95);*/
+/*}*/
 
 
 
-/****************************  Devices (below 1100px) ******************************************/
+/***************************  Devices (below 1100px) *****************************************/
 @media screen and (max-width: 1100px) {
     #rm-booking-form {
         
@@ -662,7 +660,7 @@ input[type="range"]::-ms-fill-upper {
     }
 }
 
-/****************************  Devices (below 768px) ******************************************/
+/***************************  Devices (below 768px) *****************************************/
 @media screen and (max-width: 768px) {
     #summary {
         flex-direction: column;
@@ -699,7 +697,7 @@ input[type="range"]::-ms-fill-upper {
 }
 
 
-/****************************  Mobile devices (below 480px) ******************************************/
+/***************************  Mobile devices (below 480px) *****************************************/
 @media screen and (max-width: 480px) {
     #rm-booking-form {
         padding: 0;

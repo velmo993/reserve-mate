@@ -22,6 +22,10 @@ function handle_property_form_submission() {
             'min_stay'          => isset($_POST['min_stay']) ? intval($_POST['min_stay']) : 0,
             'max_stay'          => isset($_POST['max_stay']) ? intval($_POST['max_stay']) : 0,
             'partial_days'      => isset($_POST['partial_days']) ? 1 : 0,
+            'check_in_time_start' => isset($_POST['check_in_time_start']) ? sanitize_text_field($_POST['check_in_time_start']) : '',
+            'check_in_time_end'   => isset($_POST['check_in_time_end']) ? sanitize_text_field($_POST['check_in_time_end']) : '',
+            'check_out_time_start' => isset($_POST['check_out_time_start']) ? sanitize_text_field($_POST['check_out_time_start']) : '',
+            'check_out_time_end'   => isset($_POST['check_out_time_end']) ? sanitize_text_field($_POST['check_out_time_end']) : '',
             'seasonal_rules'    => isset($_POST['seasonal_rules']) ? array_map('intval', $_POST['seasonal_rules']) : [],
         ];
 
@@ -59,7 +63,6 @@ function manage_properties_page() {
     <?php
 }
 
-// Display the property form
 function display_property_form($property = null) {
     $currency_symbol = get_currency();
     ?>
@@ -68,51 +71,105 @@ function display_property_form($property = null) {
         <table class="form-table">
             <tr>
                 <th><label for="name"><?php _e('Property Name', 'reserve-mate'); ?></label><i class="star-required">*</i></th>
-                <td><input type="text" name="name" value="<?php echo esc_attr($property->name ?? ''); ?>" required></td>
+                <td>
+                    <input type="text" name="name" value="<?php echo esc_attr($property->name ?? ''); ?>" required>
+                    <p class="description"><?php _e('Enter the name of the property.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><label for="max_adult_number"><?php _e('Adults (Max)', 'reserve-mate'); ?></label><i class="star-required">*</i></th>
-                <td><input name="max_adult_number" type="number" min="1" value="<?php echo esc_attr($property->max_adult_number ?? ''); ?>" required></td>
+                <td>
+                    <input name="max_adult_number" type="number" min="1" value="<?php echo esc_attr($property->max_adult_number ?? ''); ?>" required>
+                    <p class="description"><?php _e('Maximum number of adults allowed.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><label for="adult_price"><?php _e('Adult Rate', 'reserve-mate'); ?> (<?php echo $currency_symbol; ?>)</label><i class="star-required">*</i></th>
-                <td><input name="adult_price" type="number" step="0.01" value="<?php echo esc_attr($property->adult_price ?? ''); ?>" required></td>
+                <td>
+                    <input name="adult_price" type="number" step="0.01" value="<?php echo esc_attr($property->adult_price ?? ''); ?>" required>
+                    <p class="description"><?php _e('Rate per adult per day.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><label for="allow_children"><?php _e('Children Allowed', 'reserve-mate'); ?></label></th>
-                <td><input type="checkbox" id="allow_children" name="allow_children" value="1" <?php checked($property->allow_children ?? 0, 1); ?>></td>
+                <td>
+                    <input type="checkbox" id="allow_children" name="allow_children" value="1" <?php checked($property->allow_children ?? 0, 1); ?>>
+                    <p class="description"><?php _e('Check this if children are allowed.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr class="children-field hidden">
                 <th><label for="max_child_number"><?php _e('Children (Max)', 'reserve-mate'); ?></label></th>
-                <td><input name="max_child_number" type="number" value="<?php echo esc_attr($property->max_child_number ?? ''); ?>"></td>
+                <td>
+                    <input name="max_child_number" type="number" value="<?php echo esc_attr($property->max_child_number ?? ''); ?>">
+                    <p class="description"><?php _e('Maximum number of children allowed.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr class="children-field hidden">
                 <th><label for="child_price"><?php _e('Child Rate', 'reserve-mate'); ?> (<?php echo $currency_symbol; ?>)</label></th>
-                <td><input name="child_price" type="number" step="0.01" value="<?php echo esc_attr($property->child_price ?? ''); ?>"></td>
+                <td>
+                    <input name="child_price" type="number" step="0.01" value="<?php echo esc_attr($property->child_price ?? ''); ?>">
+                    <p class="description"><?php _e('Rate per child per day.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><label for="allow_pets"><?php _e('Pets Allowed', 'reserve-mate'); ?></label></th>
-                <td><input type="checkbox" id="allow_pets" name="allow_pets" value="1" <?php checked($property->allow_pets ?? 0, 1); ?>></td>
+                <td>
+                    <input type="checkbox" id="allow_pets" name="allow_pets" value="1" <?php checked($property->allow_pets ?? 0, 1); ?>>
+                    <p class="description"><?php _e('Check this if pets are allowed.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr class="pets-field hidden">
                 <th><label for="max_pet_number"><?php _e('Pets (Max)', 'reserve-mate'); ?></label></th>
-                <td><input name="max_pet_number" type="number" value="<?php echo esc_attr($property->max_pet_number ?? ''); ?>"></td>
+                <td>
+                    <input name="max_pet_number" type="number" value="<?php echo esc_attr($property->max_pet_number ?? ''); ?>">
+                    <p class="description"><?php _e('Maximum number of pets allowed.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr class="pets-field hidden">
                 <th><label for="pet_price"><?php _e('Pet Rate', 'reserve-mate'); ?> (<?php echo $currency_symbol; ?>)</label></th>
-                <td><input name="pet_price" type="number" step="0.01" value="<?php echo esc_attr($property->pet_price ?? ''); ?>"></td>
+                <td>
+                    <input name="pet_price" type="number" step="0.01" value="<?php echo esc_attr($property->pet_price ?? ''); ?>">
+                    <p class="description"><?php _e('Rate per pet per day.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><label for="min_stay"><?php _e('Minimum Stay', 'reserve-mate'); ?></label></th>
-                <td><input type="number" name="min_stay" min="0" value="<?php echo esc_attr($property->min_stay ?? ''); ?>"></td>
+                <td>
+                    <input type="number" name="min_stay" min="0" value="<?php echo esc_attr($property->min_stay ?? ''); ?>">
+                    <p class="description"><?php _e('Minimum number of nights required for a booking.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><label for="max_stay"><?php _e('Maximum Stay', 'reserve-mate'); ?></label></th>
-                <td><input type="number" name="max_stay" min="0" value="<?php echo esc_attr($property->max_stay ?? ''); ?>"></td>
+                <td>
+                    <input type="number" name="max_stay" min="0" value="<?php echo esc_attr($property->max_stay ?? ''); ?>">
+                    <p class="description"><?php _e('Maximum number of nights allowed for a booking.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <tr>
+                <th><label for="check_in_time_start"><?php _e('Check-in Time', 'reserve-mate'); ?></label></th>
+                <td>
+                    <input name="check_in_time_start" type="text" placeholder="14:00" value="<?php echo esc_attr($property->check_in_time_start ?? ''); ?>">
+                    <input name="check_in_time_end" type="text" placeholder="17:00" value="<?php echo esc_attr($property->check_in_time_end ?? ''); ?>">
+                    <p class="description"><?php _e('Check-in time from - to', 'reserve-mate'); ?></p>
+               </td>
+            </tr>
+                
+            <tr>
+                <th><label for="check_out_time_start"><?php _e('Check-out Time', 'reserve-mate'); ?></label></th>
+                <td>
+                    <input name="check_out_time_start" type="text" placeholder="08:00" value="<?php echo esc_attr($property->check_out_time_start ?? ''); ?>">
+                    <input name="check_out_time_end" type="text" placeholder="12:00" value="<?php echo esc_attr($property->check_out_time_end ?? ''); ?>">
+                    <p class="description"><?php _e('Check-out time from - to', 'reserve-mate'); ?></p>
+                </td>
+            </tr>
+            
+            <tr>
                 <th><strong><?php _e('Seasonal Rules', 'reserve-mate'); ?></strong></th>
-                <td><button id="seasonal-rules-btn"><i>▼</i></button></td>
+                <td>
+                    <button id="seasonal-rules-btn"><i>▼</i></button>
+                    <p class="description"><?php _e('Define minimum and maximum stay for specific months.', 'reserve-mate'); ?></p>
+                </td>
             </tr>
             <?php
             $seasonal_rules = !empty($property->seasonal_rules) ? json_decode($property->seasonal_rules, true) : [];
@@ -134,7 +191,7 @@ function display_property_form($property = null) {
                 <td>
                     <input type="checkbox" id="partial_days" name="partial_days" value="1" <?php checked($property->partial_days ?? 0, 1); ?>>
                     <p class="description">
-                        <?php _e('Enable this if you allow guests to book from the same day afternoon when the previous guest leaves in the morning. ', 'reserve-mate'); ?>
+                        <?php _e('Enable this if you allow guests to book from the same day afternoon when the previous guest leaves in the morning.', 'reserve-mate'); ?>
                     </p>
                 </td>
             </tr>
@@ -182,20 +239,30 @@ function display_existing_properties_table($properties) {
                 </tr>
                 <tr class="table-details" id="details-<?php echo esc_attr($property->id); ?>" style="display: none;">
                     <td colspan="6">
+                        <div class="table-details-flex"><strong><?php _e('Check-in Time:', 'reserve-mate'); ?></strong>
+                            <span class="property-data">
+                                <?php echo !empty($property->check_in_time_start) && !empty($property->check_in_time_end) ? esc_html($property->check_in_time_start). '-' .esc_html($property->check_in_time_end) : __('Not Set', 'reserve-mate'); ?>
+                            </span>
+                        </div>
+                        <div class="table-details-flex"><strong><?php _e('Check-out Time:', 'reserve-mate'); ?></strong>
+                            <span class="property-data">
+                                <?php echo !empty($property->check_out_time_start) && !empty($property->check_out_time_end) ? esc_html($property->check_out_time_start). '-' .esc_html($property->check_out_time_end) : __('Not Set', 'reserve-mate'); ?>
+                            </span>
+                        </div>
                         <div class="table-details-flex"><strong><?php _e('Adults(Max):', 'reserve-mate'); ?></strong>
-                        <span class="property-data"><?php echo $property->max_adult_number ? esc_html($property->max_adult_number) : ''; ?></span>
+                        <span class="property-data"><?php echo $property->max_adult_number ? esc_html($property->max_adult_number) : __('Not Set', 'reserve-mate'); ?></span>
                         </div>
                         <div class="table-details-flex"><strong><?php _e('Adult Rate:', 'reserve-mate'); ?></strong>
                         <span class="property-data"><?php echo $property->adult_price ? esc_html(format_price($property->adult_price)).' '. $currency_symbol : ''; ?></span>
                         </div>
                         <div class="table-details-flex"><strong><?php _e('Children(Max):', 'reserve-mate'); ?></strong>
-                        <span class="property-data"><?php echo $property->max_child_number ? esc_html($property->max_child_number) : ''; ?></span>
+                        <span class="property-data"><?php echo $property->max_child_number ? esc_html($property->max_child_number) : __('Not Set', 'reserve-mate'); ?></span>
                         </div>
                         <div class="table-details-flex"><strong><?php _e('Child Rate:', 'reserve-mate'); ?></strong>
                         <span class="property-data"><?php echo $property->child_price ? esc_html(format_price($property->child_price)).' '. $currency_symbol : ''; ?></span>
                         </div>
                         <div class="table-details-flex"><strong><?php _e('Pets(Max):', 'reserve-mate'); ?></strong>
-                        <span class="property-data"><?php echo $property->max_pet_number ? esc_html($property->max_pet_number) : ''; ?></span>
+                        <span class="property-data"><?php echo $property->max_pet_number ? esc_html($property->max_pet_number) : __('Not Set', 'reserve-mate'); ?></span>
                         </div>
                         <div class="table-details-flex"><strong><?php _e('Pet Rate:', 'reserve-mate'); ?></strong>
                         <span class="property-data"><?php echo $property->pet_price ? esc_html(format_price($property->pet_price)).' '. $currency_symbol : ''; ?></span>
