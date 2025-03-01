@@ -214,4 +214,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    
+    
+    // Manage Services Page JS -- Separate these in the future
+    if (window.location.search.includes('page=manage-services')) {
+        setupToggleDetails('.toggle-details-service', 'service');
+    }
+    
 });

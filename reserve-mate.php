@@ -38,6 +38,7 @@ if (!function_exists('wp_mail')) {
     require_once ABSPATH . WPINC . '/pluggable.php';
 }
 require_once(plugin_dir_path(__FILE__) . 'db/property.php');
+require_once(plugin_dir_path(__FILE__) . 'db/service.php');
 require_once(plugin_dir_path(__FILE__) . 'db/booking.php');
 require_once(plugin_dir_path(__FILE__) . 'db/tax.php');
 require_once(plugin_dir_path(__FILE__) . 'includes/helpers.php');
@@ -277,6 +278,7 @@ if($option) {
 }
 
 register_activation_hook(__FILE__, 'create_bookings_table');
+register_activation_hook(__FILE__, 'create_services_table');
 register_activation_hook(__FILE__, 'create_hourly_bookings_table');
 register_activation_hook(__FILE__, 'create_taxes_table');
 

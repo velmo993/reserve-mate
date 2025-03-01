@@ -7,9 +7,13 @@ require_once plugin_dir_path(__FILE__) . 'menu/message-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/booking-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/ical-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/property-settings.php';
+require_once plugin_dir_path(__FILE__) . 'menu/service-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/tax-settings.php';
 
 function add_admin_menu() {
+    $options = get_option('booking_settings');
+    $hourly_booking_enabled = isset($options['enable_hourly_booking']) ? $options['enable_hourly_booking'] : 0;
+    
     add_menu_page(
         'Booking System Settings',
         'Reserve Mate',
@@ -38,14 +42,27 @@ function add_admin_menu() {
         'display_manage_bookings_page'
     );
     
-    add_submenu_page(
-        'reserve-mate-settings', 
-        __('Properties', 'reserve-mate'),
-        __('Properties', 'reserve-mate'), 
-        'manage_options', 
-        'manage-properties', 
-        'manage_properties_page'
-    );
+    if ($hourly_booking_enabled) {
+        // Add "Services" menu item if hourly booking is enabled
+        add_submenu_page(
+            'reserve-mate-settings', 
+            __('Services', 'reserve-mate'),
+            __('Services', 'reserve-mate'), 
+            'manage_options', 
+            'manage-services', 
+            'manage_services_page'
+        );
+    } else {
+        // Add "Properties" menu item if hourly booking is disabled
+        add_submenu_page(
+            'reserve-mate-settings', 
+            __('Properties', 'reserve-mate'),
+            __('Properties', 'reserve-mate'), 
+            'manage_options', 
+            'manage-properties', 
+            'manage_properties_page'
+        );
+    }
     
     add_submenu_page(
         'reserve-mate-settings', 
