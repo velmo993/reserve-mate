@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die('No direct access!');
 
 function create_taxes_table() {
     global $wpdb;

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die('No direct access!');
 
 // Create the properties table if it doesn't exist
 function create_properties_table() {

@@ -3,7 +3,7 @@
 Plugin Name: Reserve Mate
 Plugin URI: https://github.com/velmo993/reserve-mate
 Description: A plugin for managing reservations.
-Version: 1.0.3
+Version: 1.0.4
 Author: velmoweb.com
 Author URI: https://example.com
 License: GPL2
@@ -37,12 +37,25 @@ require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 if (!function_exists('wp_mail')) {
     require_once ABSPATH . WPINC . '/pluggable.php';
 }
-require_once(plugin_dir_path(__FILE__) . 'db/property.php');
-require_once(plugin_dir_path(__FILE__) . 'db/service.php');
 require_once(plugin_dir_path(__FILE__) . 'db/booking.php');
 require_once(plugin_dir_path(__FILE__) . 'db/tax.php');
+require_once(plugin_dir_path(__FILE__) . 'db/property.php');
+require_once(plugin_dir_path(__FILE__) . 'db/date-range-booking.php');
 require_once(plugin_dir_path(__FILE__) . 'includes/helpers.php');
 
+$b_settings = get_option('booking_settings');
+$booking_settings = [
+    'hourly_booking_enabled' => isset($b_settings['enable_hourly_booking']) ? strval($b_settings['enable_hourly_booking']) : '0'
+];
+
+if ($booking_settings['hourly_booking_enabled'] === '1') {
+    // Hourly booking is enabled
+    require_once(plugin_dir_path(__FILE__) . 'db/service.php');
+    register_activation_hook(__FILE__, 'create_services_table');
+    require_once(plugin_dir_path(__FILE__) . 'db/date-time-booking.php');
+    register_activation_hook(__FILE__, 'create_hourly_bookings_table');
+}
+    
 if (!is_admin()) {
     require_once(plugin_dir_path(__FILE__) . 'includes/frontend/booking-form.php');
 }
@@ -54,6 +67,7 @@ if (is_admin()) {
 }
 
 register_activation_hook(__FILE__, 'create_properties_table'); // Create this first, bookings table has foreign for this table.
+
 // Register custom post types
 function create_booking_post_type() {
     register_post_type('booking',
@@ -278,8 +292,6 @@ if($option) {
 }
 
 register_activation_hook(__FILE__, 'create_bookings_table');
-register_activation_hook(__FILE__, 'create_services_table');
-register_activation_hook(__FILE__, 'create_hourly_bookings_table');
 register_activation_hook(__FILE__, 'create_taxes_table');
 
 function reserve_mate_force_load_translation() {
