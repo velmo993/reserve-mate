@@ -14,9 +14,17 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
+table td,
+.widefat td {
+    vertical-align: middle;
+}
+
+.booking-summary:not(:last-child):not(.details-row-active) {
+    border-bottom: 1px solid #dcdcdc;
+}
+
 .table-details{
     background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
     padding: 10px;
 }
 
@@ -54,6 +62,25 @@ input[type="number"] {
 .toggle-details-property:hover,
 #seasonal-rules-btn:hover {
     background-color: #005177;
+}
+
+.details-row-active {
+    border: 2px solid #0073a8;
+    margin: -2px;
+    background-color: #eff6ff !important;
+}
+
+.details-section-active {
+    border-left: 2px solid #0073a8;
+    border-right: 2px solid #0073a8;
+    border-bottom: 2px solid #0073a8;
+    margin: -2px;
+}
+
+.details-row-active,
+.details-section-active {
+    position: relative;
+    z-index: 10;
 }
 
 .actions-dropdown {

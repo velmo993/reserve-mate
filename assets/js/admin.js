@@ -1,6 +1,9 @@
 jQuery(document).ready(function($) {
     // Utility Functions (Shared across pages)
     function setupDetailsToggle(toggleClass, dataIdPrefix) {
+        let $currentOpenDetails = null;
+        let $currentOpenSummaryRow = null;
+
         $(toggleClass).each(function() {
             const $button = $(this);
             const toggleDetails = function(event) {
@@ -10,10 +13,41 @@ jQuery(document).ready(function($) {
     
                 const entityId = $button.attr(`data-${dataIdPrefix}-id`);
                 const $detailsRow = $('#details-' + entityId);
-                const isVisible = $detailsRow.is(':visible');
-    
-                $detailsRow.toggle();
-                $button.html(isVisible ? '<i>▼</i>' : '<i>▲</i>');
+                const $summaryRow = $button.closest('tr');
+
+                // If no details are open or a different details is clicked
+                if (!$currentOpenDetails || $currentOpenDetails[0] !== $detailsRow[0]) {
+                    // Close any currently open details first
+                    if ($currentOpenDetails) {
+                        const $previousButton = $(toggleClass + `[data-${dataIdPrefix}-id="${$currentOpenDetails.attr('id').replace('details-', '')}"]`);
+                        $previousButton.html('<i>▼</i>');
+                        $currentOpenDetails.hide();
+                        
+                        // Remove highlight from previous row
+                        if ($currentOpenSummaryRow) {
+                            $currentOpenSummaryRow.removeClass('details-row-active');
+                            $currentOpenDetails.removeClass('details-section-active');
+                        }
+                    }
+
+                    // Open new details
+                    $detailsRow.show();
+                    $button.html('<i>▲</i>');
+                    $currentOpenDetails = $detailsRow;
+                    
+                    // Add highlight to current row and details section
+                    $summaryRow.addClass('details-row-active');
+                    $detailsRow.addClass('details-section-active');
+                    $currentOpenSummaryRow = $summaryRow;
+                } else {
+                    // Clicking the same details closes it
+                    $detailsRow.hide();
+                    $button.html('<i>▼</i>');
+                    $summaryRow.removeClass('details-row-active');
+                    $detailsRow.removeClass('details-section-active');
+                    $currentOpenDetails = null;
+                    $currentOpenSummaryRow = null;
+                }
             };
     
             $button.on('click', toggleDetails);
@@ -102,7 +136,9 @@ jQuery(document).ready(function($) {
             const $form = $('#booking-form');
             const isHidden = $form.is(':hidden');
             
-            $form.toggle();
+            $form.slideToggle(500, function() {
+                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+            });
             $(this).text(isHidden ? 'Hide Form' : 'Add New Booking');
         });
 
@@ -133,13 +169,12 @@ jQuery(document).ready(function($) {
         function toggleSeasonalRules($seasonalRulesContainer, $seasonalRulesBtn) {
             $seasonalRulesContainer.each(function() {
                 const $container = $(this);
-                if ($container.hasClass('hidden')) {
-                    $container.removeClass('hidden');
-                    $seasonalRulesBtn.html('<i>▲</i>');                
-                } else {
-                    $container.addClass('hidden');
-                    $seasonalRulesBtn.html('<i>▼</i>');
-                }
+                const isHidden = $container.hasClass('hidden');
+                
+                $container.slideToggle(500, function() {
+                    $container.toggleClass('hidden');
+                    $seasonalRulesBtn.html(isHidden ? '<i>▲</i>' : '<i>▼</i>');
+                });
             });
         }
         
@@ -171,7 +206,9 @@ jQuery(document).ready(function($) {
             const $form = $('#property-form');
             const isHidden = $form.is(':hidden');
             
-            $form.toggle();
+            $form.slideToggle(500, function() {
+                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+            });
             $(this).text(isHidden ? 'Hide Form' : 'Add New Property');
         });
     }
@@ -183,10 +220,13 @@ jQuery(document).ready(function($) {
             const $form = $('#service-form');
             const isHidden = $form.is(':hidden');
             
-            $form.toggle();
+            $form.slideToggle(500, function() {
+                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+            });
             $(this).text(isHidden ? 'Hide Form' : 'Add New Service');
         });
     }
+    
 
     function initGlobalFeatures() {
         setupTabNavigation();
