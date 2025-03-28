@@ -3,7 +3,7 @@ defined('ABSPATH') or die('No direct access!');
 
 require_once plugin_dir_path(__FILE__) . 'menu/settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/payment-settings.php';
-require_once plugin_dir_path(__FILE__) . 'menu/message-settings.php';
+require_once plugin_dir_path(__FILE__) . 'menu/notification-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/booking-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/ical-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/property-settings.php';
@@ -84,11 +84,11 @@ function add_admin_menu() {
     
     add_submenu_page(
         'reserve-mate-settings',
-        __('Messages', 'reserve-mate'),
-        __('Messages', 'reserve-mate'), 
+        __('Notifications', 'reserve-mate'),
+        __('Notifications', 'reserve-mate'), 
         'manage_options', 
-        'manage-messages',
-        'manage_messages_page'
+        'manage-notifications',
+        'manage_notifications_page'
     );
 
     add_submenu_page(

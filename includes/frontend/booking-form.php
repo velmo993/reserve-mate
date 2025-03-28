@@ -10,19 +10,15 @@ function isDateTimeEnabled() {
     $booking_settings = get_option('booking_settings');
     $datetime_select_enabled = $booking_settings['enable_hourly_booking'];
     $datetime_select_enabled === intval(1) ? true : false;
-    error_log("datetimeselect enabled: $datetime_select_enabled");
-    error_log("datetimeselect type:". gettype($datetime_select_enabled));
     return $datetime_select_enabled;
 }
 
 $enabled = isDateTimeEnabled();
 
 if(!$enabled) {
-    error_log("not enabled, RANGE should work");
     require_once plugin_dir_path(__FILE__) . 'daterange-booking-form.php';
     require_once plugin_dir_path(__FILE__) . 'handlers/daterange-handler.php';
 } else {
-    error_log("enabled, DATETIME should work");
     require_once plugin_dir_path(__FILE__) . 'datetime-booking-form.php';
     require_once plugin_dir_path(__FILE__) . 'handlers/datetime-handler.php';
 }
