@@ -56,8 +56,22 @@ function manage_properties_page() {
 
     ?>
     <div class="wrap">
-        <h1><?php echo $editing_property ? 'Edit Property' : 'Add New Property'; ?></h1>
-        <?php display_property_form($editing_property); ?>
+        <h1>Manage Properties</h1>
+        
+        <?php if ($editing_property): ?>
+            <h2>Edit Property</h2>
+            <?php display_property_form($editing_property); ?>
+        <?php else: ?>
+            <button id="toggle-form-btn" class="button button-primary" style="margin-bottom: 20px;">
+                <?php _e('Add New Property', 'reserve-mate'); ?>
+            </button>
+            
+            <div id="property-form" style="display: none;">
+                <h2>Add New Property</h2>
+                <?php display_property_form(); ?>
+            </div>
+        <?php endif; ?>
+        
         <?php display_existing_properties_table($properties); ?>
     </div>
     <?php

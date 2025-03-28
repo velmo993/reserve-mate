@@ -47,8 +47,22 @@ function manage_services_page() {
 
     ?>
     <div class="wrap">
-        <h1><?php echo $editing_service ? 'Edit Service' : 'Add New Service'; ?></h1>
-        <?php display_service_form($editing_service); ?>
+        <h1>Manage Services</h1>
+        
+        <?php if ($editing_service): ?>
+            <h2>Edit Service</h2>
+            <?php display_service_form($editing_service); ?>
+        <?php else: ?>
+            <button id="toggle-form-btn" class="button button-primary" style="margin-bottom: 20px;">
+                <?php _e('Add New Service', 'reserve-mate'); ?>
+            </button>
+            
+            <div id="service-form" style="display: none;">
+                <h2>Add New Service</h2>
+                <?php display_service_form(); ?>
+            </div>
+        <?php endif; ?>
+        
         <?php display_existing_services_table($services); ?>
     </div>
     <?php

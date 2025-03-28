@@ -1,224 +1,224 @@
-document.addEventListener('DOMContentLoaded', function() {
-    let tabButtons = document.querySelectorAll('.tab-button');
-    let tabContents = document.querySelectorAll('.tab-content');
-    let calendarCheckBox = document.getElementById('save_to_google_calendar');
+jQuery(document).ready(function($) {
+    // Utility Functions (Shared across pages)
+    function setupDetailsToggle(toggleClass, dataIdPrefix) {
+        $(toggleClass).each(function() {
+            const $button = $(this);
+            const toggleDetails = function(event) {
+                if (event.type === 'touchstart') {
+                    event.preventDefault();
+                }
+    
+                const entityId = $button.attr(`data-${dataIdPrefix}-id`);
+                const $detailsRow = $('#details-' + entityId);
+                const isVisible = $detailsRow.is(':visible');
+    
+                $detailsRow.toggle();
+                $button.html(isVisible ? '<i>▼</i>' : '<i>▲</i>');
+            };
+    
+            $button.on('click', toggleDetails);
+            $button.on('touchstart', toggleDetails);
+        });
+    }
 
-    // Manage Bookings Page JS -- Separate these in the future
-    if (window.location.search.includes('page=manage-bookings')) {
-        const activeTab = localStorage.getItem('activeTab');
-        const propertySelect = document.getElementById("property_id");
-        if (activeTab) {
-            document.querySelectorAll('.tab-button, .tab-content').forEach(function(elem) {
-                elem.classList.remove('active');
-            });
-            document.querySelector(activeTab).classList.add('active');
-            document.querySelector(`.tab-button[data-target="${activeTab}"]`).classList.add('active');
-        }
-    
-        document.querySelectorAll('.tab-button').forEach(function(button) {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.tab-button, .tab-content').forEach(function(elem) {
-                    elem.classList.remove('active');
-                });
-    
-                this.classList.add('active');
-                const target = this.getAttribute('data-target');
-                document.querySelector(target).classList.add('active');
-    
+    function setupTabNavigation() {
+        $('.tab-button').on('click', function() {
+            $('.tab-button, .tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            const target = $(this).attr('data-target');
+            $(target).addClass('active');
+
+            // Persist active tab in local storage if on manage-bookings page
+            if (window.location.search.includes('page=manage-bookings')) {
                 localStorage.setItem('activeTab', target);
-            });
-        });
-        
-        updatePropertyFields(propertySelect);
-        setupToggleDetails('.toggle-details-booking', 'booking');
-        propertySelect.addEventListener("change", () => {
-            updatePropertyFields(propertySelect);
+            }
         });
     }
-    
-    function updatePropertyFields(propertySelect) {
-        const selectedOption = propertySelect.options[propertySelect.selectedIndex];
-        const adultsSelect = document.getElementById("adults");
-        const childrenSelect = document.getElementById("children");
-        const petsSelect = document.getElementById("pets");
-        const childrenRow = document.querySelector(".children-row");
-        const petsRow = document.querySelector(".pets-row");
-        if(selectedOption) {
-            const maxAdults = parseInt(selectedOption.getAttribute("data-max-adults"), 10) || 1;
-            const maxChildren = parseInt(selectedOption.getAttribute("data-max-children"), 10) || 0;
-            const maxPets = parseInt(selectedOption.getAttribute("data-max-pets"), 10) || 0;
-            const allowChildren = selectedOption.getAttribute("data-allow-children") === "1";
-            const allowPets = selectedOption.getAttribute("data-allow-pets") === "1";
-        
-            // Update Adults Dropdown
-            adultsSelect.innerHTML = "";
-            for (let i = 1; i <= maxAdults; i++) {
-                adultsSelect.innerHTML += `<option value="${i}">${i}</option>`;
-            }
-    
-            // Update Children Dropdown
-            childrenSelect.innerHTML = "";
-            if (allowChildren) {
-                childrenRow.style.display = "";
-                for (let i = 0; i <= maxChildren; i++) {
-                    childrenSelect.innerHTML += `<option value="${i}">${i}</option>`;
-                }
-            } else {
-                childrenRow.style.display = "none";
-            }
-    
-            // Update Pets Dropdown
-            petsSelect.innerHTML = "";
-            if (allowPets) {
-                petsRow.style.display = "";
-                for (let i = 0; i <= maxPets; i++) {
-                    petsSelect.innerHTML += `<option value="${i}">${i}</option>`;
-                }
-            } else {
-                petsRow.style.display = "none";
-            }
+
+    // Page-specific Initializations
+    function initManageBookingsPage() {
+        const activeTab = localStorage.getItem('activeTab');
+        const $propertySelect = $("#property_id");
+
+        if (activeTab) {
+            $('.tab-button, .tab-content').removeClass('active');
+            $(activeTab).addClass('active');
+            $('.tab-button[data-target="' + activeTab + '"]').addClass('active');
         }
+
+        function updatePropertyFields($propertySelect) {
+            const $selectedOption = $propertySelect.find('option:selected');
+            const $adultsSelect = $("#adults");
+            const $childrenSelect = $("#children");
+            const $petsSelect = $("#pets");
+            const $childrenRow = $(".children-row");
+            const $petsRow = $(".pets-row");
+
+            if ($selectedOption.length) {
+                const maxAdults = parseInt($selectedOption.attr("data-max-adults")) || 1;
+                const maxChildren = parseInt($selectedOption.attr("data-max-children")) || 0;
+                const maxPets = parseInt($selectedOption.attr("data-max-pets")) || 0;
+                const allowChildren = $selectedOption.attr("data-allow-children") === "1";
+                const allowPets = $selectedOption.attr("data-allow-pets") === "1";
+            
+                // Update Adults Dropdown
+                $adultsSelect.empty();
+                for (let i = 1; i <= maxAdults; i++) {
+                    $adultsSelect.append(`<option value="${i}">${i}</option>`);
+                }
         
-    }
-    
-    function setupToggleDetails(toggleClass, dataIdPrefix) {
-        const toggleButtons = document.querySelectorAll(toggleClass);
-    
-        if (toggleButtons) {
-            toggleButtons.forEach(button => {
-                const toggleDetails = function(event) {
-                    if (event.type === 'touchstart') {
-                        event.preventDefault();
+                // Update Children Dropdown
+                $childrenSelect.empty();
+                if (allowChildren) {
+                    $childrenRow.show();
+                    for (let i = 0; i <= maxChildren; i++) {
+                        $childrenSelect.append(`<option value="${i}">${i}</option>`);
                     }
-    
-                    const entityId = this.getAttribute(`data-${dataIdPrefix}-id`);
-                    const detailsRow = document.getElementById('details-' + entityId);
-                    const isVisible = detailsRow.style.display === 'table-row';
-    
-                    detailsRow.style.display = isVisible ? 'none' : 'table-row';
-                    this.innerHTML = isVisible ? '<i>▼</i>' : '<i>▲</i>';
-                };
-    
-                button.addEventListener('click', toggleDetails);
-                button.addEventListener('touchstart', toggleDetails);
+                } else {
+                    $childrenRow.hide();
+                }
+        
+                // Update Pets Dropdown
+                $petsSelect.empty();
+                if (allowPets) {
+                    $petsRow.show();
+                    for (let i = 0; i <= maxPets; i++) {
+                        $petsSelect.append(`<option value="${i}">${i}</option>`);
+                    }
+                } else {
+                    $petsRow.hide();
+                }
+            }
+        }
+
+        setupDetailsToggle('.toggle-details-booking', 'booking');
+        
+        $propertySelect.on("change", function() {
+            updatePropertyFields($(this));
+        });
+        
+        $('#toggle-form-btn').on('click', function() {
+            const $form = $('#booking-form');
+            const isHidden = $form.is(':hidden');
+            
+            $form.toggle();
+            $(this).text(isHidden ? 'Hide Form' : 'Add New Booking');
+        });
+
+        // Initial property fields setup
+        updatePropertyFields($propertySelect);
+    }
+
+    function initManagePropertiesPage() {
+        const $allowChildren = $("#allow_children");
+        const $allowPets = $("#allow_pets");
+        const $seasonalRulesBtn = $("#seasonal-rules-btn");
+        const $seasonalRulesContainer = $(".seasonal-rules-container");
+        
+        function toggleFields($allowChildren, $allowPets) {
+            $(".children-field").each(function() {
+                $allowChildren.prop('checked') ? 
+                    $(this).removeClass('hidden') : 
+                    $(this).addClass('hidden');
+            });
+
+            $(".pets-field").each(function() {
+                $allowPets.prop('checked') ? 
+                    $(this).removeClass('hidden') : 
+                    $(this).addClass('hidden');
             });
         }
-    }
-    
-    tabButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            tabButtons.forEach(function(btn) { btn.classList.remove('active'); });
-            tabContents.forEach(function(content) { content.classList.remove('active'); });
 
-            button.classList.add('active');
-
-            var target = document.querySelector(button.getAttribute('data-target'));
-            target.classList.add('active');
+        function toggleSeasonalRules($seasonalRulesContainer, $seasonalRulesBtn) {
+            $seasonalRulesContainer.each(function() {
+                const $container = $(this);
+                if ($container.hasClass('hidden')) {
+                    $container.removeClass('hidden');
+                    $seasonalRulesBtn.html('<i>▲</i>');                
+                } else {
+                    $container.addClass('hidden');
+                    $seasonalRulesBtn.html('<i>▼</i>');
+                }
+            });
+        }
+        
+        $allowChildren.on("change", function() {
+            toggleFields($allowChildren, $allowPets);
         });
-    });
-    
-    function toggleCalendarSettings() {
-        const checkbox = document.getElementById('save_to_google_calendar');
-        const fields = [
-            'calendar_api_key',
-            'calendar_id',
-            'calendar_timezones'
-        ];
-    
-        fields.forEach(function(fieldId) {
-            let field = document.querySelector(`[name="booking_settings[${fieldId}]"]`);
-            if (field) {
-                field.disabled = !checkbox.checked;
-            }
+        $allowPets.on("change", function() {
+            toggleFields($allowChildren, $allowPets);
+        });
+        $seasonalRulesBtn.on("click", function(e) {
+            e.preventDefault();
+            toggleSeasonalRules($seasonalRulesContainer, $seasonalRulesBtn);
+        });
+        
+        // Flatpickr time inputs
+        ['check_in_time_start', 'check_in_time_end', 
+         'check_out_time_start', 'check_out_time_end'].forEach(function(inputName) {
+            flatpickr(`input[name='${inputName}']`, {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true
+            });
+        });
+        
+        setupDetailsToggle('.toggle-details-property', 'property');
+        
+        $('#toggle-form-btn').on('click', function() {
+            const $form = $('#property-form');
+            const isHidden = $form.is(':hidden');
+            
+            $form.toggle();
+            $(this).text(isHidden ? 'Hide Form' : 'Add New Property');
         });
     }
-    
-    if(calendarCheckBox) {
-        calendarCheckBox.addEventListener("click" , (e) => {
+
+    function initManageServicesPage() {
+        setupDetailsToggle('.toggle-details-service', 'service');
+
+        $('#toggle-form-btn').on('click', function() {
+            const $form = $('#service-form');
+            const isHidden = $form.is(':hidden');
+            
+            $form.toggle();
+            $(this).text(isHidden ? 'Hide Form' : 'Add New Service');
+        });
+    }
+
+    function initGlobalFeatures() {
+        setupTabNavigation();
+
+        // Calendar settings toggle
+        function toggleCalendarSettings() {
+            const $checkbox = $('#save_to_google_calendar');
+            const fields = [
+                'calendar_api_key',
+                'calendar_id',
+                'calendar_timezones'
+            ];
+        
+            fields.forEach(function(fieldId) {
+                $(`[name="booking_settings[${fieldId}]"]`).prop('disabled', !$checkbox.prop('checked'));
+            });
+        }
+        
+        $('#save_to_google_calendar').on('click', function(e) {
             e.preventDefault();
             toggleCalendarSettings();
         });
     }
-    
-    
-    // Manage Properties Page JS -- Separate these in the future
-    if (window.location.search.includes('page=manage-properties')) {
-        const allowChildren = document.getElementById("allow_children");
-        const allowPets = document.getElementById("allow_pets");
-        const seasonalRulesBtn = document.getElementById("seasonal-rules-btn");
-        const seasonalRulesContainer = document.querySelectorAll(".seasonal-rules-container");
-        
-        allowChildren.addEventListener("change", () => {
-            toggleFields(allowChildren, allowPets);
-        });
-        allowPets.addEventListener("change", () => {
-            toggleFields(allowChildren, allowPets);
-        });
-        seasonalRulesBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            toggleSeasonalRules(seasonalRulesContainer, seasonalRulesBtn);
-        });
-        
-        console.log("flatpickr: ", flatpickr);
-        flatpickr("input[name='check_in_time_start']", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true
-        });
-    
-        flatpickr("input[name='check_in_time_end']", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true
-        });
-        
-        flatpickr("input[name='check_out_time_start']", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true
-        });
-    
-        flatpickr("input[name='check_out_time_end']", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true
-        });
-        
-        setupToggleDetails('.toggle-details-property', 'property');
-        
-    }
-    
-    function toggleSeasonalRules(seasonalRulesContainer, seasonalRulesBtn) {
-        seasonalRulesContainer.forEach(el => {
-            if(el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-                seasonalRulesBtn.innerHTML = '<i>▲</i>';                
-            } else {
-                el.classList.add('hidden');
-                seasonalRulesBtn.innerHTML = '<i>▼</i>';
-            }
-        });
-    }
-    
-    function toggleFields(allowChildren, allowPets) {
-        document.querySelectorAll(".children-field").forEach(el => {
-            allowChildren.checked ? el.classList.remove('hidden') : el.classList.add('hidden');
-        });
 
-        document.querySelectorAll(".pets-field").forEach(el => {
-            allowPets.checked ? el.classList.remove('hidden') : el.classList.add('hidden');
-        });
+    // Page-specific Initialization
+    initGlobalFeatures();
+
+    if (window.location.search.includes('page=manage-bookings')) {
+        initManageBookingsPage();
+    } else if (window.location.search.includes('page=manage-properties')) {
+        initManagePropertiesPage();
+    } else if (window.location.search.includes('page=manage-services')) {
+        initManageServicesPage();
     }
-    
-    
-    
-    // Manage Services Page JS -- Separate these in the future
-    if (window.location.search.includes('page=manage-services')) {
-        setupToggleDetails('.toggle-details-service', 'service');
-    }
-    
 });

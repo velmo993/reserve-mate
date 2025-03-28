@@ -54,8 +54,22 @@ function display_manage_bookings_page() {
 
     ?>
     <div class="wrap">
-        <h1><?php echo $editing_booking ? 'Edit Booking' : 'Add New Booking'; ?></h1>
-        <?php display_admin_booking_form($editing_booking); ?>
+        <h1>Manage Bookings</h1>
+        
+        <?php if ($editing_booking): ?>
+            <h2>Edit Booking</h2>
+            <?php display_admin_booking_form($editing_booking); ?>
+        <?php else: ?>
+            <button id="toggle-form-btn" class="button button-primary" style="margin-bottom: 20px;">
+                <?php _e('Add New Booking', 'reserve-mate'); ?>
+            </button>
+            
+            <div id="booking-form" style="display: none;">
+                <h2>Add New Booking</h2>
+                <?php display_admin_booking_form(); ?>
+            </div>
+        <?php endif; ?>
+        
         <?php display_existing_bookings_table($bookings); ?>
     </div>
     <?php
