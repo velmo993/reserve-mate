@@ -195,65 +195,162 @@ function register_payment_settings() {
         'payment-settings',
         'bank_transfer_settings'
     );
-
-    // add_settings_section(
-    //     'apple_pay_settings',
-    //     __('Apple Pay Settings', 'reserve-mate'),
-    //     null,
-    //     'payment-settings'
-    // );
-    
-    // add_settings_field(
-    //     'apple_pay_enabled',
-    //     __('Enable Apple Pay Payment', 'reserve-mate'),
-    //     'display_apple_pay_enabled_field',
-    //     'payment-settings',
-    //     'apple_pay_settings'
-    // );
-
-    // add_settings_field(
-    //     'apple_pay_merchant_id',
-    //     __('Apple Pay Merchant ID', 'reserve-mate'),
-    //     'display_apple_pay_merchant_id_field',
-    //     'payment-settings',
-    //     'apple_pay_settings'
-    // );
-
-    // add_settings_field(
-    //     'apple_pay_cert_path',
-    //     __('Apple Pay Certificate Path', 'reserve-mate'),
-    //     'display_apple_pay_cert_path_field',
-    //     'payment-settings',
-    //     'apple_pay_settings'
-    // );
-
-    // add_settings_field(
-    //     'apple_pay_key_path',
-    //     __('Apple Pay Private Key Path', 'reserve-mate'),
-    //     'display_apple_pay_key_path_field',
-    //     'payment-settings',
-    //     'apple_pay_settings'
-    // );
-
-    // add_settings_field(
-    //     'apple_pay_display_name',
-    //     __('Apple Pay Display Name', 'reserve-mate'),
-    //     'display_apple_pay_display_name_field',
-    //     'payment-settings',
-    //     'apple_pay_settings'
-    // );
 }
 
 function payment_settings_page() {
     ?>
     <div class="wrap">
+        <?php if (isset($_GET['settings-updated']) && $_GET['settings-updated']) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Settings saved.', 'reserve-mate') . '</p></div>';
+        } ?>
         <h1><?php _e('Payment Settings', 'reserve-mate'); ?></h1>
+        
+        <div class="nav-tab-wrapper">
+            <a href="#online-tab" class="nav-tab nav-tab-active" data-tab="online-tab"><?php _e('Online Payments', 'reserve-mate'); ?></a>
+            <a href="#offline-tab" class="nav-tab" data-tab="offline-tab"><?php _e('Offline Payments', 'reserve-mate'); ?></a>
+            <a href="#advance-tab" class="nav-tab" data-tab="advance-tab"><?php _e('Advance Payment', 'reserve-mate'); ?></a>
+        </div>
+        
         <form method="post" action="options.php">
-            <?php
-            settings_fields('payment_settings_group');
-            do_settings_sections('payment-settings');
-            submit_button();
-            ?>
+            <?php settings_fields('payment_settings_group'); ?>
+            
+            <div id="online-tab" class="tab-content active">
+                <h2><?php _e('Online Payment Methods', 'reserve-mate'); ?></h2>
+                
+                <h3><?php _e('Stripe Settings', 'reserve-mate'); ?></h3>
+                <table class="form-table">
+                    <?php 
+                    // Stripe fields
+                    echo '<tr><th>';
+                    _e('Enable Stripe', 'reserve-mate');
+                    echo '</th><td>';
+                    display_stripe_enabled_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Stripe Secret Key', 'reserve-mate');
+                    echo '</th><td>';
+                    display_stripe_secret_key_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Stripe Public Key', 'reserve-mate');
+                    echo '</th><td>';
+                    display_stripe_public_key_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+                
+                <h3><?php _e('PayPal Settings', 'reserve-mate'); ?></h3>
+                <table class="form-table">
+                    <?php
+                    // PayPal fields
+                    echo '<tr><th>';
+                    _e('Enable PayPal', 'reserve-mate');
+                    echo '</th><td>';
+                    display_paypal_enabled_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('PayPal Client ID', 'reserve-mate');
+                    echo '</th><td>';
+                    display_paypal_client_id_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <div id="offline-tab" class="tab-content">
+                <h2><?php _e('Offline Payment Methods', 'reserve-mate'); ?></h2>
+                
+                <h3><?php _e('Pay on Arrival', 'reserve-mate'); ?></h3>
+                <table class="form-table">
+                    <?php
+                    // Pay on arrival
+                    echo '<tr><th>';
+                    _e('Pay on Arrival', 'reserve-mate');
+                    echo '</th><td>';
+                    display_pay_on_arrival_enabled_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+                
+                <h3><?php _e('Bank Transfer', 'reserve-mate'); ?></h3>
+                <table class="form-table">
+                    <?php
+                    // Bank transfer fields
+                    echo '<tr><th>';
+                    _e('Enable Bank Transfer', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_transfer_enabled_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Bank Account Number', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_account_number_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Bank Account Identifier (IBAN/Routing Number)', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_account_identifier_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Bank SWIFT/BIC Code', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_swift_bic_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Bank Name', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_name_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Recipient Name', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_recipient_name_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Additional Bank Information', 'reserve-mate');
+                    echo '</th><td>';
+                    display_bank_additional_info_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <div id="advance-tab" class="tab-content">
+                <h2><?php _e('Advance Payment Settings', 'reserve-mate'); ?></h2>
+                <table class="form-table">
+                    <?php
+                    // Advance payment fields
+                    echo '<tr><th>';
+                    _e('Advance Payment Type', 'reserve-mate');
+                    echo '</th><td>';
+                    display_advance_payment_type_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Advance Payment Percentage', 'reserve-mate');
+                    echo '</th><td>';
+                    display_advance_payment_percentage_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Advance Payment Fixed Amount', 'reserve-mate');
+                    echo '</th><td>';
+                    display_advance_payment_fixed_amount_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <?php submit_button(); ?>
         </form>
     </div>
     <?php

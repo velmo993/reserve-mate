@@ -112,6 +112,28 @@ function register_booking_settings() {
         'hourly_booking_settings'
     );
     
+    add_settings_section(
+        'horizontal_line_before_form_display',
+        '',
+        'display_horizontal_line',
+        'booking-settings'
+    );
+    
+    add_settings_section(
+        'form_display_settings',
+        __('Form Display Options', 'reserve-mate'),
+        null,
+        'booking-settings'
+    );
+    
+    add_settings_field(
+        'calendar_display_type',
+        __('Calendar Display Type', 'reserve-mate'),
+        'display_calendar_display_type_field',
+        'booking-settings',
+        'form_display_settings'
+    );
+    
     /* add_settings_field(
         'auto_delete_booking_enabled',
         __('Automatically delete unpaid bookings', 'reserve-mate'),
@@ -138,12 +160,110 @@ function booking_settings_page() {
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Settings saved.', 'reserve-mate') . '</p></div>';
         } ?>
         <h1><?php _e('Booking System Settings', 'reserve-mate'); ?></h1>
+        
+        <div class="nav-tab-wrapper">
+            <a href="#general-tab" class="nav-tab nav-tab-active" data-tab="general-tab"><?php _e('General', 'reserve-mate'); ?></a>
+            <a href="#hourly-tab" class="nav-tab" data-tab="hourly-tab"><?php _e('Hourly Booking', 'reserve-mate'); ?></a>
+            <a href="#calendar-tab" class="nav-tab" data-tab="calendar-tab"><?php _e('Google Calendar', 'reserve-mate'); ?></a>
+            <a href="#display-tab" class="nav-tab" data-tab="display-tab"><?php _e('Display', 'reserve-mate'); ?></a>
+        </div>
+        
         <form method="post" action="options.php">
-            <?php
-            settings_fields('booking_settings_group');
-            do_settings_sections('booking-settings');
-            submit_button();
-            ?>
+            <?php settings_fields('booking_settings_group'); ?>
+            
+            <div id="general-tab" class="tab-content active">
+                <h2><?php _e('General Settings', 'reserve-mate'); ?></h2>
+                <table class="form-table">
+                    <?php 
+                    // Currency field
+                    echo '<tr><th>';
+                    _e('Currency', 'reserve-mate');
+                    echo '</th><td>';
+                    display_currency_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <div id="hourly-tab" class="tab-content">
+                <h2><?php _e('Hourly Booking Settings', 'reserve-mate'); ?></h2>
+                <table class="form-table">
+                    <?php
+                    // Hourly booking fields
+                    echo '<tr><th>';
+                    _e('Enable Hourly Booking', 'reserve-mate');
+                    echo '</th><td>';
+                    display_enable_hourly_booking_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Earliest Booking Time', 'reserve-mate');
+                    echo '</th><td>';
+                    display_hourly_min_time();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Latest Booking Time', 'reserve-mate');
+                    echo '</th><td>';
+                    display_hourly_max_time();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Booking Interval (Minutes)', 'reserve-mate');
+                    echo '</th><td>';
+                    display_hourly_booking_interval();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Break Duration Between Slots (Minutes)', 'reserve-mate');
+                    echo '</th><td>';
+                    display_hourly_break_duration();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <div id="calendar-tab" class="tab-content">
+                <h2><?php _e('Google Calendar Settings', 'reserve-mate'); ?></h2>
+                <table class="form-table">
+                    <?php
+                    // Google Calendar fields
+                    echo '<tr><th>';
+                    _e('Google Calendar API Credentials (JSON)', 'reserve-mate');
+                    echo '</th><td>';
+                    display_calendar_api_key_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Google Calendar ID', 'reserve-mate');
+                    echo '</th><td>';
+                    display_calendar_id_field();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Calendar Timezone', 'reserve-mate');
+                    echo '</th><td>';
+                    display_calendar_timezones();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <div id="display-tab" class="tab-content">
+                <h2><?php _e('Display Settings', 'reserve-mate'); ?></h2>
+                <table class="form-table">
+                    <?php
+                    // Display settings
+                    echo '<tr><th>';
+                    _e('Calendar Display Type', 'reserve-mate');
+                    echo '</th><td>';
+                    display_calendar_display_type_field();
+                    echo '</td></tr>';
+                    ?>
+                </table>
+            </div>
+            
+            <?php submit_button(); ?>
         </form>
     </div>
     <?php
@@ -255,6 +375,20 @@ function display_hourly_break_duration() {
     <?php
 }
 
+function display_calendar_display_type_field() {
+    $options = get_option('booking_settings');
+    $calendar_type = isset($options['calendar_display_type']) ? $options['calendar_display_type'] : 'full';
+    ?>
+    <select name="booking_settings[calendar_display_type]">
+        <option value="full" <?php selected($calendar_type, 'full'); ?>><?php _e('Full Calendar View', 'reserve-mate'); ?></option>
+        <option value="inline" <?php selected($calendar_type, 'inline'); ?>><?php _e('Inline Calendar View', 'reserve-mate'); ?></option>
+    </select>
+    <p class="description">
+        <?php _e('Choose between a full calendar display or an inline calendar.', 'reserve-mate'); ?>
+    </p>
+    <?php
+}
+
 function sanitize_booking_settings($input) {
     if (isset($input['calendar_api_key'])) {
         $input['calendar_api_key'] = fix_json($input['calendar_api_key']);
@@ -306,6 +440,10 @@ function sanitize_booking_settings($input) {
     
     if (isset($input['hourly_break_duration'])) {
         $input['hourly_break_duration'] = absint($input['hourly_break_duration']);
+    }
+
+    if (isset($input['calendar_display_type'])) {
+        $input['calendar_display_type'] = sanitize_text_field($input['calendar_display_type']);
     }
 
     return $input;

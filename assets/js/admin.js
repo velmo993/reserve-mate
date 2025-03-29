@@ -166,6 +166,11 @@ jQuery(document).ready(function($) {
             });
         }
 
+        // Add this function to handle initial state when editing a property
+        function initializeFieldVisibility() {
+            toggleFields($allowChildren, $allowPets);
+        }
+
         function toggleSeasonalRules($seasonalRulesContainer, $seasonalRulesBtn) {
             $seasonalRulesContainer.each(function() {
                 const $container = $(this);
@@ -178,6 +183,9 @@ jQuery(document).ready(function($) {
             });
         }
         
+        // Call initialization on page load
+        initializeFieldVisibility();
+
         $allowChildren.on("change", function() {
             toggleFields($allowChildren, $allowPets);
         });
@@ -227,6 +235,43 @@ jQuery(document).ready(function($) {
         });
     }
     
+    function initTabManagement(storageKey, defaultTab) {
+        const activeTab = localStorage.getItem(storageKey) || defaultTab;
+        
+        // Activate the saved tab
+        $('.nav-tab').removeClass('nav-tab-active');
+        $('.tab-content').removeClass('active');
+        
+        $(`a[data-tab="${activeTab}"]`).addClass('nav-tab-active');
+        $(`#${activeTab}`).addClass('active');
+        
+        // Handle tab clicks
+        $('.nav-tab').on('click', function(e) {
+            e.preventDefault();
+            
+            const tabId = $(this).data('tab');
+            
+            // Update tabs
+            $('.nav-tab').removeClass('nav-tab-active');
+            $(this).addClass('nav-tab-active');
+            
+            // Update content
+            $('.tab-content').removeClass('active');
+            $(`#${tabId}`).addClass('active');
+            
+            // Save to localStorage
+            localStorage.setItem(storageKey, tabId);
+        });
+    }
+    
+    function initManageSettingsPage() {
+        initTabManagement('booking_settings_active_tab', 'general-tab');
+    }
+    
+    function initManagePaymentsPage() {
+        initTabManagement('payment_settings_active_tab', 'online-tab');
+    }
+    
 
     function initGlobalFeatures() {
         setupTabNavigation();
@@ -260,5 +305,9 @@ jQuery(document).ready(function($) {
         initManagePropertiesPage();
     } else if (window.location.search.includes('page=manage-services')) {
         initManageServicesPage();
+    } else if (window.location.search.includes('page=reserve-mate-settings')) {
+        initManageSettingsPage();
+    } else if (window.location.search.includes('page=payment-settings')) {
+        initManagePaymentsPage();
     }
 });
