@@ -106,6 +106,21 @@ function register_notification_settings() {
         'manage-notifications',
         'smtp_settings'
     );
+    
+    add_settings_section(
+        'email_test_section',
+        __('Test Email Settings', 'reserve-mate'),
+        'display_email_test_section',
+        'manage-notifications'
+    );
+
+    add_settings_field(
+        'test_email_address',
+        __('Test Email Address', 'reserve-mate'),
+        'display_test_email_address_field',
+        'manage-notifications',
+        'email_test_section'
+    );
 }
 
 function manage_notifications_page() {
@@ -198,7 +213,7 @@ function display_smtp_encryption_field() {
     echo '<option value="tls"' . selected('tls', $smtp_encryption, false) . '>TLS</option>';
     echo '<option value="ssl"' . selected('ssl', $smtp_encryption, false) . '>SSL</option>';
     echo '</select>';
-    echo '<p class="description">' . __('Select the encryption method (TLS or SSL).', 'reserve-mate') . '</p>';
+    echo '<p class="description">' . __('Select the encryption method TLS/SSL (TLS recommended).', 'reserve-mate') . '</p>';
 }
 
 function display_smtp_username_field() {
@@ -213,6 +228,25 @@ function display_smtp_password_field() {
     $smtp_password = $notification_settings['smtp_password'] ?? '';
     echo '<input type="password" name="notification_settings[smtp_password]" value="' . esc_attr($smtp_password) . '" class="regular-text">';
     echo '<p class="description">' . __('Enter your SMTP password.', 'reserve-mate') . '</p>';
+}
+
+function display_email_test_section() {
+    echo '<p>' . __('Test your email configuration by sending test emails.', 'reserve-mate') . '</p>';
+}
+
+function display_test_email_address_field() {
+    $notification_settings = get_option('notification_settings');
+    $test_email = isset($notification_settings['test_email_address']) ? $notification_settings['test_email_address'] : get_option('admin_email');
+    
+    echo '<input type="email" id="test_email" name="test_email" value="' . esc_attr($test_email) . '" class="regular-text">';
+    echo '<p class="description">' . __('Enter the email address where test emails will be sent.', 'reserve-mate') . '</p>';
+    
+    // Add test buttons
+    echo '<div style="margin-top: 15px;">';
+    echo '<button type="button" id="test_client_email" class="button button-secondary">' . __('Send Client test email', 'reserve-mate') . '</button>';
+    echo ' <button type="button" id="test_admin_email" class="button button-secondary">' . __('Send Admin test email', 'reserve-mate') . '</button>';
+    echo ' <span id="email_test_result" style="margin-left: 10px; display: inline-block;"></span>';
+    echo '</div>';
 }
 
 function sanitize_notification_settings($input) {
@@ -258,6 +292,10 @@ function sanitize_notification_settings($input) {
 
     if (isset($input['smtp_password'])) {
         $sanitized['smtp_password'] = sanitize_text_field($input['smtp_password']);
+    }
+    
+    if (isset($input['test_email_address']) && is_email($input['test_email_address'])) {
+        $sanitized['test_email_address'] = sanitize_email($input['test_email_address']);
     }
 
     return $sanitized;

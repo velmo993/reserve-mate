@@ -43,6 +43,7 @@ require_once(plugin_dir_path(__FILE__) . 'db/property.php');
 require_once(plugin_dir_path(__FILE__) . 'db/date-range-booking.php');
 require_once(plugin_dir_path(__FILE__) . 'includes/helpers.php');
 
+
 $b_settings = get_option('booking_settings');
 $booking_settings = [
     'hourly_booking_enabled' => isset($b_settings['enable_hourly_booking']) ? strval($b_settings['enable_hourly_booking']) : '0'
@@ -120,6 +121,19 @@ function enqueue_flatpickr_scripts() {
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_flatpickr_scripts');
+
+function enqueue_email_test_script() {
+    $screen = get_current_screen();
+    
+    // Only load on the notifications page
+    if ($screen && strpos($screen->id, 'reserve-mate') !== false) {
+        wp_enqueue_script('email-test-script', plugins_url('assets/js/test-email.js', __FILE__), array('jquery'), '1.0', true);
+        wp_localize_script('email-test-script', 'email_test_data', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('email_test_nonce')
+        ));
+    }
+}
 
 function enqueue_frontend_styles() {
     wp_enqueue_style('reserve-mate-frontend', plugin_dir_url(__FILE__) . 'assets/css/frontend.css');
@@ -279,6 +293,7 @@ add_action('admin_enqueue_scripts', 'enqueue_admin_scripts');
 add_action('wp_enqueue_scripts', 'enqueue_frontend_scripts');
 add_action('reserve_mate_cleanup_unpaid_bookings', 'delete_unpaid_bookings');
 add_action('wp', 'booking_auto_cleanup');
+add_action('admin_enqueue_scripts', 'enqueue_email_test_script');
 
 $option = get_option('payment_settings');
 if($option) {

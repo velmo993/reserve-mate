@@ -9,6 +9,7 @@ require_once plugin_dir_path(__FILE__) . 'menu/ical-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/property-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/service-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/tax-settings.php';
+require_once plugin_dir_path(__FILE__) . 'mail/test-email.php';
 
 function add_admin_menu() {
     $options = get_option('booking_settings');
