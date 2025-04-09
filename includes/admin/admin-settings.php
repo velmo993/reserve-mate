@@ -5,6 +5,7 @@ require_once plugin_dir_path(__FILE__) . 'menu/settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/payment-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/notification-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/booking-settings.php';
+require_once plugin_dir_path(__FILE__) . 'menu/datetime-booking-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/ical-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/property-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/service-settings.php';
@@ -34,17 +35,16 @@ function add_admin_menu() {
         'booking_settings_page'
     );
     
-    add_submenu_page(
-        'reserve-mate-settings', 
-        __('Bookings', 'reserve-mate'),
-        __('Bookings', 'reserve-mate'),
-        'manage_options', 
-        'manage-bookings',
-        'display_manage_bookings_page'
-    );
-    
     if ($hourly_booking_enabled) {
-        // Add "Services" menu item if hourly booking is enabled
+        // Add "Services & Bookings" menu item if hourly booking is enabled
+        add_submenu_page(
+            'reserve-mate-settings', 
+            __('Bookings', 'reserve-mate'),
+            __('Bookings', 'reserve-mate'),
+            'manage_options', 
+            'manage-datetime-bookings',
+            'display_datetime_bookings_page'
+        );
         add_submenu_page(
             'reserve-mate-settings', 
             __('Services', 'reserve-mate'),
@@ -54,7 +54,15 @@ function add_admin_menu() {
             'manage_services_page'
         );
     } else {
-        // Add "Properties" menu item if hourly booking is disabled
+        // Add "Properties & Bookings" menu item if hourly booking is disabled
+        add_submenu_page(
+            'reserve-mate-settings', 
+            __('Bookings', 'reserve-mate'),
+            __('Bookings', 'reserve-mate'),
+            'manage_options', 
+            'manage-bookings',
+            'display_manage_bookings_page'
+        );
         add_submenu_page(
             'reserve-mate-settings', 
             __('Properties', 'reserve-mate'),

@@ -111,6 +111,14 @@ function register_payment_settings() {
         'advance_payment_settings'
     );
     
+    add_settings_field(
+        'advance_payment_methods',
+        __('Apply Advance Payment to', 'reserve-mate'),
+        'display_advance_payment_methods_field',
+        'payment-settings',
+        'advance_payment_settings'
+    );
+    
     add_settings_section(
         'horizontal_line_before_pay_on_arrival',
         '',
@@ -346,6 +354,12 @@ function payment_settings_page() {
                     echo '</th><td>';
                     display_advance_payment_fixed_amount_field();
                     echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Apply Advance Payment to', 'reserve-mate');
+                    echo '</th><td>';
+                    display_advance_payment_methods_field();
+                    echo '</td></tr>';
                     ?>
                 </table>
             </div>
@@ -391,7 +405,7 @@ function display_stripe_enabled_field() {
 function display_stripe_secret_key_field() {
     $options = get_option('payment_settings');
     ?>
-    <input type="text" name="payment_settings[stripe_secret_key]" value="<?php echo isset($options['stripe_secret_key']) ? esc_attr($options['stripe_secret_key']) : ''; ?>" class="regular-text">
+    <input type="password" name="payment_settings[stripe_secret_key]" value="<?php echo isset($options['stripe_secret_key']) ? esc_attr($options['stripe_secret_key']) : ''; ?>" class="regular-text">
     <p class="description"><?php _e('Enter your Stripe Secret Key. This is required to process payments via Stripe.', 'reserve-mate'); ?></p>
     <?php
 }
@@ -399,7 +413,7 @@ function display_stripe_secret_key_field() {
 function display_stripe_public_key_field() {
     $options = get_option('payment_settings');
     ?>
-    <input type="text" name="payment_settings[stripe_public_key]" value="<?php echo isset($options['stripe_public_key']) ? esc_attr($options['stripe_public_key']) : ''; ?>" class="regular-text">
+    <input type="password" name="payment_settings[stripe_public_key]" value="<?php echo isset($options['stripe_public_key']) ? esc_attr($options['stripe_public_key']) : ''; ?>" class="regular-text">
     <p class="description"><?php _e('Enter your Stripe Publishable Key. This is used to securely collect payment details on the frontend.', 'reserve-mate'); ?></p>
     <?php
 }
@@ -413,7 +427,7 @@ function display_paypal_enabled_field() {
 function display_paypal_client_id_field() {
     $options = get_option('payment_settings');
     ?>
-    <input type="text" name="payment_settings[paypal_client_id]" value="<?php echo isset($options['paypal_client_id']) ? esc_attr($options['paypal_client_id']) : ''; ?>" class="regular-text">
+    <input type="password" name="payment_settings[paypal_client_id]" value="<?php echo isset($options['paypal_client_id']) ? esc_attr($options['paypal_client_id']) : ''; ?>" class="regular-text">
     <p class="description"><?php _e('Enter your PayPal Client ID. This is required to process payments via PayPal.', 'reserve-mate'); ?></p>
     <?php
 }
@@ -445,6 +459,29 @@ function display_advance_payment_fixed_amount_field() {
     <input type="number" name="payment_settings[advance_payment_fixed_amount]" value="<?php echo isset($options['advance_payment_fixed_amount']) ? esc_attr($options['advance_payment_fixed_amount']) : ''; ?>" class="small-text">
     <p class="description"><?php _e('Enter the fixed amount to be paid in advance.', 'reserve-mate'); ?></p>
     <?php
+}
+
+function display_advance_payment_methods_field() {
+    $options = get_option('payment_settings');
+    $payment_methods = [
+        'stripe' => __('Stripe (Card Payment)', 'reserve-mate'),
+        'paypal' => __('PayPal', 'reserve-mate'),
+        'bank_transfer' => __('Bank Transfer', 'reserve-mate'),
+        'pay_on_arrival' => __('Pay on Arrival', 'reserve-mate')
+    ];
+    
+    echo '<fieldset>';
+    echo '<legend class="screen-reader-text">' . __('Apply Advance Payment to', 'reserve-mate') . '</legend>';
+    
+    foreach ($payment_methods as $method_key => $method_label) {
+        $checked = isset($options['advance_payment_methods'][$method_key]) ? $options['advance_payment_methods'][$method_key] : 0;
+        echo '<label for="advance_payment_' . $method_key . '">';
+        echo '<input type="checkbox" id="advance_payment_' . $method_key . '" name="payment_settings[advance_payment_methods][' . $method_key . ']" value="1" ' . checked(1, $checked, false) . '> ';
+        echo $method_label . '</label><br>';
+    }
+    
+    echo '</fieldset>';
+    echo '<p class="description">' . __('Select which payment methods should use the advance payment option.', 'reserve-mate') . '</p>';
 }
 
 function display_pay_on_arrival_enabled_field() {
@@ -529,6 +566,14 @@ function sanitize_payment_settings($input) {
     $sanitized_input['advance_payment_type'] = sanitize_text_field($input['advance_payment_type']);
     $sanitized_input['advance_payment_percentage'] = isset($input['advance_payment_percentage']) ? floatval($input['advance_payment_percentage']) : 0;
     $sanitized_input['advance_payment_fixed_amount'] = isset($input['advance_payment_fixed_amount']) ? floatval($input['advance_payment_fixed_amount']) : 0;
+    if (isset($input['advance_payment_methods']) && is_array($input['advance_payment_methods'])) {
+        foreach ($input['advance_payment_methods'] as $method_key => $enabled) {
+            $sanitized_input['advance_payment_methods'][$method_key] = isset($enabled) ? 1 : 0;
+        }
+    } else {
+        $sanitized_input['advance_payment_methods'] = [];
+    }
+    
     $sanitized_input['pay_on_arrival_enabled'] = isset($input['pay_on_arrival_enabled']) ? 1 : 0;
     
     // Bank transfer

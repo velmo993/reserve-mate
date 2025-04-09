@@ -13,6 +13,7 @@ function display_payment_form() {
         <form id="payment-form" class="payment-form" method="post">
             <?php wp_nonce_field('final_form_submit', 'frontend_booking_nonce'); ?>
             <input type="hidden" name="clientSecret" value="">
+            <input type="hidden" id="services-field" name="services-field[]" multiple value="">
             <input type="hidden" id="multiple-properties" name="multiple-properties" value="false">
             <input type="hidden" id="multiple-ids" name="multiple-ids" value="">
             <input type="hidden" id="single-id" name="single-id" value="">

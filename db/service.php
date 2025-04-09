@@ -1,7 +1,6 @@
 <?php
 defined('ABSPATH') or die('No direct access!');
 
-// Create the services table if it doesn't exist
 function create_services_table() {
     global $wpdb;
     $table_name = get_services_table_name();
@@ -103,6 +102,13 @@ function get_service_ids() {
     $table_name = get_services_table_name();
     return $wpdb->get_col("SELECT id FROM $table_name");
 }
+
+function get_service_name($service_id) {
+    global $wpdb;
+    $service_name = $wpdb->get_var($wpdb->prepare("SELECT name FROM {$wpdb->prefix}reservemate_services WHERE id = %d", intval($service_id)));
+    return $service_name;
+}
+
 
 // Format service data (if needed)
 function format_service_data($service) {

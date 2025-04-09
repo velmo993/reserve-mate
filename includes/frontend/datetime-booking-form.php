@@ -2,6 +2,7 @@
 defined('ABSPATH') or die('No direct access!');
 
 function display_datetime_booking_form() {
+    $services = get_services();
     ob_start();
     ?>
     
@@ -9,7 +10,7 @@ function display_datetime_booking_form() {
         <div class="flatpickr-calendar-container booking-form-content">
             <div class="date-time-container">
                 <div class="day-selector-wrap">
-                    <input type="text" id="day-selector" class="flatpick-r-datetime" placeholder="Select a day">
+                    <input type="text" id="day-selector" class="flatpick-r-datetime" placeholder="Select day">
                     <img src="<?php echo RESERVE_MATE_PLUGIN_URL; ?>assets/images/calendar-color-icon.png" alt="Calendar Icon" class="calendar-color-icon">
                 </div>
                 <!-- Container for time slot selection -->
@@ -47,15 +48,13 @@ function display_datetime_booking_form() {
                 </select>
             </div>
             
-            <!--<div class="form-field">-->
-            <!--    <select name="services" id="services" required>-->
-            <!--        <option value=""disabled selected>Services</option>-->
-            <!--        <option value="service">Service 1</option>-->
-            <!--        <option value="service_2">Service 2</option>-->
-            <!--        <option value="service_3">Service 3</option>-->
-            <!--        <option value="service_4">Service 4</option>-->
-            <!--    </select>-->
-            <!--</div>-->
+            <div class="form-field">
+                <select name="services[]" multiple id="services" required>
+                    <?php foreach ($services as $service): ?>
+                        <option value="<?php echo $service->id; ?>" data-price="<?php echo $service->price; ?>"><?php echo $service->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             
             <input type="hidden" id="start-date" name="start-date" value="" required>
             <input type="hidden" id="end-date" name="end-date" value="" required>
@@ -73,3 +72,4 @@ function display_datetime_booking_form() {
     <?php
     return ob_get_clean();
 }
+

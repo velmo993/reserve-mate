@@ -43,6 +43,14 @@ function register_booking_settings() {
         'google_calendar_settings'
     );
     
+    add_settings_field(
+        'calendar_locale',
+        __('Calendar Locale', 'reserve-mate'),
+        'display_calendar_locale',
+        'booking-settings',
+        'google_calendar_settings'
+    );
+    
     add_settings_section(
         'horizontal_line_before_bookings',
         '',
@@ -181,6 +189,18 @@ function booking_settings_page() {
                     echo '</th><td>';
                     display_currency_field();
                     echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Calendar Timezone', 'reserve-mate');
+                    echo '</th><td>';
+                    display_calendar_timezones();
+                    echo '</td></tr>';
+                    
+                    echo '<tr><th>';
+                    _e('Date and Time Format', 'reserve-mate');
+                    echo '</th><td>';
+                    display_calendar_locale();
+                    echo '</td></tr>';
                     ?>
                 </table>
             </div>
@@ -239,12 +259,6 @@ function booking_settings_page() {
                     echo '</th><td>';
                     display_calendar_id_field();
                     echo '</td></tr>';
-                    
-                    echo '<tr><th>';
-                    _e('Calendar Timezone', 'reserve-mate');
-                    echo '</th><td>';
-                    display_calendar_timezones();
-                    echo '</td></tr>';
                     ?>
                 </table>
             </div>
@@ -299,18 +313,163 @@ function display_calendar_timezones() {
     echo '</select>';
 }
 
+function display_calendar_locale() {
+    $options = get_option('booking_settings');
+    $default_locale = 'en-US';
+    $locale = isset($options['calendar_locale']) ? esc_attr($options['calendar_locale']) : $default_locale;
+    
+    $locales = [
+        'af-ZA' => 'Afrikaans (South Africa)',
+        'am-ET' => 'Amharic (Ethiopia)',
+        'ar-SA' => 'Arabic (Saudi Arabia)',
+        'ar-AE' => 'Arabic (United Arab Emirates)',
+        'ar-EG' => 'Arabic (Egypt)',
+        'az-AZ' => 'Azerbaijani (Azerbaijan)',
+        'be-BY' => 'Belarusian (Belarus)',
+        'bg-BG' => 'Bulgarian (Bulgaria)',
+        'bn-BD' => 'Bengali (Bangladesh)',
+        'bs-BA' => 'Bosnian (Bosnia & Herzegovina)',
+        'ca-ES' => 'Catalan (Spain)',
+        'cs-CZ' => 'Czech (Czech Republic)',
+        'cy-GB' => 'Welsh (United Kingdom)',
+        'da-DK' => 'Danish (Denmark)',
+        'de-DE' => 'German (Germany)',
+        'de-AT' => 'German (Austria)',
+        'de-CH' => 'German (Switzerland)',
+        'el-GR' => 'Greek (Greece)',
+        'en-AU' => 'English (Australia)',
+        'en-CA' => 'English (Canada)',
+        'en-GB' => 'English (United Kingdom)',
+        'en-IN' => 'English (India)',
+        'en-NZ' => 'English (New Zealand)',
+        'en-US' => 'English (United States)',
+        'es-ES' => 'Spanish (Spain)',
+        'es-MX' => 'Spanish (Mexico)',
+        'es-AR' => 'Spanish (Argentina)',
+        'es-CO' => 'Spanish (Colombia)',
+        'es-CL' => 'Spanish (Chile)',
+        'et-EE' => 'Estonian (Estonia)',
+        'eu-ES' => 'Basque (Spain)',
+        'fa-IR' => 'Persian (Iran)',
+        'fi-FI' => 'Finnish (Finland)',
+        'fil-PH' => 'Filipino (Philippines)',
+        'fr-FR' => 'French (France)',
+        'fr-CA' => 'French (Canada)',
+        'fr-BE' => 'French (Belgium)',
+        'fr-CH' => 'French (Switzerland)',
+        'ga-IE' => 'Irish (Ireland)',
+        'gl-ES' => 'Galician (Spain)',
+        'gu-IN' => 'Gujarati (India)',
+        'he-IL' => 'Hebrew (Israel)',
+        'hi-IN' => 'Hindi (India)',
+        'hr-HR' => 'Croatian (Croatia)',
+        'hu-HU' => 'Hungarian (Hungary)',
+        'hy-AM' => 'Armenian (Armenia)',
+        'id-ID' => 'Indonesian (Indonesia)',
+        'is-IS' => 'Icelandic (Iceland)',
+        'it-IT' => 'Italian (Italy)',
+        'it-CH' => 'Italian (Switzerland)',
+        'ja-JP' => 'Japanese (Japan)',
+        'ka-GE' => 'Georgian (Georgia)',
+        'kk-KZ' => 'Kazakh (Kazakhstan)',
+        'km-KH' => 'Khmer (Cambodia)',
+        'kn-IN' => 'Kannada (India)',
+        'ko-KR' => 'Korean (South Korea)',
+        'ky-KG' => 'Kyrgyz (Kyrgyzstan)',
+        'lo-LA' => 'Lao (Laos)',
+        'lt-LT' => 'Lithuanian (Lithuania)',
+        'lv-LV' => 'Latvian (Latvia)',
+        'mk-MK' => 'Macedonian (North Macedonia)',
+        'ml-IN' => 'Malayalam (India)',
+        'mn-MN' => 'Mongolian (Mongolia)',
+        'mr-IN' => 'Marathi (India)',
+        'ms-MY' => 'Malay (Malaysia)',
+        'mt-MT' => 'Maltese (Malta)',
+        'nb-NO' => 'Norwegian Bokmål (Norway)',
+        'ne-NP' => 'Nepali (Nepal)',
+        'nl-NL' => 'Dutch (Netherlands)',
+        'nl-BE' => 'Dutch (Belgium)',
+        'nn-NO' => 'Norwegian Nynorsk (Norway)',
+        'pa-IN' => 'Punjabi (India)',
+        'pl-PL' => 'Polish (Poland)',
+        'ps-AF' => 'Pashto (Afghanistan)',
+        'pt-BR' => 'Portuguese (Brazil)',
+        'pt-PT' => 'Portuguese (Portugal)',
+        'ro-RO' => 'Romanian (Romania)',
+        'ru-RU' => 'Russian (Russia)',
+        'si-LK' => 'Sinhala (Sri Lanka)',
+        'sk-SK' => 'Slovak (Slovakia)',
+        'sl-SI' => 'Slovenian (Slovenia)',
+        'sq-AL' => 'Albanian (Albania)',
+        'sr-RS' => 'Serbian (Serbia)',
+        'sv-SE' => 'Swedish (Sweden)',
+        'sw-KE' => 'Swahili (Kenya)',
+        'ta-IN' => 'Tamil (India)',
+        'te-IN' => 'Telugu (India)',
+        'th-TH' => 'Thai (Thailand)',
+        'tr-TR' => 'Turkish (Turkey)',
+        'uk-UA' => 'Ukrainian (Ukraine)',
+        'ur-PK' => 'Urdu (Pakistan)',
+        'uz-UZ' => 'Uzbek (Uzbekistan)',
+        'vi-VN' => 'Vietnamese (Vietnam)',
+        'zh-CN' => 'Chinese (Simplified)',
+        'zh-HK' => 'Chinese (Hong Kong)',
+        'zh-TW' => 'Chinese (Traditional)'
+    ];
+    
+    echo '<select name="booking_settings[calendar_locale]">';
+    foreach ($locales as $code => $name) {
+        echo '<option value="' . esc_attr($code) . '"' . selected($locale, $code, false) . '>' . esc_html($name) . '</option>';
+    }
+    echo '</select>';
+    echo '<p class="description">' . __('Select the locale for date formatting throughout the booking system.', 'reserve-mate') . '</p>';
+}
+
 function display_currency_field() {
     $options = get_option('booking_settings');
     $currency = isset($options['currency']) ? $options['currency'] : 'USD';
-    ?>
-    <select name="booking_settings[currency]">
-        <option value="EUR" <?php selected($currency, 'EUR'); ?>>EUR (€)</option>
-        <option value="GBP" <?php selected($currency, 'GBP'); ?>>GBP (£)</option>
-        <option value="HUF" <?php selected($currency, 'HUF'); ?>>HUF (Ft)</option>
-        <option value="JPY" <?php selected($currency, 'JPY'); ?>>JPY (¥)</option>
-        <option value="USD" <?php selected($currency, 'USD'); ?>>USD ($)</option>
-    </select>
-    <?php
+
+    $currencies = [
+        'AED' => 'AED (د.إ)',
+        'AUD' => 'AUD ($)',
+        'BRL' => 'BRL (R$)',
+        'CAD' => 'CAD ($)',
+        'CHF' => 'CHF (CHF)',
+        'CNY' => 'CNY (¥)',
+        'CZK' => 'CZK (Kč)',
+        'DKK' => 'DKK (kr)',
+        'EUR' => 'EUR (€)',
+        'GBP' => 'GBP (£)',
+        'HKD' => 'HKD ($)',
+        'HUF' => 'HUF (Ft)',
+        'IDR' => 'IDR (Rp)',
+        'ILS' => 'ILS (₪)',
+        'INR' => 'INR (₹)',
+        'JPY' => 'JPY (¥)',
+        'KRW' => 'KRW (₩)',
+        'MXN' => 'MXN ($)',
+        'MYR' => 'MYR (RM)',
+        'NOK' => 'NOK (kr)',
+        'NZD' => 'NZD ($)',
+        'PHP' => 'PHP (₱)',
+        'PLN' => 'PLN (zł)',
+        'RON' => 'RON (lei)',
+        'RUB' => 'RUB (₽)',
+        'SAR' => 'SAR (﷼)',
+        'SEK' => 'SEK (kr)',
+        'SGD' => 'SGD ($)',
+        'THB' => 'THB (฿)',
+        'TRY' => 'TRY (₺)',
+        'TWD' => 'TWD (NT$)',
+        'USD' => 'USD ($)',
+        'ZAR' => 'ZAR (R)'
+    ];
+
+    echo '<select name="booking_settings[currency]">';
+    foreach ($currencies as $code => $symbol) {
+        echo '<option value="' . esc_attr($code) . '" ' . selected($currency, $code, false) . '>' . esc_html($symbol) . '</option>';
+    }
+    echo '</select>';
 }
 
 function display_enable_hourly_booking_field() {

@@ -153,7 +153,7 @@ function display_send_email_to_clients_field() {
     $notification_settings = get_option('notification_settings');
     $send_email_to_clients = isset($notification_settings['send_email_to_clients']) ? $notification_settings['send_email_to_clients'] : 0;
     
-    echo '<input type="checkbox" name="notification_settings[send_email_to_clients]" value="1"' . checked(1, $send_email_to_clients, false) . '> ' . __('Send an email to the guest after the booking is made.', 'reserve-mate');
+    echo '<input type="checkbox" name="notification_settings[send_email_to_clients]" value="1"' . checked(1, $send_email_to_clients, false) . '> ' . __('Send email to the guest after the booking is made.', 'reserve-mate');
 }
 
 function display_email_from_name_field() {
@@ -236,7 +236,7 @@ function display_email_test_section() {
 
 function display_test_email_address_field() {
     $notification_settings = get_option('notification_settings');
-    $test_email = isset($notification_settings['test_email_address']) ? $notification_settings['test_email_address'] : get_option('admin_email');
+    $test_email = $notification_settings['test_email'] ?? '';
     
     echo '<input type="email" id="test_email" name="test_email" value="' . esc_attr($test_email) . '" class="regular-text">';
     echo '<p class="description">' . __('Enter the email address where test emails will be sent.', 'reserve-mate') . '</p>';
@@ -294,8 +294,8 @@ function sanitize_notification_settings($input) {
         $sanitized['smtp_password'] = sanitize_text_field($input['smtp_password']);
     }
     
-    if (isset($input['test_email_address']) && is_email($input['test_email_address'])) {
-        $sanitized['test_email_address'] = sanitize_email($input['test_email_address']);
+    if (isset($input['test_email']) && is_email($input['test_email'])) {
+        $sanitized['test_email'] = sanitize_email($input['test_email']);
     }
 
     return $sanitized;

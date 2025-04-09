@@ -52,9 +52,12 @@ $booking_settings = [
 if ($booking_settings['hourly_booking_enabled'] === '1') {
     // Hourly booking is enabled
     require_once(plugin_dir_path(__FILE__) . 'db/service.php');
-    register_activation_hook(__FILE__, 'create_services_table');
     require_once(plugin_dir_path(__FILE__) . 'db/date-time-booking.php');
-    register_activation_hook(__FILE__, 'create_hourly_bookings_table');
+    register_activation_hook(__FILE__, function() {
+        create_hourly_bookings_table();
+        create_services_table();
+        create_booking_services_table();
+    });
 }
     
 if (!is_admin()) {
@@ -98,7 +101,17 @@ function enqueue_admin_scripts() {
     wp_enqueue_style('flatpickr-css', plugins_url('assets/css/flatpickr.min.css', __FILE__));
     wp_enqueue_script('flatpickr-js', plugins_url('assets/js/flatpickr.min.js', __FILE__), array(), null, true);
     wp_enqueue_script('flatpickr-hu', plugins_url('assets/l10n/hu.js', __FILE__), ['flatpickr-js'], null, true);
-    wp_enqueue_script('booking-plugin-scripts', plugin_dir_url(__FILE__) . 'assets/js/admin.js', array('flatpickr-js', 'flatpickr-hu'), null, true);
+    wp_enqueue_style('select2-css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', [], '4.0.13');
+    wp_enqueue_script('select2-js', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', [], '4.0.13', true);
+    wp_enqueue_script('jquery');
+    wp_enqueue_style('jquery-datetimepicker-css', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css');
+    wp_enqueue_script('jquery-datetimepicker-js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js', array('jquery'), null, true);
+    wp_enqueue_script('booking-plugin-scripts', plugin_dir_url(__FILE__) . 'assets/js/admin.js', array('jquery', 'flatpickr-js', 'flatpickr-hu', 'select2-js'), null, true);
+    
+    wp_localize_script('booking-plugin-scripts', 'reserve_mate_admin', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('reserve_mate_nonce')
+    ]);
 }
 
 
@@ -108,15 +121,19 @@ function enqueue_flatpickr_scripts() {
     wp_enqueue_script('flatpickr-hu', plugins_url('assets/l10n/hu.js', __FILE__), ['flatpickr-js'], null, true);
     wp_enqueue_script('custom-flatpickr', plugin_dir_url(__FILE__) . 'assets/js/flatpickr-init.js', ['flatpickr-js', 'flatpickr-hu'], null, true);
     
-    $b_settings = get_option('booking_settings');
+    $options = get_option('booking_settings');
     $booking_settings = [
-        'hourly_booking_enabled' => isset($b_settings['enable_hourly_booking']) ? strval($b_settings['enable_hourly_booking']) : '0'
+        'hourly_booking_enabled' => isset($options['enable_hourly_booking']) ? strval($options['enable_hourly_booking']) : '0'
     ];
+    $selected_timezone = isset($options['calendar_timezones']) ? $options['calendar_timezones'] : 'UTC';
+    $calendar_locale = isset($options['calendar_locale']) ? $options['calendar_locale'] : 'en-US';
     
     wp_localize_script('custom-flatpickr', 'flatpickrVars', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
         'bookingSettings' => $booking_settings,
-        'nonce' => wp_create_nonce('custom_flatpickr_nonce')
+        'nonce'    => wp_create_nonce('custom_flatpickr_nonce'),
+        'timezone' => $selected_timezone,
+        'locale'   => $calendar_locale
     ));
 }
 
@@ -135,12 +152,6 @@ function enqueue_email_test_script() {
     }
 }
 
-function enqueue_frontend_styles() {
-    wp_enqueue_style('reserve-mate-frontend', plugin_dir_url(__FILE__) . 'assets/css/frontend.css');
-}
-
-add_action('wp_enqueue_scripts', 'enqueue_frontend_styles');
-
 function enqueue_booking_form_styles() {
     $b_settings = get_option('booking_settings');
     if(!$b_settings['enable_hourly_booking']) {
@@ -153,13 +164,17 @@ function enqueue_booking_form_styles() {
 add_action('wp_enqueue_scripts', 'enqueue_booking_form_styles');
 
 function enqueue_frontend_scripts() {
+    wp_enqueue_style('select2-css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', [], '4.0.13');
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('select2-js', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', ['jquery'], '4.0.13', true);
     wp_enqueue_script(
         'frontend-scripts',
         plugin_dir_url(__FILE__) . 'assets/js/frontend.js',
-        array('jquery'),
+        ['jquery', 'select2-js'],
         '1.0.0',
         true
     );
+    
     $p_settings = get_option('payment_settings');
     $stripe_public_key = get_option('payment_settings')['stripe_public_key'] ?? '';
     $stripe_secret_key = get_option('payment_settings')['stripe_secret_key'] ?? '';
@@ -170,6 +185,14 @@ function enqueue_frontend_scripts() {
     $paypal_enabled = '0';
     !empty($p_settings['paypal_enabled']) && !empty($client_id) ? $paypal_enabled = strval(1) : '0';
     
+    $advance_payment_methods = isset($p_settings['advance_payment_methods']) ? $p_settings['advance_payment_methods'] : [];
+    $advance_payment_methods_array = [
+        'stripe' => isset($advance_payment_methods['stripe']) ? strval($advance_payment_methods['stripe']) : '0',
+        'paypal' => isset($advance_payment_methods['paypal']) ? strval($advance_payment_methods['paypal']) : '0',
+        'bank_transfer' => isset($advance_payment_methods['bank_transfer']) ? strval($advance_payment_methods['bank_transfer']) : '0',
+        'pay_on_arrival' => isset($advance_payment_methods['pay_on_arrival']) ? strval($advance_payment_methods['pay_on_arrival']) : '0'
+    ];
+    
     $payment_settings = [
         'stripe_enabled' => $stripe_enabled,
         'paypal_enabled' => $paypal_enabled,
@@ -178,6 +201,7 @@ function enqueue_frontend_scripts() {
         'advance_payment_type' => isset($p_settings['advance_payment_type']) ? strval($p_settings['advance_payment_type']) : '0',
         'advance_payment_percentage' => isset($p_settings['advance_payment_percentage']) ? floatval($p_settings['advance_payment_percentage']) : '0',
         'advance_payment_fixed_amount' => isset($p_settings['advance_payment_fixed_amount']) ? floatval($p_settings['advance_payment_fixed_amount']) : '0',
+        'advance_payment_methods' => $advance_payment_methods_array,
     ];
     
     $b_settings = get_option('booking_settings');

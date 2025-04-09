@@ -42,7 +42,7 @@ function handle_daterange_booking_form() {
     // Handle payment
     $payment_success = handle_payment();
     if ($payment_success) {
-        save_booking_to_db($property_ids, $name, $email, $phone, $adults, $children, $pets, $start_date, $end_date, $total_cost, $paid_amount, $payment_success['method'], $client_request);
+        save_booking_to_db($property_ids, $name, $email, $phone, $adults, $children, $pets, $start_date, $end_date, $total_cost, $payment_success['method'], $client_request, $paid_amount);
         header('Location: ' . home_url() . '?booking_status=success');
         exit;
     } else {

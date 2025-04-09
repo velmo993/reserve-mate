@@ -12,12 +12,10 @@ function create_bookings_table() {
 
     // Ensure properties table exists before creating bookings
     if ($wpdb->get_var("SHOW TABLES LIKE '$properties_table'") != $properties_table) {
-        error_log("Error: Properties table does not exist. Cannot create bookings table.");
         return;
     }
     
      if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
-        // error_log("$table_name table already exists.");
         return;
     } else {
         // Now create the bookings table with the foreign key
@@ -77,7 +75,6 @@ function get_bookings_for_property($property_id) {
 function update_booking($data, $index) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'reservemate_bookings';
-    error_log("Index: $index");
     $wpdb->update($table_name, $data, ['id' => $index]);
 }
 
@@ -89,7 +86,7 @@ function delete_booking($booking_id) {
     }
 }
 
-function get_available_days_between_bookings($bookings, $min_stay, $seasonal_rules = []) {
+function get_available_days_between_bookings($bookings, $min_stay, $seasonal_rules = [], $disabled_dates = []) {
     $gaps = [];
 
     if (count($bookings) > 1) {
@@ -103,6 +100,21 @@ function get_available_days_between_bookings($bookings, $min_stay, $seasonal_rul
 
             // Check if the gap is valid (should be at least 1 day)
             if ($current_end >= $next_start) {
+                continue;
+            }
+            
+            $is_gap_disabled = false;
+            $current_gap_date = strtotime($gap_start_date);
+            while ($current_gap_date <= strtotime($gap_end_date)) {
+                $date_str = date('Y-m-d', $current_gap_date);
+                if (is_date_disabled($date_str, $disabled_dates)) {
+                    $is_gap_disabled = true;
+                    break;
+                }
+                $current_gap_date = strtotime('+1 day', $current_gap_date);
+            }
+
+            if ($is_gap_disabled) {
                 continue;
             }
 
@@ -139,6 +151,37 @@ function get_available_days_between_bookings($bookings, $min_stay, $seasonal_rul
     return $gaps;
 }
 
+function is_date_disabled($date, $disabled_dates) {
+    if (empty($disabled_dates)) return false;
+
+    $timestamp = strtotime($date);
+    $day_of_week = strtolower(date('l', $timestamp));
+    $month_day = date('m-d', $timestamp);
+
+    foreach ($disabled_dates as $rule) {
+        switch ($rule['type']) {
+            case 'specific':
+                if ($date === $rule['date']) return true;
+                if (!empty($rule['repeat_yearly']) && $month_day === date('m-d', strtotime($rule['date']))) return true;
+                break;
+            case 'range':
+                $start = strtotime($rule['start_date']);
+                $end = strtotime($rule['end_date']);
+                if ($timestamp >= $start && $timestamp <= $end) return true;
+                if (!empty($rule['repeat_yearly'])) {
+                    $current_year = date('Y');
+                    if ($date >= date('Y-m-d', strtotime($current_year . '-' . date('m-d', $start))) && 
+                        $date <= date('Y-m-d', strtotime($current_year . '-' . date('m-d', $end)))) return true;
+                }
+                break;
+            case 'weekly':
+                if (in_array($day_of_week, $rule['days'])) return true;
+                break;
+        }
+    }
+    return false;
+}
+
 function get_bookings_with_settings($property_id) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'reservemate_bookings';
@@ -158,8 +201,9 @@ function get_bookings_with_settings($property_id) {
         ARRAY_A
     );
     $seasonal_rules = !empty($property->seasonal_rules) ? json_decode($property->seasonal_rules, true) : [];
+    $disabled_dates = !empty($property->disabled_dates) ? json_decode($property->disabled_dates, true) : [];
     // Find gaps between bookings
-    $gaps = get_available_days_between_bookings($bookings, $min_stay, $seasonal_rules);
+    $gaps = get_available_days_between_bookings($bookings, $min_stay, $seasonal_rules, $disabled_dates);
 
     $bookingsData = [
         'bookings' => $bookings,
@@ -228,14 +272,13 @@ function get_booked_dates_data() {
     ]);
 }
 
-function save_booking_to_db($property_ids, $name, $email, $phone, $adults, $children, $pets, $start_date, $end_date, $total_cost, $paid_amount = 0, $payment_method, $client_request,  $admin = false) {
+function save_booking_to_db($property_ids, $name, $email, $phone, $adults, $children, $pets, $start_date, $end_date, $total_cost, $payment_method, $client_request, $paid_amount = 0, $admin = false) {
     global $wpdb;
 
     // If $property_ids is a single value, convert it into an array to handle both cases
     if (!is_array($property_ids)) {
         $property_ids = array($property_ids);
     }
-    // error_log(print_r($property_ids));
     // Loop through all property IDs and insert bookings for each one
     foreach ($property_ids as $property_id) {
         $result = $wpdb->insert(
@@ -307,7 +350,7 @@ function send_success_email_to_client($property_ids, $name, $email, $phone, $adu
         $content = isset($message_settings['client_email_content']) && !empty($message_settings['client_email_content'])
         ? $message_settings['client_email_content'] 
         : '<!DOCTYPE html>
-        <html lang="hu">
+        <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -393,9 +436,6 @@ function send_success_email_to_client($property_ids, $name, $email, $phone, $adu
             $content
         );
 
-        error_log("Subject: $subject");
-        error_log("Content: $content");
-
         $headers = "Content-Type: text/html; charset=UTF-8\r\n";
         $headers .= "From: $sender_name <$sender_email>\r\n";
 
@@ -406,7 +446,6 @@ function send_success_email_to_client($property_ids, $name, $email, $phone, $adu
                 error_log("Email failed to send to: $email");
                 $response = 'Email failed to send to client';
             } else {
-                error_log("Email successfully sent to: $email");
                 $response = 'Email successfully sent to client';
             }
         } catch (Exception $e) {
@@ -522,10 +561,8 @@ function send_success_email_to_admin($property_ids, $name, $email, $phone, $adul
     try {
         $email_sent = wp_mail($admin_email, $subject, $content, $headers);
         if (!$email_sent) {
-            error_log("Email failed to send to admin: $admin_email");
             $response = 'Email failed to send to admin';
         } else {
-            error_log("Email successfully sent to admin: $admin_email");
             $response = 'Email successfully sent to admin';
         }
     } catch (Exception $e) {

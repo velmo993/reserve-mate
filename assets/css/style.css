@@ -19,6 +19,19 @@ table td,
     vertical-align: middle;
 }
 
+.tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 20px;
+}
+
 .booking-summary:not(:last-child):not(.details-row-active) {
     border-bottom: 1px solid #dcdcdc;
 }
@@ -50,7 +63,8 @@ table td,
 
 .toggle-details-booking,
 .toggle-details-property,
-#seasonal-rules-btn {
+#seasonal-rules-btn,
+#disabled-dates-btn {
     background-color: #0073aa;
     color: white;
     border: none;
@@ -180,6 +194,24 @@ table td,
 
 .tax-input {
     vertical-align: top;
+}
+
+.disabled-date-rule {
+    background: #f9f9f9;
+    margin-bottom: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+.datepicker {
+    width: 100px;
+}
+
+.disabled-date-weekly label {
+    display: inline-block;
+    margin-right: 10px;
 }
 
 

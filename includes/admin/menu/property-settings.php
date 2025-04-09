@@ -27,6 +27,7 @@ function handle_property_form_submission() {
             'check_out_time_start' => isset($_POST['check_out_time_start']) ? sanitize_text_field($_POST['check_out_time_start']) : '',
             'check_out_time_end'   => isset($_POST['check_out_time_end']) ? sanitize_text_field($_POST['check_out_time_end']) : '',
             'seasonal_rules'    => isset($_POST['seasonal_rules']) ? array_map('intval', $_POST['seasonal_rules']) : [],
+            'disabled_dates'    => isset($_POST['disabled_dates']) ? $_POST['disabled_dates'] : []
         ];
 
         save_property($property_data, $editing_index);
@@ -181,7 +182,7 @@ function display_property_form($property = null) {
             <tr>
                 <th><strong><?php _e('Seasonal Rules', 'reserve-mate'); ?></strong></th>
                 <td>
-                    <button id="seasonal-rules-btn"><i>▼</i></button>
+                    <button id="seasonal-rules-btn" type="button"><i>▼</i></button>
                     <p class="description"><?php _e('Define minimum and maximum stay for specific months.', 'reserve-mate'); ?></p>
                 </td>
             </tr>
@@ -201,11 +202,33 @@ function display_property_form($property = null) {
                 </tr>
             <?php endfor; ?>
             <tr>
+                <th><strong><?php _e('Disable Dates', 'reserve-mate'); ?></strong></th>
+                <td>
+                    <button id="disabled-dates-btn" type="button"><i>▼</i></button>
+                    <p class="description"><?php _e('Define dates or date patterns that should be disabled for booking.', 'reserve-mate'); ?></p>
+                </td>
+            </tr>
+            <tr class="disabled-dates-container hidden">
+                <td colspan="2">
+                    <div id="disabled-dates-rules">
+                        <?php
+                        $disabled_dates = !empty($property->disabled_dates) ? json_decode($property->disabled_dates, true) : [];
+                        if (!empty($disabled_dates)) {
+                            foreach ($disabled_dates as $index => $rule) {
+                                display_disabled_date_rule($index, $rule);
+                            }
+                        }
+                        ?>
+                    </div>
+                    <button type="button" id="add-disabled-date-rule" class="button"><?php _e('Add New Rule', 'reserve-mate'); ?></button>
+                </td>
+            </tr>
+            <tr>
                 <th><label for="partial_days"><?php _e('Partial Booking Days / Half Days', 'reserve-mate'); ?></label></th>
                 <td>
                     <input type="checkbox" id="partial_days" name="partial_days" value="1" <?php checked($property->partial_days ?? 0, 1); ?>>
                     <p class="description">
-                        <?php _e('Enable this if you allow guests to book from the same day afternoon when the previous guest leaves in the morning.', 'reserve-mate'); ?>
+                        <?php _e('Enable this if you allow new guests to check in during the afternoon of the same day when previous guests check out in the morning.', 'reserve-mate'); ?>
                     </p>
                 </td>
             </tr>
@@ -306,6 +329,33 @@ function display_existing_properties_table($properties) {
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <div class="table-details-flex"><strong><?php _e('Disabled Dates:', 'reserve-mate'); ?></strong>
+                            <div class="disabled-dates-rules">
+                                <?php if (!empty($property->disabled_dates)): ?>
+                                <ul>
+                                    <?php
+                                    $disabled_dates = json_decode($property->disabled_dates, true);
+                                    foreach ($disabled_dates as $rule):
+                                        if ($rule['type'] === 'specific'): ?>
+                                            <li><?php _e('Specific date:', 'reserve-mate'); ?> <?php echo esc_html($rule['date']); ?>
+                                                <?php if (!empty($rule['repeat_yearly'])) echo ' (' . __('repeats yearly', 'reserve-mate') . ')'; ?>
+                                            </li>
+                                        <?php elseif ($rule['type'] === 'range'): ?>
+                                            <li><?php _e('Date range:', 'reserve-mate'); ?> <?php echo esc_html($rule['start_date']); ?> - <?php echo esc_html($rule['end_date']); ?>
+                                                <?php if (!empty($rule['repeat_yearly'])) echo ' (' . __('repeats yearly', 'reserve-mate') . ')'; ?>
+                                            </li>
+                                        <?php elseif ($rule['type'] === 'weekly' && !empty($rule['days'])): ?>
+                                            <li><?php _e('Weekly on:', 'reserve-mate'); ?> <?php echo esc_html(implode(', ', array_map(function($day) {
+                                                return date_i18n('l', strtotime($day));
+                                            }, $rule['days']))); ?></li>
+                                        <?php endif;
+                                    endforeach; ?>
+                                </ul>
+                                <?php else: ?>
+                                    <span><?php _e('No disabled dates set.', 'reserve-mate'); ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -313,4 +363,98 @@ function display_existing_properties_table($properties) {
         </tbody>
     </table>
     <?php
+}
+
+
+function display_disabled_date_rule($index, $rule = []) {
+    $rule = wp_parse_args($rule, [
+        'type' => 'specific',
+        'date' => '',
+        'start_date' => '',
+        'end_date' => '',
+        'days' => [],
+        'repeat_yearly' => false,
+    ]);
+    ?>
+    <div class="disabled-date-rule" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd;">
+        <div style="margin-bottom: 10px;">
+            <label>
+                <select name="disabled_dates[<?php echo $index; ?>][type]" class="disabled-date-type">
+                    <option value="specific" <?php selected($rule['type'], 'specific'); ?>><?php _e('Specific Date', 'reserve-mate'); ?></option>
+                    <option value="range" <?php selected($rule['type'], 'range'); ?>><?php _e('Date Range', 'reserve-mate'); ?></option>
+                    <option value="weekly" <?php selected($rule['type'], 'weekly'); ?>><?php _e('Weekly Pattern', 'reserve-mate'); ?></option>
+                </select>
+            </label>
+            
+            <button type="button" class="button remove-disabled-date-rule" style="float: right;"><?php _e('Remove', 'reserve-mate'); ?></button>
+        </div>
+        
+        <div class="disabled-date-options">
+            <!-- Specific Date -->
+            <div class="disabled-date-specific" style="<?php echo $rule['type'] !== 'specific' ? 'display: none;' : ''; ?>">
+                <label>
+                    <?php _e('Date:', 'reserve-mate'); ?>
+                    <input type="text" class="datepicker" name="disabled_dates[<?php echo $index; ?>][date]" value="<?php echo esc_attr($rule['date']); ?>">
+                </label>
+                <label style="margin-left: 10px;">
+                    <input type="checkbox" name="disabled_dates[<?php echo $index; ?>][repeat_yearly]" value="1" <?php checked($rule['repeat_yearly'], 1); ?>>
+                    <?php _e('Repeat yearly', 'reserve-mate'); ?>
+                </label>
+            </div>
+            
+            <!-- Date Range -->
+            <div class="disabled-date-range" style="<?php echo $rule['type'] !== 'range' ? 'display: none;' : ''; ?>">
+                <label>
+                    <?php _e('From:', 'reserve-mate'); ?>
+                    <input type="text" class="datepicker" name="disabled_dates[<?php echo $index; ?>][start_date]" value="<?php echo esc_attr($rule['start_date']); ?>">
+                </label>
+                <label style="margin-left: 10px;">
+                    <?php _e('To:', 'reserve-mate'); ?>
+                    <input type="text" class="datepicker" name="disabled_dates[<?php echo $index; ?>][end_date]" value="<?php echo esc_attr($rule['end_date']); ?>">
+                </label>
+                <label style="margin-left: 10px;">
+                    <input type="checkbox" name="disabled_dates[<?php echo $index; ?>][repeat_yearly]" value="1" <?php checked($rule['repeat_yearly'], 1); ?>>
+                    <?php _e('Repeat yearly', 'reserve-mate'); ?>
+                </label>
+            </div>
+            
+            <!-- Weekly Pattern -->
+            <div class="disabled-date-weekly" style="<?php echo $rule['type'] !== 'weekly' ? 'display: none;' : ''; ?>">
+                <?php 
+                $days = [
+                    'monday' => __('Monday', 'reserve-mate'),
+                    'tuesday' => __('Tuesday', 'reserve-mate'),
+                    'wednesday' => __('Wednesday', 'reserve-mate'),
+                    'thursday' => __('Thursday', 'reserve-mate'),
+                    'friday' => __('Friday', 'reserve-mate'),
+                    'saturday' => __('Saturday', 'reserve-mate'),
+                    'sunday' => __('Sunday', 'reserve-mate'),
+                ];
+                
+                foreach ($days as $day => $label): ?>
+                    <label style="margin-right: 10px;">
+                        <input type="checkbox" name="disabled_dates[<?php echo $index; ?>][days][]" value="<?php echo $day; ?>" <?php checked(in_array($day, (array)$rule['days'])); ?>>
+                        <?php echo $label; ?>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
+add_action('wp_ajax_get_disabled_date_rule', 'ajax_get_disabled_date_rule');
+function ajax_get_disabled_date_rule() {
+    // Verify nonce first
+    check_ajax_referer('reserve_mate_nonce', 'security');
+    
+    $index = isset($_POST['index']) ? intval($_POST['index']) : 0;
+    
+    ob_start();
+    display_disabled_date_rule($index);
+    $html = ob_get_clean();
+    
+    // Send JSON response
+    wp_send_json_success($html);
+    wp_die();
 }

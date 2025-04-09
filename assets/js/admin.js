@@ -71,7 +71,7 @@ jQuery(document).ready(function($) {
     }
 
     // Page-specific Initializations
-    function initManageBookingsPage() {
+    function initBookingsPage() {
         const activeTab = localStorage.getItem('activeTab');
         const $propertySelect = $("#property_id");
 
@@ -79,51 +79,6 @@ jQuery(document).ready(function($) {
             $('.tab-button, .tab-content').removeClass('active');
             $(activeTab).addClass('active');
             $('.tab-button[data-target="' + activeTab + '"]').addClass('active');
-        }
-
-        function updatePropertyFields($propertySelect) {
-            const $selectedOption = $propertySelect.find('option:selected');
-            const $adultsSelect = $("#adults");
-            const $childrenSelect = $("#children");
-            const $petsSelect = $("#pets");
-            const $childrenRow = $(".children-row");
-            const $petsRow = $(".pets-row");
-
-            if ($selectedOption.length) {
-                const maxAdults = parseInt($selectedOption.attr("data-max-adults")) || 1;
-                const maxChildren = parseInt($selectedOption.attr("data-max-children")) || 0;
-                const maxPets = parseInt($selectedOption.attr("data-max-pets")) || 0;
-                const allowChildren = $selectedOption.attr("data-allow-children") === "1";
-                const allowPets = $selectedOption.attr("data-allow-pets") === "1";
-            
-                // Update Adults Dropdown
-                $adultsSelect.empty();
-                for (let i = 1; i <= maxAdults; i++) {
-                    $adultsSelect.append(`<option value="${i}">${i}</option>`);
-                }
-        
-                // Update Children Dropdown
-                $childrenSelect.empty();
-                if (allowChildren) {
-                    $childrenRow.show();
-                    for (let i = 0; i <= maxChildren; i++) {
-                        $childrenSelect.append(`<option value="${i}">${i}</option>`);
-                    }
-                } else {
-                    $childrenRow.hide();
-                }
-        
-                // Update Pets Dropdown
-                $petsSelect.empty();
-                if (allowPets) {
-                    $petsRow.show();
-                    for (let i = 0; i <= maxPets; i++) {
-                        $petsSelect.append(`<option value="${i}">${i}</option>`);
-                    }
-                } else {
-                    $petsRow.hide();
-                }
-            }
         }
 
         setupDetailsToggle('.toggle-details-booking', 'booking');
@@ -145,8 +100,53 @@ jQuery(document).ready(function($) {
         // Initial property fields setup
         updatePropertyFields($propertySelect);
     }
+    
+    function updatePropertyFields($propertySelect) {
+        const $selectedOption = $propertySelect.find('option:selected');
+        const $adultsSelect = $("#adults");
+        const $childrenSelect = $("#children");
+        const $petsSelect = $("#pets");
+        const $childrenRow = $(".children-row");
+        const $petsRow = $(".pets-row");
 
-    function initManagePropertiesPage() {
+        if ($selectedOption.length) {
+            const maxAdults = parseInt($selectedOption.attr("data-max-adults")) || 1;
+            const maxChildren = parseInt($selectedOption.attr("data-max-children")) || 0;
+            const maxPets = parseInt($selectedOption.attr("data-max-pets")) || 0;
+            const allowChildren = $selectedOption.attr("data-allow-children") === "1";
+            const allowPets = $selectedOption.attr("data-allow-pets") === "1";
+        
+            // Update Adults Dropdown
+            $adultsSelect.empty();
+            for (let i = 1; i <= maxAdults; i++) {
+                $adultsSelect.append(`<option value="${i}">${i}</option>`);
+            }
+    
+            // Update Children Dropdown
+            $childrenSelect.empty();
+            if (allowChildren) {
+                $childrenRow.show();
+                for (let i = 0; i <= maxChildren; i++) {
+                    $childrenSelect.append(`<option value="${i}">${i}</option>`);
+                }
+            } else {
+                $childrenRow.hide();
+            }
+    
+            // Update Pets Dropdown
+            $petsSelect.empty();
+            if (allowPets) {
+                $petsRow.show();
+                for (let i = 0; i <= maxPets; i++) {
+                    $petsSelect.append(`<option value="${i}">${i}</option>`);
+                }
+            } else {
+                $petsRow.hide();
+            }
+        }
+    }
+
+    function initPropertiesPage() {
         const $allowChildren = $("#allow_children");
         const $allowPets = $("#allow_pets");
         const $seasonalRulesBtn = $("#seasonal-rules-btn");
@@ -219,9 +219,70 @@ jQuery(document).ready(function($) {
             });
             $(this).text(isHidden ? 'Hide Form' : 'Add New Property');
         });
+        
+        
+        
+        
+        // Toggle disabled dates section
+        $('#disabled-dates-btn').on('click', function() {
+            $('.disabled-dates-container').toggleClass('hidden');
+            $(this).find('i').text($('.disabled-dates-container').hasClass('hidden') ? '▼' : '▲');
+        });
+        
+        // Add new disabled date rule
+        $('#add-disabled-date-rule').on('click', function() {
+
+            var index = Date.now();
+            
+            $.ajax({
+                url: reserve_mate_admin.ajax_url,
+                type: 'POST',
+                dataType: 'json', // Ensure we're expecting JSON
+                data: {
+                    action: 'get_disabled_date_rule',
+                    index: index,
+                    security: reserve_mate_admin.nonce
+                },
+                success: function(response) {
+                    if (response.success && response.data) {
+                        $('#disabled-dates-rules').append(response.data);
+                        initDatePickers();
+                    } else {
+                        console.error("Invalid response format", response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        });
+        
+        // Remove disabled date rule
+        $(document).on('click', '.remove-disabled-date-rule', function() {
+            $(this).closest('.disabled-date-rule').remove();
+        });
+        
+        // Change disabled date type
+        $(document).on('change', '.disabled-date-type', function() {
+            var $container = $(this).closest('.disabled-date-rule').find('.disabled-date-options');
+            $container.find('> div').hide();
+            $container.find('.disabled-date-' + $(this).val()).show();
+        });
+        
+        // Initialize date pickers
+        function initDatePickers() {
+        $('.datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                minDate: 0
+            });
+        }
+        
+        initDatePickers();
+        
+    
     }
 
-    function initManageServicesPage() {
+    function initServicesPage() {
         setupDetailsToggle('.toggle-details-service', 'service');
 
         $('#toggle-form-btn').on('click', function() {
@@ -264,15 +325,83 @@ jQuery(document).ready(function($) {
         });
     }
     
-    function initManageSettingsPage() {
+    function initSettingsPage() {
         initTabManagement('booking_settings_active_tab', 'general-tab');
     }
     
-    function initManagePaymentsPage() {
+    function initPaymentsPage() {
         initTabManagement('payment_settings_active_tab', 'online-tab');
     }
     
-
+    function initServiceBookingsPage() {
+        const activeTab = localStorage.getItem('activeTab');
+        const $serviceSelect = $("#services");
+    
+        if (activeTab) {
+            $('.tab-button, .tab-content').removeClass('active');
+            $(activeTab).addClass('active');
+            $('.tab-button[data-target="' + activeTab + '"]').addClass('active');
+        }
+        
+        setupDetailsToggle('.toggle-details-booking', 'booking');
+        
+        // Initialize select2 for multiple service selection
+        $serviceSelect.select2({
+            placeholder: "Select service(s)",
+            multiple: true,
+            allowClear: true,
+        });
+        
+        $('#toggle-form-btn').on('click', function() {
+            const $form = $('#booking-form');
+            const isHidden = $form.is(':hidden');
+            
+            $form.slideToggle(500, function() {
+                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+            });
+            $(this).text(isHidden ? 'Hide Form' : 'Add New Booking');
+        });
+        
+        // Set up datetime pickers for start and end datetime
+        $('#start_datetime, #end_datetime').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            onShow: function(ct) {
+                this.setOptions({
+                    minDate: new Date()
+                });
+            }
+        });
+        
+        // End datetime should be after start datetime
+        $('#end_datetime').datetimepicker({
+            onShow: function(ct) {
+                const startDate = $('#start_datetime').val() ? 
+                    $('#start_datetime').datetimepicker('getValue') : new Date();
+                this.setOptions({
+                    minDate: startDate
+                });
+            }
+        });
+        
+        // Calculate total cost when service, guests, or dates change
+        $('#services, #guests').on('change', function() {
+            const selectedServices = $("#services").select2('data'); // Get selected services as an array of objects
+            calculateTotalCost(selectedServices);
+        });
+        
+    }
+    
+    function calculateTotalCost(selectedServices) {
+        let totalCost = 0;
+        selectedServices.forEach(service => {
+            const servicePrice = parseFloat(jQuery(`#services option[value="${service.id}"]`).data('price')); // Get price from data attribute
+            totalCost += servicePrice;
+        });
+        $("#total_cost").val(totalCost);
+        return totalCost;
+    }
+    
     function initGlobalFeatures() {
         setupTabNavigation();
 
@@ -300,14 +429,16 @@ jQuery(document).ready(function($) {
     initGlobalFeatures();
 
     if (window.location.search.includes('page=manage-bookings')) {
-        initManageBookingsPage();
+        initBookingsPage();
     } else if (window.location.search.includes('page=manage-properties')) {
-        initManagePropertiesPage();
+        initPropertiesPage();
     } else if (window.location.search.includes('page=manage-services')) {
-        initManageServicesPage();
+        initServicesPage();
     } else if (window.location.search.includes('page=reserve-mate-settings')) {
-        initManageSettingsPage();
+        initSettingsPage();
     } else if (window.location.search.includes('page=payment-settings')) {
-        initManagePaymentsPage();
+        initPaymentsPage();
+    } else if (window.location.search.includes('page=manage-datetime-bookings')) {
+        initServiceBookingsPage();
     }
 });

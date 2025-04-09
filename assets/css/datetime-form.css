@@ -121,7 +121,7 @@ select {
     
 }
 
-#rm-booking-form .flatpickr-calendar-container {
+.date-time-form .flatpickr-calendar-container {
     position: relative;
     min-width: 360px;
     max-width: 600px;
@@ -130,7 +130,7 @@ select {
 }
 
 /* Reserve mate booking form */
-#rm-booking-form {
+.date-time-form {
     width: fit-content;
     display: flex;
     flex-direction: column;
@@ -141,7 +141,7 @@ select {
     margin: auto;
     padding: 60px 20px;
     border-radius: 40px;
-    background: transparent;
+    background: #11202a;
 }
 
 .payment-form-wrap {
@@ -158,7 +158,7 @@ select {
     margin: auto;
 }
 
-#rm-booking-form .form-inputs {
+.date-time-form .form-inputs {
     align-self: center;
     display: flex;
     flex-wrap: wrap;
@@ -168,41 +168,97 @@ select {
 }
 
 /* Style labels */
-#rm-booking-form label {
+.date-time-form label {
     display: block;
 }
 
 /* Style inputs */
-#rm-booking-form .form-field input[type="number"],
-#rm-booking-form .form-field input[type="text"],
-#rm-booking-form .form-field input[type="email"],
-#rm-booking-form .form-field input[type="tel"],
-#rm-booking-form .form-field select,
-#rm-booking-form .form-field #payment_method,
-#rm-booking-form .form-field #adults,
-#rm-booking-form .form-field #guests,
-#rm-booking-form .form-field #children,
-#rm-booking-form .form-field #pets {
+.date-time-form .form-field input[type="number"],
+.date-time-form .form-field input[type="text"],
+.date-time-form .form-field input[type="email"],
+.date-time-form .form-field input[type="tel"],
+.date-time-form .form-field select,
+.date-time-form .form-field #payment_method,
+.date-time-form .form-field #adults,
+.date-time-form .form-field #guests,
+.date-time-form .form-field #services,
+.date-time-form .form-field #children,
+.date-time-form .form-field #pets {
     width: inherit;
     margin-bottom: 8px;
     border: 2px solid #9333EA;
     border-radius: 10px;
     box-sizing: border-box;
     font-size: 16px;
-    max-height: 2.2em;
+    height: 2.3em;
     padding: .4em 0.8em !important;
     margin: 0.1rem 0 0.2rem 0;
     color: #666;
     text-shadow: none;
 }
 
-#rm-booking-form .form-field #adults {
+.date-time-form .form-field input[type="number"]:focus,
+.date-time-form .form-field input[type="text"]:focus,
+.date-time-form .form-field input[type="email"]:focus,
+.date-time-form .form-field input[type="tel"]:focus,
+.date-time-form .form-field select:focus,
+.date-time-form .form-field #payment_method:focus,
+.date-time-form .form-field #adults:focus,
+.date-time-form .form-field #guests:focus,
+.date-time-form .form-field #services:focus,
+.date-time-form .form-field #children:focus,
+.date-time-form .form-field #pets:focus {
+    border: 2px solid #fff;
+    outline: 1px solid #000;
+}
+
+.date-time-form .form-field #adults
+{
     padding: .22em 0.6em .3em !important;
     color: #666;
     text-shadow: none;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+}
+
+/* Select2 css */
+.select2-container {
+    width: 100% !important;    
+}
+
+.select2-container .select2-selection--multiple {
+    border: 2px solid #9333EA !important;
+    border-radius: 10px !important;
+    font-size: 16px;
+    height: auto;
+    margin: 0.1rem 0 0.2rem 0;
+    padding: 0.15em 0.4em;
+    color: #666;
+    text-shadow: none;
+    display: flex !important;
+    align-items: center;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin-top: 0;
+}
+
+.select2-container .select2-selection--multiple .select2-selection__rendered {
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+    flex-wrap: wrap;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin-top: 0 !important;
+}
+
+.select2-container .select2-search--inline {
+    float: none !important;
 }
 
 ::placeholder {
@@ -227,7 +283,7 @@ select {
 }
 
 .payment-form-wrap .form-field,
-#rm-booking-form .form-field {
+.date-time-form .form-field {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -238,7 +294,7 @@ select {
     flex: 1 1 270px;
 }
 
-#rm-booking-form .form-field #client_request {
+.date-time-form .form-field #client_request {
     width: inherit;
     margin-bottom: 8px;
     border: 1px solid #ccc;
@@ -250,7 +306,7 @@ select {
     min-height: 40px;
 }
 
-#rm-booking-form .form-field label {
+.date-time-form .form-field label {
     width: inherit;
     align-content: center;
     font-size: 0.96em;
@@ -790,7 +846,7 @@ input:checked + .slider:before {
     border-radius: 10px;
     background: #ea6c6c;
     position: absolute;
-    bottom: 0;
+    bottom: -3%;
     right: 10%;
     left: 10%;
     display: flex;
@@ -850,21 +906,21 @@ input:checked + .slider:before {
 
 /****************************  Mobile devices (below 650px) ******************************************/
 @media screen and (max-width: 650px) {
-    #rm-booking-form .flatpickr-calendar-container {
-        /*margin: 2em auto;*/
-    }
-
-    
     
 }
 
 @media screen and (max-width: 480px) {
-    #rm-booking-form {
+    .date-time-form {
         padding: 0;
     }
 
-    #rm-booking-form > div:first-child {
+    .date-time-form > div:first-child {
         padding: 0;
+    }
+    
+    .date-time-container {
+        max-width: 360px;
+        justify-self: center;
     }
     
     .choose-payment {
@@ -890,56 +946,58 @@ input:checked + .slider:before {
         padding: 1rem 0;
     }
     
+    .payment-form-wrap .form-field,
+    .date-time-form .form-field {
+        max-width: 360px;
+    }
+    
 }
 
 @media screen and (max-width: 450px) {
-    #rm-booking-form .flatpickr-calendar-container {
+    .date-time-form .flatpickr-calendar-container {
         min-width: unset;
     }
-    
-    
-
+    .date-time-form .form-field {
+        max-width: 260px;
+    }
 }
     
+    
+@media screen and (max-width: 360px) {
+    .payment-form-wrap .form-field {
+        max-width: 300px;
+    }
+    
+}
     
 
     
     
 @media screen and (min-width: 451px) {
-    .payment-form-wrap .form-field,
-    #rm-booking-form .form-field {
-        flex: 1 1 180px;
-    }
-    
-    #rm-booking-form .form-inputs {
+    .date-time-form .form-inputs {
         gap: 0 10px;
     }
 }
 
 @media screen and (min-width: 630px) {
     .payment-form-wrap .form-field,
-    #rm-booking-form .form-field {
+    .date-time-form .form-field {
         flex: 1 1 200px;
     }
 }
 
 @media screen and (min-width: 651px) {
-    #rm-booking-form .form-inputs {
+    .date-time-form .form-inputs {
         gap: 0 15px;
-    }
-    
-    .payment-form-wrap .form-field,
-    #rm-booking-form .form-field {
-        width: 100%;        
     }
 }
 
 @media screen and (min-width: 922px) {
-    #rm-booking-form {
+    .date-time-form {
         padding: 2em 4em;
         border: 1px solid #5f5d5d;
         border-radius: 10px;
-        background: #ffffff36;
+        background: #11202a;
     }
     
     #desktop-header-menu {
@@ -949,38 +1007,21 @@ input:checked + .slider:before {
 }
 
 @media screen and (min-width: 1101px) {
-    #rm-booking-form .form-inputs {
+    .date-time-form .form-inputs {
         gap: 0 30px;
+    }
+    
+    .date-time-form .flatpickr-calendar-container {
         max-width: 860px;
     }
     
-    #rm-booking-form .flatpickr-calendar-container {
-        max-width: 860px;    
-        margin: 2em auto;
-    }
-    
     .payment-form-wrap .form-field,
-    #rm-booking-form .form-field {
-        flex: 1 1 180px;
+    .date-time-form .form-field {
+        flex: 1 1 200px;
     }
     
     .agreement-container label {
         width: 42%;
-    }
-    
-    #rm-booking-form .form-field input[type="number"],
-    #rm-booking-form .form-field input[type="text"],
-    #rm-booking-form .form-field input[type="email"],
-    #rm-booking-form .form-field input[type="tel"],
-    #rm-booking-form .form-field select,
-    #rm-booking-form .form-field #payment_method,
-    #rm-booking-form .form-field #adults,
-    #rm-booking-form .form-field #guests,
-    #rm-booking-form .form-field #children,
-    #rm-booking-form .form-field #pets,
-    #proceed-to-checkout, 
-    #day-selector {
-        font-size: 15px;
     }
     
     .payment-form-wrap {
@@ -989,8 +1030,14 @@ input:checked + .slider:before {
     
 }
 
-@media screen and (min-width: 1400px) {
+@media screen and (min-width: 1366px) {
     .choose-payment {
         flex-direction: column;
+    }
+    
+    #payment-methods {
+        width: 100%;
+        max-width: 650px;
+        grid-template-columns: 1fr 1fr;
     }
 }

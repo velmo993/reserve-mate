@@ -13,9 +13,21 @@ function create_payment_intent() {
     if (!isset($_POST['totalPaymentCost'])) {
         wp_send_json_error(['error' => 'Missing total payment cost.']);
     }
-
-    $amount = floatval($_POST['totalPaymentCost']); // Ensure it's a number
-    $response = create_stripe_payment_intent($amount);
+    
+    $zero_decimal_currencies = [
+        'huf', 'jpy', 'clp', 'krw', 'vnd', 'xaf', 'xof', 'bif', 'djf', 'gnf', 
+        'kmf', 'mga', 'pyg', 'rwf', 'ugx', 'vuv', 'xpf'
+    ];
+    
+    $options = get_option('booking_settings');
+    $currency = strtolower($options['currency'] ?? 'usd');
+    
+    $amount = floatval($_POST['totalPaymentCost']);
+    $amount = in_array($currency, $zero_decimal_currencies) 
+        ? intval($amount) 
+        : intval($amount * 100);
+    
+    $response = create_stripe_payment_intent($amount, $currency);
 
     if ($response['success']) {
         wp_send_json_success(['clientSecret' => $response['clientSecret']]);
@@ -24,13 +36,11 @@ function create_payment_intent() {
     }
 }
 
-function create_stripe_payment_intent($amount) {
-    $amount = floatval($amount) * 100; // Convert to cents
-
+function create_stripe_payment_intent($amount, $currency) {
     try {
         $paymentIntent = \Stripe\PaymentIntent::create([
             'amount' => $amount,
-            'currency' => 'usd',
+            'currency' => $currency,
             'payment_method_types' => ['card'],
         ]);
         return ['success' => true, 'clientSecret' => $paymentIntent->client_secret];

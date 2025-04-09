@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
+    var servicesElement = document.getElementById("services");
+    if (servicesElement) {
+        jQuery(servicesElement).select2({
+            placeholder: "Select services",
+            multiple: true,
+            allowClear: true,
+        });
+    }
     const msgModal = document.getElementById('booking-success-modal');
     if (msgModal && window.location.href.includes('booking_status=success')) {
         msgModal.classList.add('show');
@@ -47,11 +55,17 @@ document.addEventListener("flatpickrInstance", function () {
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
         const guests = document.getElementById('adults').value;
-        const request = document.getElementById('client_request')?.value;
         startDateTime = startDateTime.value;
         endDateTime = endDateTime.value;
-        let totalCost = 200;
-               
+    
+        // Get selected services from Select2
+        const selectedServices = jQuery('#services').select2('data'); // Get selected services as an array of objects
+        const serviceIds = selectedServices.map(service => service.id); // Extract service IDs
+        const serviceNames = selectedServices.map(service => service.text); // Extract service names
+        
+        // Calculate total cost based on selected services
+        let totalCost = calculateTotalCost(selectedServices);
+    
         document.getElementById('total-payment-cost').value = totalCost;
     
         const bookingDetails = {
@@ -59,19 +73,29 @@ document.addEventListener("flatpickrInstance", function () {
             email,
             phone,
             guests,
-            request,
             startDateTime,
             endDateTime,
             totalCost,
+            serviceIds, // Add selected service IDs
+            serviceNames, // Add selected service names
             currency: ajaxScript.currency
         };
-        
-        if(!validateBookingForm(bookingDetails)) {
+    
+        if (!validateBookingForm(bookingDetails)) {
             return;
         } else {
             bookingForm.classList.add("hidden");
             dateTimeBookingPaymentForm(bookingDetails);
         }
+    }
+    
+    function calculateTotalCost(selectedServices) {
+        let totalCost = 0;
+        selectedServices.forEach(service => {
+            const servicePrice = parseFloat(jQuery(`#services option[value="${service.id}"]`).data('price')); // Get price from data attribute
+            totalCost += servicePrice;
+        });
+        return totalCost;
     }
     
     function validateBookingForm(bookingDetails) {
@@ -122,11 +146,12 @@ document.addEventListener("flatpickrInstance", function () {
         document.getElementById("name-field").value = bookingDetails.name;
         document.getElementById("email-field").value = bookingDetails.email;
         document.getElementById("phone-field").value = bookingDetails.phone;
-        document.getElementById("client-request-field").value = bookingDetails.request;
         document.getElementById("adults-field").value = bookingDetails.guests;
         document.getElementById("start-date-field").value = bookingDetails.startDateTime;
         document.getElementById("end-date-field").value = bookingDetails.endDateTime;
         document.getElementById("total-cost-field").value = document.getElementById('actual-payment-field').value = bookingDetails.totalCost;
+        const servicesField = document.getElementById("services-field");
+        servicesField.value = JSON.stringify(bookingDetails.serviceIds);
         
         // Show modal and overlay
         paymentWrap.classList.remove("hidden");
@@ -142,6 +167,7 @@ document.addEventListener("flatpickrInstance", function () {
         const percentageAdvancePayment = ajaxScript.paymentSettings.advance_payment_type == "percentage";
         const imagePath = ajaxScript.imagePath;
         let endTime = new Date(bookingDetails.endDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        
         // Populate the form with booking details
         paymentForm.lastElementChild.innerHTML = `
             <div id="summary">
@@ -151,9 +177,10 @@ document.addEventListener("flatpickrInstance", function () {
                     <p><strong>📞</strong><span>${bookingDetails.phone}</span></p>
                     <p><strong>👥</strong><span>${bookingDetails.guests}</span></p>
                     <p><strong>📅</strong><span>${bookingDetails.startDateTime} ---> ${endTime}</span></p>
-                    
                 </div>
                 <div id="booking-cost-summary">
+                    <p><strong>🛠️</strong></p>
+                    ${bookingDetails.serviceNames.map(service => `<p><span>${service} *1</span><span>$30</span></p>`).join('')}
                     <p><span>Total Price:</span><span>${bookingDetails.totalCost} ${bookingDetails.currency}</span></p>
                 </div>
             </div>
@@ -556,6 +583,7 @@ document.addEventListener("flatpickrInstance", function () {
         const advancePriceDisplay = document.getElementById('advance-price');
         const fullLabel = document.querySelector('.toggle-label:first-child');
         const advanceLabel = document.querySelector('.toggle-label:last-child');
+        const advancePaymentForm = document.querySelector(".advance-payment-form");
     
         // Handle toggle switch change
         if (paymentToggle) {
@@ -601,13 +629,60 @@ document.addEventListener("flatpickrInstance", function () {
                     paymentButtons.forEach(btn => btn.classList.remove("active"));
                     this.classList.add("active");
     
-                    // Handle advance payment form visibility
-                    let advancePaymentForm = document.querySelector(".advance-payment-form");
+                    // Get the selected payment method
+                    const selectedMethod = this.getAttribute("data-method");
+                    
+                    // Check if advance payment is enabled for this payment method
+                    let advanceEnabledForMethod = false;
+                    if (selectedMethod === "stripe") {
+                        advanceEnabledForMethod = ajaxScript.paymentSettings.advance_payment_methods && 
+                                                  ajaxScript.paymentSettings.advance_payment_methods.stripe === "1";
+                    } else if (selectedMethod === "paypal") {
+                        advanceEnabledForMethod = ajaxScript.paymentSettings.advance_payment_methods && 
+                                                  ajaxScript.paymentSettings.advance_payment_methods.paypal === "1";
+                    } else if (selectedMethod === "bank-transfer") {
+                        advanceEnabledForMethod = ajaxScript.paymentSettings.advance_payment_methods && 
+                                                  ajaxScript.paymentSettings.advance_payment_methods.bank_transfer === "1";
+                    } else if (selectedMethod === "pay-on-arrival") {
+                        advanceEnabledForMethod = ajaxScript.paymentSettings.advance_payment_methods && 
+                                                  ajaxScript.paymentSettings.advance_payment_methods.pay_on_arrival === "1";
+                    }
+                    
+                    // Show/hide advance payment form based on whether it's enabled for this method
                     if (advancePaymentForm) {
-                        if (this.id !== "pay_on_arrival") {
+                        if (advanceEnabledForMethod) {
                             advancePaymentForm.classList.remove('hidden');
+                            // Reset to full payment when switching payment methods
+                            if (paymentToggle && paymentToggle.checked) {
+                                paymentToggle.checked = false;
+                                updatePaymentAmount(totalPaymentCost, 'full');
+                                
+                                // Update hidden radio inputs
+                                hiddenRadios.forEach(radio => {
+                                    if (radio.value === 'full') {
+                                        radio.checked = true;
+                                    }
+                                });
+                                
+                                // Update labels and price display
+                                if (fullLabel && advanceLabel && fullPriceDisplay && advancePriceDisplay) {
+                                    fullLabel.classList.toggle('active', paymentType === 'full');
+                                    advanceLabel.classList.toggle('active', paymentType === 'advance');
+                                    fullPriceDisplay.classList.toggle('active', paymentType === 'full');
+                                    advancePriceDisplay.classList.toggle('active', paymentType === 'advance');
+                                }
+                            }
                         } else {
                             advancePaymentForm.classList.add('hidden');
+                            // If advance payment is not enabled for this method, ensure we use full payment
+                            updatePaymentAmount(totalPaymentCost, 'full');
+                            
+                            // Update hidden radio inputs
+                            hiddenRadios.forEach(radio => {
+                                if (radio.value === 'full') {
+                                    radio.checked = true;
+                                }
+                            });
                         }
                     }
     
@@ -616,7 +691,6 @@ document.addEventListener("flatpickrInstance", function () {
                     paymentMethods.forEach(method => method.classList.add("hidden"));
     
                     // Show selected payment method
-                    const selectedMethod = this.getAttribute("data-method");
                     const selectedForm = document.getElementById(`${selectedMethod}-payment-form`);
                     if (selectedForm) {
                         selectedForm.classList.add("active");

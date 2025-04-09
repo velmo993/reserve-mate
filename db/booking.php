@@ -11,8 +11,6 @@ function delete_unpaid_bookings() {
 
         $date_threshold = date('Y-m-d H:i:s', strtotime("-$days days"));
 
-        error_log('Date threshold: ' . $date_threshold);
-
         $wpdb->query(
             $wpdb->prepare(
                 "DELETE FROM $table_name WHERE paid = 0 AND created_at < %s",

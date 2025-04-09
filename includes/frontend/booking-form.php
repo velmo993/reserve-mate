@@ -66,10 +66,8 @@ function display_booking_form($atts) {
     </div>
     <div class="booking-form-wrapper">
         <?php if(!$datetime_select_enabled) : ?>
-        <?php error_log("enabled vagy nem : $datetime_select_enabled"); ?>
             <?php echo display_daterange_booking_form($property_id, $property_ids, $property_count, $property); ?>
         <?php else : ?>
-        <?php error_log("display datetime booking form"); ?>
             <?php echo display_datetime_booking_form(); ?>
         <?php endif; ?>
         

@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let seasonalRules = {};
     let selectedTimeSlotButton = null;
     let isHourlyBooking = flatpickrVars.bookingSettings.hourly_booking_enabled === '1';
-
+    let timezone = flatpickrVars.timezone;
+    let locale = flatpickrVars.locale;
     if (isHourlyBooking) {
         fetchDateTimeBookings();
     }
@@ -65,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     from: booking.start,
                     to: booking.end
                 })),
-                ...fullyBookedDays
+                ...fullyBookedDays,
+                isPreviousDay
             ],
             onChange: function (selectedDates, dateStr, instance) {
                 if (selectedDates.length === 1) {
@@ -82,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     void timeSlotContainer.offsetWidth; // Trigger reflow
                     timeSlotContainer.classList.add('open');
                 }
-                
             }
         });
     
@@ -103,14 +104,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const [minHour, minMinute] = settings.min_time.split(':').map(Number);
         const [maxHour, maxMinute] = settings.max_time.split(':').map(Number);
         const interval = settings.interval;
-        const breakDuration = settings.break_duration || 0; // Add break duration (e.g., 2 minutes)
+        const breakDuration = settings.break_duration || 0;
     
+        // Parse selectedDay properly
         const selectedDate = new Date(selectedDay);
-    
-        let currentTime = new Date(selectedDay);
+        
+        // Get current time in the SELECTED TIMEZONE (not browser time)
+        const now = new Date();
+        const nowInSelectedTZ = new Date(now.toLocaleString('locale', { timeZone: timezone }));
+        
+        // Create time slots
+        let currentTime = new Date(selectedDate);
         currentTime.setHours(minHour, minMinute, 0, 0);
-    
-        const endTime = new Date(selectedDay);
+        
+        const endTime = new Date(selectedDate);
         endTime.setHours(maxHour, maxMinute, 0, 0);
     
         let allBooked = true;
@@ -120,14 +127,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const timeSlotEnd = new Date(timeSlotStart);
             timeSlotEnd.setMinutes(timeSlotStart.getMinutes() + interval);
     
-            // Stop generating slots if the end time exceeds the latest booking time
             if (timeSlotEnd > endTime) {
                 break;
             }
     
-            const localStartTime = new Date(timeSlotStart.getTime() - timeSlotStart.getTimezoneOffset() * 60000);
-            const localEndTime = new Date(timeSlotEnd.getTime() - timeSlotEnd.getTimezoneOffset() * 60000);
-            const isPast = selectedDate.toDateString() === today.toDateString() && timeSlotStart <= today;
+            // Compare with the time in the selected timezone
+            const isToday = nowInSelectedTZ.getFullYear() === selectedDate.getFullYear() && 
+                           nowInSelectedTZ.getMonth() === selectedDate.getMonth() && 
+                           nowInSelectedTZ.getDate() === selectedDate.getDate();
+                           
+            // Only disable if it's today AND the current time (in selected TZ) is after the slot start
+            const isPast = isToday && nowInSelectedTZ > timeSlotStart;
     
             const isBooked = bookedDates.some(booking => {
                 const bookingStart = new Date(booking.start);
@@ -140,14 +150,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
     
             const timeSlotButton = document.createElement('button');
-            timeSlotButton.textContent = `${formatTime(timeSlotStart)} - ${formatTime(timeSlotEnd)}`;
+            timeSlotButton.textContent = `${formatSimpleTime(timeSlotStart)} - ${formatSimpleTime(timeSlotEnd)}`;
             timeSlotButton.disabled = isBooked || isPast;
-            timeSlotButton.dataset.start = localStartTime.toISOString().slice(0, 16);
-            timeSlotButton.dataset.end = localEndTime.toISOString().slice(0, 16);
+            
+            if (isPast) {
+                timeSlotButton.classList.add('past-time-slot');
+            }
+            
+            // Create time values with correct timezone offset for data-attributes
+            // These represent the local time in the selected timezone
+            const localTimeStart = createLocalTimeString(timeSlotStart);
+            const localTimeEnd = createLocalTimeString(timeSlotEnd);
+            
+            timeSlotButton.dataset.start = localTimeStart;
+            timeSlotButton.dataset.end = localTimeEnd;
             
             timeSlotsElement.appendChild(timeSlotButton);
     
-            // Add break duration after each slot
             currentTime.setMinutes(currentTime.getMinutes() + interval + breakDuration);
         }
     
@@ -156,12 +175,106 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
+    function createLocalTimeString(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        
+        // Get hours and minutes in the correct timezone
+        const timeParts = formatSimpleTime(date).split(':');
+        const hours = timeParts[0];
+        const minutes = timeParts[1];
+        
+        // Create a timezone-aware ISO string that represents the local time
+        // Format: 2025-04-09T10:30:00.000Z for 10:30 AM
+        return `${year}-${month}-${day}T${hours}:${minutes}:00.000Z`;
+    }
+    
+    function isDayFullyBooked(day, bookedDates, settings) {
+        const [minHour, minMinute] = settings.min_time.split(':').map(Number);
+        const [maxHour, maxMinute] = settings.max_time.split(':').map(Number);
+        const interval = settings.interval;
+    
+        const dayDate = new Date(day);
+        
+        let currentTime = new Date(dayDate);
+        currentTime.setHours(minHour, minMinute, 0, 0);
+    
+        const endTime = new Date(dayDate);
+        endTime.setHours(maxHour, maxMinute, 0, 0);
+    
+        // Get current time in SELECTED TIMEZONE
+        const now = new Date();
+        const nowInSelectedTZ = new Date(now.toLocaleString(locale, { timeZone: timezone }));
+    
+        while (currentTime < endTime) {
+            const timeSlotStart = new Date(currentTime);
+            const timeSlotEnd = new Date(timeSlotStart);
+            timeSlotEnd.setMinutes(timeSlotStart.getMinutes() + interval);
+    
+            // Compare with the time in the selected timezone
+            const isToday = nowInSelectedTZ.getFullYear() === dayDate.getFullYear() && 
+                           nowInSelectedTZ.getMonth() === dayDate.getMonth() && 
+                           nowInSelectedTZ.getDate() === dayDate.getDate();
+                           
+            // Only consider a slot "past" if it's today AND current time is after slot start
+            const isPast = isToday && nowInSelectedTZ > timeSlotStart;
+    
+            const isBooked = bookedDates.some(booking => {
+                const bookingStart = new Date(booking.start);
+                const bookingEnd = new Date(booking.end);
+                return timeSlotStart >= bookingStart && timeSlotEnd <= bookingEnd;
+            });
+    
+            if (!isBooked && !isPast) {
+                return false; // At least one time slot is available
+            }
+    
+            currentTime.setMinutes(currentTime.getMinutes() + interval);
+        }
+    
+        return true; // All time slots are booked or in the past
+    }
+    
+    function isTodayFullyPast(settings) {
+        // Get current time in SELECTED TIMEZONE
+        const now = new Date();
+        const nowInSelectedTZ = new Date(now.toLocaleString(locale, { timeZone: timezone }));
+        
+        const [maxHour, maxMinute] = settings.max_time.split(':').map(Number);
+        
+        // Create a date object for today with the max time
+        const todayMax = new Date(nowInSelectedTZ);
+        todayMax.setHours(maxHour, maxMinute, 0, 0);
+        
+        return nowInSelectedTZ > todayMax;
+    }
+    
+    function isPreviousDay(date) {
+        // Get current date in SELECTED TIMEZONE
+        const now = new Date();
+        const todayInSelectedTZ = new Date(now.toLocaleString(locale, { timeZone: timezone }));
+        
+        // Create a date object for the date we're checking
+        const checkDate = new Date(date);
+        
+        // Compare dates (ignoring time)
+        return checkDate.setHours(0,0,0,0) < todayInSelectedTZ.setHours(0,0,0,0);
+    }
+    
+    // Add this new function that doesn't use timezone conversion
+    function formatSimpleTime(date) {
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
+    
     function initTimeSlotsEventListener() {
         timeSlotsElement.addEventListener('click', function (e) {
             e.preventDefault();
             if (e.target.tagName === 'BUTTON' && !e.target.disabled) {
-                const startTime = new Date(e.target.dataset.start);
-                const endTime = new Date(e.target.dataset.end);
+                const startTime = e.target.dataset.start;
+                const endTime = e.target.dataset.end;
                 selectTimeSlot(startTime, endTime);
                 
                 if (selectedTimeSlotButton) {
@@ -174,68 +287,51 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     function selectTimeSlot(startTime, endTime) {
-        const formattedStart = formatDateTime(startTime);
-        const formattedEnd = formatDateTime(endTime);
+        // These values should now already be in the correct timezone format
+        startDateField.value = convertISOToFormattedDate(startTime);
+        endDateField.value = convertISOToFormattedDate(endTime);
+    }
     
-        startDateField.value = formattedStart;
-        endDateField.value = formattedEnd;
+    function convertISOToFormattedDate(isoString) {
+        // Parse the ISO string
+        const dateParts = isoString.split('T')[0].split('-');
+        const timeParts = isoString.split('T')[1].split(':');
+        
+        // Create yyyy-MM-dd HH:mm format
+        return `${dateParts[0]}-${dateParts[1]}-${dateParts[2]} ${timeParts[0]}:${timeParts[1]}`;
     }
     
     function formatTime(date) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        return new Intl.DateTimeFormat('default', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: timezone
+        }).format(date);
     }
     
     function formatDateTime(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
-    }
-    
-    function isDayFullyBooked(day, bookedDates, settings) {
-        const [minHour, minMinute] = settings.min_time.split(':').map(Number);
-        const [maxHour, maxMinute] = settings.max_time.split(':').map(Number);
-        const interval = settings.interval;
-    
-        let currentTime = new Date(day);
-        currentTime.setHours(minHour, minMinute, 0, 0);
-    
-        const endTime = new Date(day);
-        endTime.setHours(maxHour, maxMinute, 0, 0);
-    
-        while (currentTime < endTime) {
-            const timeSlotStart = new Date(currentTime);
-            const timeSlotEnd = new Date(timeSlotStart);
-            timeSlotEnd.setMinutes(timeSlotStart.getMinutes() + interval);
-    
-            const isBooked = bookedDates.some(booking => {
-                const bookingStart = new Date(booking.start);
-                const bookingEnd = new Date(booking.end);
-                return timeSlotStart >= bookingStart && timeSlotEnd <= bookingEnd;
-            });
-    
-            if (!isBooked) {
-                return false; // At least one time slot is available
-            }
-    
-            currentTime.setMinutes(currentTime.getMinutes() + interval);
+        // Format date and time with respect to the user's timezone
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: timezone
+        };
+        
+        const parts = new Intl.DateTimeFormat(locale, options).formatToParts(date);
+        const values = {};
+        
+        for (const part of parts) {
+            values[part.type] = part.value;
         }
-    
-        return true; // All time slots are booked
+        
+        // yyyy-MM-dd HH:mm format
+        return `${values.year}-${values.month}-${values.day} ${values.hour}:${values.minute}`;
     }
-    
-    // Helper function to check if today is fully in the past
-    function isTodayFullyPast(settings) {
-        const today = new Date();
-        const [maxHour, maxMinute] = settings.max_time.split(':').map(Number);
-        const lastTimeSlotToday = new Date(today);
-        lastTimeSlotToday.setHours(maxHour, maxMinute, 0, 0);
-    
-        return today > lastTimeSlotToday; // If current time is after the last time slot
-    }
-    
     
     
     
@@ -269,6 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const onlyDeparture = new Set();
             const onlyArrival = new Set();
             const mergedBookings = [];
+            const disabledDates = [];
             window.dataForPayment = {
                 data: bookingsData.data
             };
@@ -302,6 +399,67 @@ document.addEventListener('DOMContentLoaded', function () {
                             const existingMax = seasonalRules[month].max ? parseInt(seasonalRules[month].max) : null;
                             seasonalRules[month].max = existingMax === null || newMax > existingMax ? newMax : existingMax;
                         }
+                    }
+                    
+                    if (data.property.disabled_dates) {
+                        const disabledDatesRules = data.property.disabled_dates 
+                            ? JSON.parse(data.property.disabled_dates)
+                            : {};
+                        
+                        // Convert disabled dates to Flatpickr format
+                        Object.values(disabledDatesRules).forEach(rule => {
+                            switch(rule.type) {
+                                case 'specific':
+                                    disabledDates.push(rule.date);
+                                    if (rule.repeat_yearly === "1") {
+                                        const date = new Date(rule.date);
+                                        disabledDates.push({
+                                            repeat: {
+                                                year: '*',
+                                                month: date.getMonth() + 1,
+                                                day: date.getDate()
+                                            }
+                                        });
+                                    }
+                                    break;
+                                    
+                                case 'range':
+                                    disabledDates.push({
+                                        from: rule.start_date,
+                                        to: rule.end_date
+                                    });
+                                    if (rule.repeat_yearly === "1") {
+                                        const start = new Date(rule.start_date);
+                                        const end = new Date(rule.end_date);
+                                        disabledDates.push({
+                                            repeat: {
+                                                year: '*',
+                                                month: start.getMonth() + 1,
+                                                day: start.getDate()
+                                            }
+                                        }, {
+                                            repeat: {
+                                                year: '*',
+                                                month: end.getMonth() + 1,
+                                                day: end.getDate()
+                                            }
+                                        });
+                                    }
+                                    break;
+                                    
+                                case 'weekly':
+                                    // Convert day names to numbers (0=Sunday, 6=Saturday)
+                                    const days = rule.days.map(day => 
+                                        ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                                        .indexOf(day.toLowerCase())
+                                    );
+                                    
+                                    disabledDates.push((date) => {
+                                        return days.includes(date.getDay());
+                                    });
+                                    break;
+                            }
+                        });
                     }
                     
                     isPartialDays = data.property.partial_days;
@@ -384,7 +542,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.flatpickrInstance = flatpickr("#date-range");
                 window.flatpickrInstance.clear();
                 // **Initialize the calendar with new merged data**
-                initializeFlatpickr([...bookedDates], [...onlyDeparture], [...onlyArrival]);
+                initializeFlatpickr(
+                    [...bookedDates],
+                    [...onlyDeparture],
+                    [...onlyArrival],
+                    disabledDates
+                );
             }
         })
         .catch((error) => {
@@ -392,13 +555,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function initializeFlatpickr(bookedDates, onlyDeparture, onlyArrival, dataForPayment) {
+    function initializeFlatpickr(bookedDates, onlyDeparture, onlyArrival, disabledDates = []) {
         window.flatpickrInstance = flatpickr("#date-range", {
             mode: "range",
             dateFormat: "Y-m-d",
             minDate: tomorrow,
             disableMobile: false,
-            disable: bookedDates,
+            disable: [
+                ...bookedDates.map(date => date),
+                ...disabledDates,
+                (date) => {
+                    const dateStr = flatpickr.formatDate(date, 'Y-m-d');
+                    return onlyDeparture.includes(dateStr) || onlyArrival.includes(dateStr);
+                }
+            ],
             static: true,
             inline: true,
             locale: hu,
@@ -409,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     
                     const parsedDate = fp.parseDate(dateLabel, "F j, Y");
                     if (!parsedDate) {
-                        // console.error("Invalid date:", dateLabel);
+                        console.error("Invalid date:", dateLabel);
                         return;
                     }
                     const formattedDate = fp.formatDate(fp.parseDate(dateLabel, "F j, Y"), "Y-m-d");

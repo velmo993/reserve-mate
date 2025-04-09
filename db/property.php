@@ -28,6 +28,7 @@ function create_properties_table() {
             check_out_time_start TIME NULL,
             check_out_time_end TIME NULL,
             seasonal_rules TEXT NULL,
+            disabled_dates TEXT NULL,
             PRIMARY KEY  (id)
         ) ENGINE=InnoDB $charset_collate;";
 
@@ -64,6 +65,7 @@ function save_property($property_data, $property_id = null) {
     $table_name = get_properties_table_name();
 
     $seasonal_rules = isset($_POST['seasonal_rules']) ? json_encode($_POST['seasonal_rules']) : null;
+    $disabled_dates = isset($_POST['disabled_dates']) ? json_encode($_POST['disabled_dates']) : null;
 
     $data = [
         'name'              => $property_data['name'],
@@ -82,7 +84,8 @@ function save_property($property_data, $property_id = null) {
         'check_in_time_end'     => $property_data['check_in_time_end'],
         'check_out_time_start'    => $property_data['check_out_time_start'],
         'check_out_time_end'    => $property_data['check_out_time_end'],
-        'seasonal_rules'    => $seasonal_rules
+        'seasonal_rules'    => $seasonal_rules,
+        'disabled_dates'    => $disabled_dates
     ];
     if ($property_id) {
         $wpdb->update($table_name, $data, ['id' => $property_id]);
