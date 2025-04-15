@@ -121,7 +121,7 @@ function enqueue_flatpickr_scripts() {
     wp_enqueue_style('flatpickr-css', plugins_url('assets/css/flatpickr.min.css', __FILE__));
     wp_enqueue_script('flatpickr-js', plugins_url('assets/js/flatpickr.min.js', __FILE__), array(), null, true);
     wp_enqueue_script('flatpickr-hu', plugins_url('assets/l10n/hu.js', __FILE__), ['flatpickr-js'], null, true);
-    wp_enqueue_script('custom-flatpickr', plugin_dir_url(__FILE__) . 'assets/js/flatpickr-init.js', ['flatpickr-js', 'flatpickr-hu'], null, true);
+    wp_enqueue_script('custom-flatpickr', plugin_dir_url(__FILE__) . 'assets/js/booking-main.js', ['flatpickr-js', 'flatpickr-hu'], null, true);
     
     $options = get_option('booking_settings');
     $booking_settings = [
