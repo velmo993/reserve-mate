@@ -54,22 +54,40 @@ function get_booking($booking_id) {
     }
 }
 
-function get_bookings() {
+function get_bookings($per_page = 10, $page_number = 1) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'reservemate_bookings';
-    $bookings = $wpdb->get_results("SELECT * FROM $table_name", OBJECT);
-    if($bookings) {
-        return $bookings;
-    }
+    $offset = ($page_number - 1) * $per_page;
+    
+    return $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM $table_name ORDER BY created_at DESC LIMIT %d OFFSET %d",
+            $per_page,
+            $offset
+        ),
+        OBJECT
+    );
 }
 
-function get_bookings_for_property($property_id) {
+function count_bookings() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'reservemate_bookings';
-    $bookings = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM $table_name WHERE property_id = %d", $property_id
-    ));
-    return $bookings;
+    return $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+}
+
+function get_bookings_for_property($property_id, $per_page = 10, $page_number = 1) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'reservemate_bookings';
+    $offset = ($page_number - 1) * $per_page;
+    
+    return $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM $table_name WHERE property_id = %d ORDER BY created_at DESC LIMIT %d OFFSET %d",
+            $property_id,
+            $per_page,
+            $offset
+        )
+    );
 }
 
 function update_booking($data, $index) {

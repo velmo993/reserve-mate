@@ -5,10 +5,17 @@ label:has(+ select:required):after {
     color: red;
 }
 
+.book-now-container {
+    text-align: center;
+    width: 100%;
+}
+
 .agreement-container {
     display: flex;
     justify-content: space-evenly;
     padding-bottom: 1rem;
+    max-width: 500px;
+    margin: auto;
 }
 
 .agreement-container label {
@@ -80,10 +87,11 @@ label:has(+ select:required):after {
     align-items: center;
     position: relative;
     margin: auto;
-    padding: 60px 20px;
+    padding: 20px;
     border: 1px solid #ddd;
     border-radius: 40px;
-    background-color: #ddd4cf;
+    background-color: var(--ast-global-color-0);
+    max-width: 1200px;
 }
 
 #choose-apartman {
@@ -93,25 +101,18 @@ label:has(+ select:required):after {
     height: 40px;
 }
 
-#rm-booking-form .flatpickr-calendar-container {
+#rm-booking-form .booking-form-content {
     position: relative;
-    flex: 1 60%;
-    min-width: 360px;
-    box-sizing: border-box;
-    justify-items: center;
-    margin: 2em auto auto;
-}
-
-#rm-booking-form .form-inputs {
-    position: relative;
-    flex: 1 40%;
-    min-width: 300px;
-    max-width: 500px;
+    display: flex;
+    flex-wrap: wrap;
     padding: 0 2em;
     box-sizing: border-box;
     justify-items: center;
     margin: auto;
-    max-width: auto;
+}
+
+#rm-booking-form .book-now-container {
+    padding: 1em 2em;
 }
 
 /* Style labels */
@@ -127,8 +128,8 @@ label:has(+ select:required):after {
 #rm-booking-form .form-field #payment_method,
 #rm-booking-form .form-field #adults,
 #rm-booking-form .form-field #children,
-#rm-booking-form .form-field #pets {
-    margin-bottom: 8px;
+#rm-booking-form .form-field #pets,
+#rm-booking-form .form-field #client_request {
     border: 1px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
@@ -145,15 +146,9 @@ label:has(+ select:required):after {
 }
 
 #rm-booking-form .form-field #client_request {
-    margin-bottom: 8px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-sizing: border-box;
-    font-size: 16px;
     resize: vertical;
     overflow: hidden;
-    width: 100%;
-    min-height: 40px;
+    padding: .1em 1em .4em;
 }
 
 /* Style submit button */
@@ -186,7 +181,21 @@ label:has(+ select:required):after {
     display: flex;
     flex-direction: column;
     padding-bottom: 1rem;
-    margin: 0 auto;
+}
+
+.day-selector-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.calendar-color-icon {
+    position: absolute;
+    right: 24px;
+    top: 57%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
 }
 
 .flatpickr-wrapper {
@@ -197,7 +206,7 @@ label:has(+ select:required):after {
 
 .flatpickr-calendar {
     width: 500px !important;
-    height: 100% !important;
+    height: auto !important;
     box-sizing: border-box;
     padding: 10px !important;
     box-shadow: 0px 0px 20px 0px !important;
@@ -293,7 +302,6 @@ label:has(+ select:required):after {
 .flatpickr-day {
     max-width: calc(100% / 7.5) !important;
     margin-top: 1% !important;
-    height: fit-content !important;
     padding: 1rem !important;
     line-height: normal !important;
     display: flex !important;
@@ -389,6 +397,7 @@ label:has(+ select:required):after {
 #nights-count {
     padding: 0 0 1rem;
     height: 40px;
+    margin: auto;
 }
 
 input[type="number"]::-webkit-inner-spin-button, 
@@ -947,8 +956,8 @@ input:checked + .slider:before {
     .flatpickr-day {
         max-width: calc(100% / 7.5) !important;
         padding: 1rem !important;
-        height: fit-content !important;
-        max-height: fit-content !important;
+        height: 39px;
+        width: 39px;
     }
     
 }
@@ -1006,18 +1015,10 @@ input:checked + .slider:before {
         width: 80%;
     }
     
-    #rm-booking-form .flatpickr-calendar-container {
-        margin: 4em auto auto;
-    }
-    
 }
 /****************************  Mobile devices (below 768px) end ******************************************/
 
 @media screen and (max-width: 1100px) {
-    #rm-booking-form {
-        gap: 4em;
-    }
-    
     #payment-methods {
         width: 80%;
         grid-template-columns: 1fr 1fr;
@@ -1043,7 +1044,7 @@ input:checked + .slider:before {
         flex: 1 1 180px;
     }
     
-    #rm-booking-form .form-inputs {
+    #rm-booking-form .booking-form-content {
         gap: 0 10px;
     }
 }
@@ -1051,30 +1052,35 @@ input:checked + .slider:before {
 @media screen and (min-width: 630px) {
     .payment-form-wrap .form-field,
     #rm-booking-form .form-field {
-        flex: 1 1 200px;
+        flex: 1 1 180px;
     }
 }
 
 @media screen and (min-width: 651px) {
-    #rm-booking-form .form-inputs {
+    #rm-booking-form .booking-form-content {
         gap: 0 15px;
     }
     
     .payment-form-wrap .form-field,
-    #rm-booking-form .form-field {
+    #rm-booking-form .booking-form-content {
         width: 100%;        
     }
 }
 
-@media screen and (min-width: 1101px) {
-    #rm-booking-form .form-inputs {
+@media screen and (min-width: 1023px) {
+    #rm-booking-form .booking-form-content {
         gap: 0 30px;
-        max-width: 860px;
     }
     
-    #rm-booking-form .flatpickr-calendar-container {
-        max-width: 860px;    
-        margin: 2em auto;
+    .book-now-container {
+        text-align: center;
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 1101px) {
+    #rm-booking-form .booking-form-content {
+        gap: 0 30px;
     }
     
     .payment-form-wrap .form-field,
@@ -1099,6 +1105,11 @@ input:checked + .slider:before {
     
     .payment-form-wrap {
         max-width: 100%;
+    }
+    
+    .flatpickr-day {
+        max-width: calc(100% / 7.5) !important;
+        height: fit-content !important;
     }
     
 }

@@ -32,7 +32,35 @@ table td,
     margin-bottom: 20px;
 }
 
-.booking-summary:not(:last-child):not(.details-row-active) {
+/* Pagination buttons */
+.tablenav .tablenav-pages {
+    display: flex;
+    justify-content: center;
+    float: none;
+    margin: 6px 0 0 0;
+}
+
+.tablenav-pages a, .tablenav-pages span {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-left: 2px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+}
+
+.tablenav-pages a:hover {
+    background: #f5f5f5;
+}
+
+.tablenav-pages .current {
+    background: #0073aa;
+    color: white;
+    border-color: #0073aa;
+}
+
+.booking-summary:not(:last-child):not(.details-row-active),
+.service-summary:not(:last-child):not(.details-row-active),
+.tax-tr:not(:last-child) {
     border-bottom: 1px solid #dcdcdc;
 }
 
@@ -44,12 +72,18 @@ table td,
 .table-details td:last-child > div:last-child {
     margin-top: 1rem;
     padding: 0.8rem;
+}
+
+.table-details td:last-child > div:last-child:not(:last-child) {
     border-bottom: 1px solid #dcdcdc;
 }
 
 .table-details-flex {
     display: flex;
     padding: 0.8rem;
+}
+
+.table-details-flex:not(:last-child) {
     border-bottom: 1px solid #dcdcdc;
 }
 
@@ -212,6 +246,10 @@ table td,
 .disabled-date-weekly label {
     display: inline-block;
     margin-right: 10px;
+}
+
+.select2-container {
+    width: 50% !important;
 }
 
 

@@ -8,8 +8,6 @@ function handle_datetime_booking_form_submission() {
             wp_die('Security check failed');
         }
         
-        error_log(print_r($_POST, true));
-        
         $name = sanitize_text_field($_POST['name']);
         $email = sanitize_email($_POST['email']);
         $phone = sanitize_text_field($_POST['phone']);
@@ -64,15 +62,33 @@ function handle_datetime_booking_form_submission() {
 function display_datetime_bookings_page() {
     handle_datetime_booking_form_submission();
 
-    $bookings = get_datetime_bookings();
+    // Set number of items per page
+    $per_page = 10;
+    $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+    
+    $bookings = get_datetime_bookings($per_page, $current_page);
     $editing_index = isset($_GET['edit']) ? intval($_GET['edit']) : null;
     $editing_booking = $editing_index ? get_datetime_booking($editing_index) : null;
 
     ?>
     <div class="wrap">
-        <h1><?php echo $editing_booking ? 'Edit Booking' : 'Add New Booking'; ?></h1>
-        <?php display_admin_datetime_booking_form($editing_booking); ?>
-        <?php display_existing_datetime_bookings_table($bookings); ?>
+        <h1>Manage Bookings</h1>
+        
+        <?php if ($editing_booking): ?>
+            <h2>Edit Booking</h2>
+            <?php display_admin_datetime_booking_form($editing_booking); ?>
+        <?php else: ?>
+            <button id="toggle-form-btn" class="button button-primary" style="margin-bottom: 20px;">
+                <?php _e('Add New Booking', 'reserve-mate'); ?>
+            </button>
+            
+            <div id="booking-form" style="display: none;">
+                <h2>Add New Booking</h2>
+                <?php display_admin_datetime_booking_form(); ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php display_existing_datetime_bookings_table($bookings, $per_page); ?>
     </div>
     <?php
 }
@@ -183,14 +199,18 @@ function display_admin_datetime_booking_form($booking = null) {
     <?php
 }
 
-function display_existing_datetime_bookings_table($bookings) {
+function display_existing_datetime_bookings_table($bookings, $per_page = 10) {
+    // Get current page number
+    $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+    $total_items = count_datetime_bookings();
+    
     ?>
     <h2><?php _e('Existing Bookings', 'reserve-mate'); ?></h2>
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
                 <th><?php _e('ID', 'reserve-mate'); ?></th>
-                <th><?php _e('Services', 'reserve-mate'); ?></th>
+                <th><?php _e('Time Interval', 'reserve-mate'); ?></th>
                 <th><?php _e('Total Cost', 'reserve-mate'); ?></th>
                 <th><?php _e('Paid Amount', 'reserve-mate'); ?></th>
                 <th><?php _e('Details', 'reserve-mate'); ?></th>
@@ -200,23 +220,13 @@ function display_existing_datetime_bookings_table($bookings) {
         <tbody>
             <?php if ($bookings) : ?>
                 <?php foreach ($bookings as $booking) : ?>
-                    <tr>
+                    <tr class="booking-summary">
                         <td><?php echo esc_html($booking->id); ?></td>
-                        <td>
-                            <?php if (!empty($booking->services)) : ?>
-                                <ul>
-                                    <?php foreach ($booking->services as $service) : ?>
-                                        <li>
-                                            <?php echo esc_html($service->service_name); ?> 
-                                            (Qty: <?php echo esc_html($service->quantity); ?>, 
-                                            Price: <?php echo esc_html(format_price($service->price) . ' ' . get_currency()); ?>)
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php else : ?>
-                                <?php _e('No services', 'reserve-mate'); ?>
-                            <?php endif; ?>
-                        </td>
+                        <?php 
+                            $start = new DateTime($booking->start_datetime);
+                            $end = new DateTime($booking->end_datetime);
+                        ?>
+                        <td><?php echo esc_html($start->format('Y-m-d H:i') . ' - ' . $end->format('H:i')); ?></td>
                         <td><?php echo $booking->total_cost ? esc_html(format_price($booking->total_cost) . ' ' . get_currency()) : '0'; ?></td>
                         <td><?php echo $booking->paid_amount ? esc_html(format_price($booking->paid_amount) . ' ' . get_currency()) : '0'; ?></td>
                         <td>
@@ -224,12 +234,12 @@ function display_existing_datetime_bookings_table($bookings) {
                         </td>
                         <td>
                             <a href="<?php echo admin_url('admin.php?page=manage-datetime-bookings&edit=' . $booking->id . '&admin_datetime_booking_nonce=' . wp_create_nonce('admin_datetime_booking_action')); ?>" class="button">
-                                <?php _e('Edit', 'reserve-mate'); ?>
+                                ✏️
                             </a>
                             <a href="<?php echo admin_url('admin.php?page=manage-datetime-bookings&delete=' . $booking->id . '&delete_nonce=' . wp_create_nonce('delete_datetime_booking')); ?>" 
                                 class="button button-danger" 
                                 onclick="return confirm('<?php echo esc_attr(__('Are you sure you want to delete this booking?', 'reserve-mate')); ?>');">
-                                <?php _e('Delete', 'reserve-mate'); ?>
+                                ❌
                             </a>
                         </td>
                     </tr>
@@ -248,10 +258,22 @@ function display_existing_datetime_bookings_table($bookings) {
                                 <strong><?php _e('Guests:', 'reserve-mate'); ?></strong><span class="booking-data"><?php echo esc_html($booking->guests); ?></span>
                             </div>
                             <div class="table-details-flex">
-                                <strong><?php _e('Start Date & Time:', 'reserve-mate'); ?></strong><span class="booking-data"><?php echo esc_html($booking->start_datetime); ?></span>
-                            </div>
-                            <div class="table-details-flex">
-                                <strong><?php _e('End Date & Time:', 'reserve-mate'); ?></strong><span class="booking-data"><?php echo esc_html($booking->end_datetime); ?></span>
+                                <strong><?php _e('Services:', 'reserve-mate'); ?></strong>
+                                <span class="booking-data">
+                                    <?php if (!empty($booking->services)) : ?>
+                                        <ul>
+                                            <?php foreach ($booking->services as $service) : ?>
+                                                <li>
+                                                    <?php echo esc_html($service->service_name); ?> 
+                                                    (Qty: <?php echo esc_html($service->quantity); ?>, 
+                                                    Price: <?php echo esc_html(format_price($service->price) . ' ' . get_currency()); ?>)
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php else : ?>
+                                        <?php _e('No services', 'reserve-mate'); ?>
+                                    <?php endif; ?>
+                                </span>
                             </div>
                             <div class="table-details-flex">
                                 <strong><?php _e('Payment Method:', 'reserve-mate'); ?></strong><span class="booking-data"><?php echo esc_html($booking->payment_method); ?></span>
@@ -264,5 +286,24 @@ function display_existing_datetime_bookings_table($bookings) {
             <?php endif; ?>
         </tbody>
     </table>
+    
+    <div class="tablenav bottom">
+        <div class="tablenav-pages">
+            <?php
+            $pagination_args = array(
+                'base' => add_query_arg('paged', '%#%'),
+                'format' => '',
+                'total' => ceil($total_items / $per_page),
+                'current' => $current_page,
+                'show_all' => false,
+                'prev_next' => true,
+                'prev_text' => __('&laquo; Previous'),
+                'next_text' => __('Next &raquo;'),
+            );
+            echo paginate_links($pagination_args);
+            ?>
+        </div>
+    </div>
+    
     <?php
 }

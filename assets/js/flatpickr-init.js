@@ -560,17 +560,13 @@ document.addEventListener('DOMContentLoaded', function () {
             mode: "range",
             dateFormat: "Y-m-d",
             minDate: tomorrow,
-            disableMobile: false,
+            disableMobile: true,
             disable: [
                 ...bookedDates.map(date => date),
                 ...disabledDates,
-                (date) => {
-                    const dateStr = flatpickr.formatDate(date, 'Y-m-d');
-                    return onlyDeparture.includes(dateStr) || onlyArrival.includes(dateStr);
-                }
             ],
-            static: true,
-            inline: true,
+            // static: true,
+            // inline: true,
             locale: hu,
             firsDayOfWeek: 1,
             onDayCreate: function (dObj, dStr, fp, dayElem) {

@@ -327,6 +327,19 @@ jQuery(document).ready(function($) {
     
     function initSettingsPage() {
         initTabManagement('booking_settings_active_tab', 'general-tab');
+        
+        $('.color-field').each(function() {
+            // Create color picker
+            $(this).wpColorPicker({
+                defaultColor: $(this).data('default-color'),
+                change: function(event, ui) {
+                    // Handle color changes
+                },
+                clear: function() {
+                    // Handle clearing
+                }
+            });
+        });
     }
     
     function initPaymentsPage() {

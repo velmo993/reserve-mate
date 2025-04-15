@@ -270,8 +270,8 @@ function display_existing_properties_table($properties) {
                         <button class="toggle-details-property" data-property-id="<?php echo esc_attr($property->id); ?>"><i>▼</i></button>
                     </td>
                     <td>
-                        <a href="<?php echo admin_url('admin.php?page=manage-properties&edit=' . $property->id); ?>" class="button"><?php _e('Edit', 'reserve-mate'); ?></a>
-                        <a href="<?php echo admin_url('admin.php?page=manage-properties&delete=' . $property->id . '&delete_nonce=' . wp_create_nonce('delete_property')); ?>" class="button button-danger" onclick="return confirm('<?php echo esc_attr(__('Are you sure you want to delete this property?', 'reserve-mate')); ?>');"><?php _e('Delete', 'reserve-mate'); ?></a>
+                        <a href="<?php echo admin_url('admin.php?page=manage-properties&edit=' . $property->id); ?>" class="button">✏️</a>
+                        <a href="<?php echo admin_url('admin.php?page=manage-properties&delete=' . $property->id . '&delete_nonce=' . wp_create_nonce('delete_property')); ?>" class="button button-danger" onclick="return confirm('<?php echo esc_attr(__('Are you sure you want to delete this property?', 'reserve-mate')); ?>');">❌<a>
                     </td>
                 </tr>
                 <tr class="table-details" id="details-<?php echo esc_attr($property->id); ?>" style="display: none;">

@@ -1,0 +1,94 @@
+/* Base Calendar Styles */
+.flatpickr-calendar {
+  background: var(--rm-calendar-bg, white);
+  font-family: var(--rm-font, sans-serif);
+  color: var(--rm-text, #333);
+  border-radius: var(--rm-calendar-radius, 8px);
+  box-shadow: var(--rm-calendar-shadow, 0 5px 15px rgba(0,0,0,0.1));
+}
+
+/* Day Cell Styles */
+.flatpickr-day {
+  background-color: var(--rm-day-bg, #fff) !important;
+  border: 1px solid var(--rm-day-border, #d2caca) !important;
+  color: var(--rm-day-text, inherit) !important;
+  max-width: var(--rm-day-max-width, calc(100% / 7.5)) !important;
+  border-radius: var(--rm-day-radius, 6px) !important;
+}
+
+/* Hover & Focus States */
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+  outline: 2px solid var(--rm-hover-outline, #000) !important;
+  background: var(--rm-day-hover-bg, #f0f0f0) !important;
+}
+
+/* Selected Day */
+.flatpickr-day.selected {
+  background: var(--rm-day-selected, var(--rm-primary, #4CAF50)) !important;
+  color: var(--rm-day-selected-text, #fff) !important;
+  border-color: transparent !important;
+}
+
+/* Disabled Days */
+.flatpickr-disabled,
+.flatpickr-day.disabled {
+  background: var(--rm-disabled-bg, rgba(236, 13, 13, 0.28)) !important;
+  color: var(--rm-disabled-color, #676666) !important;
+  cursor: not-allowed !important;
+}
+
+/* Adjacent Month Days */
+.nextMonthDay,
+.prevMonthDay {
+  color: var(--rm-prev-next-color, #9c9c9c) !important;
+  border: 1px solid var(--rm-prev-next-border, #e1e1e1) !important;
+  background: var(--rm-prev-next-bg, transparent) !important;
+}
+
+/* Date Range Styles */
+.startRange {
+    background: var(--rm-start-range-highlight, #07c66594) !important;
+}
+
+.inRange {
+    background: var(--rm-range-highlight, #07c66594) !important;
+}
+
+.endRange {
+    background: var(--rm-end-range-highlight, #07c66594) !important;
+}
+
+.startRange,
+.inRange,
+.endRange {
+    color: var(--rm-range-text, #fff) !important;
+    box-shadow: none !important;
+}
+
+/* Special Day Types */
+.flatpickr-day.arrival-only {
+  background: var(--rm-arrival-bg, linear-gradient(to left, #fff 50%, rgb(250 188 188) 50%)) !important;
+  border-color: var(--rm-day-border, #d2caca) !important;
+}
+
+.flatpickr-day.departure-only {
+  background: var(--rm-departure-bg, linear-gradient(to right, #fff 50%, rgb(250 188 188) 50%)) !important;
+  border-color: var(--rm-day-border, #d2caca) !important;
+}
+
+/* Today Indicator */
+.flatpickr-day.today {
+  border-color: var(--rm-today-border, #959ea9) !important;
+}
+
+/* Navigation Arrows */
+.flatpickr-prev-month:hover svg,
+.flatpickr-next-month:hover svg {
+  fill: var(--rm-nav-hover, var(--rm-primary, #4CAF50)) !important;
+}
+
+/* Week Numbers */
+.flatpickr-weekwrapper span {
+  color: var(--rm-week-number-color, #333) !important;
+}

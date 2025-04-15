@@ -168,8 +168,8 @@ function display_existing_services_table($services) {
                         <button class="toggle-details-service" data-service-id="<?php echo esc_attr($service->id); ?>"><i>▼</i></button>
                     </td>
                     <td>
-                        <a href="<?php echo admin_url('admin.php?page=manage-services&edit=' . $service->id); ?>" class="button"><?php _e('Edit', 'reserve-mate'); ?></a>
-                        <a href="<?php echo admin_url('admin.php?page=manage-services&delete=' . $service->id . '&delete_nonce=' . wp_create_nonce('delete_service')); ?>" class="button button-danger" onclick="return confirm('<?php echo esc_attr(__('Are you sure you want to delete this service?', 'reserve-mate')); ?>');"><?php _e('Delete', 'reserve-mate'); ?></a>
+                        <a href="<?php echo admin_url('admin.php?page=manage-services&edit=' . $service->id); ?>" class="button">✏️</a>
+                        <a href="<?php echo admin_url('admin.php?page=manage-services&delete=' . $service->id . '&delete_nonce=' . wp_create_nonce('delete_service')); ?>" class="button button-danger" onclick="return confirm('<?php echo esc_attr(__('Are you sure you want to delete this service?', 'reserve-mate')); ?>');">❌</a>
                     </td>
                 </tr>
                 <tr class="table-details" id="details-<?php echo esc_attr($service->id); ?>" style="display: none;">

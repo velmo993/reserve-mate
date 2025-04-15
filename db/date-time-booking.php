@@ -50,6 +50,8 @@ function create_booking_services_table() {
     }
 }
 
+
+// Frontend calendar (flatpickr) works with this method
 function get_date_time_bookings_data() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'reservemate_hourly_bookings';
@@ -452,15 +454,24 @@ function send_datetime_success_email_to_admin($services_list, $name, $email, $ph
     return $response;
 }
 
-function get_datetime_bookings() {
+function get_datetime_bookings($per_page = 10, $page_number = 1) {
     global $wpdb;
 
     $bookings_table = $wpdb->prefix . 'reservemate_hourly_bookings';
     $services_table = $wpdb->prefix . 'reservemate_booking_services';
     $service_names_table = $wpdb->prefix . 'reservemate_services';
 
-    // First get all bookings
-    $bookings = $wpdb->get_results("SELECT * FROM $bookings_table ORDER BY created_at DESC");
+    // Calculate offset
+    $offset = ($page_number - 1) * $per_page;
+
+    // Get paginated bookings
+    $bookings = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM $bookings_table ORDER BY created_at DESC LIMIT %d OFFSET %d",
+            $per_page,
+            $offset
+        )
+    );
     
     // Then get services for each booking
     foreach ($bookings as $booking) {
@@ -478,6 +489,13 @@ function get_datetime_bookings() {
     }
 
     return $bookings;
+}
+
+// Add a function to count total bookings
+function count_datetime_bookings() {
+    global $wpdb;
+    $bookings_table = $wpdb->prefix . 'reservemate_hourly_bookings';
+    return $wpdb->get_var("SELECT COUNT(*) FROM $bookings_table");
 }
 
 function get_datetime_booking($booking_id) {

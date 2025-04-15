@@ -107,6 +107,8 @@ function enqueue_admin_scripts() {
     wp_enqueue_style('jquery-datetimepicker-css', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css');
     wp_enqueue_script('jquery-datetimepicker-js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js', array('jquery'), null, true);
     wp_enqueue_script('booking-plugin-scripts', plugin_dir_url(__FILE__) . 'assets/js/admin.js', array('jquery', 'flatpickr-js', 'flatpickr-hu', 'select2-js'), null, true);
+    wp_enqueue_style('wp-color-picker');
+    wp_enqueue_script('wp-color-picker');
     
     wp_localize_script('booking-plugin-scripts', 'reserve_mate_admin', [
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -138,6 +140,81 @@ function enqueue_flatpickr_scripts() {
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_flatpickr_scripts');
+
+function flatpickr_calendar_styles() {
+    $options = get_option('booking_settings');
+
+    wp_enqueue_style('flatpickr-styles', plugins_url('assets/css/flatpickr-styles.css', __FILE__), array(), '1.0');
+
+    // Core Styles
+    $primary_color = $options['primary_color'] ?? '#4CAF50';
+    $text_color = $options['text_color'] ?? '#333';
+    $font_family = $options['font_family'] ?? 'inherit';
+    $calendar_bg = $options['calendar_bg'] ?? '#fff';
+    
+    // Day Cell Styles
+    $day_bg = $options['day_bg_color'] ?? '#fff';
+    $day_border = $options['day_border_color'] ?? '#d2caca';
+    $day_selected =  $options['day_selected'] ?? '#07c66594';
+    $day_selected_text = $options['day_selected_text'] ?? '#fff';
+    $hover_outline = $options['day_hover_outline'] ?? '#000';
+    $today_border = $options['today_border_color'] ?? '#959ea9';
+    
+    // Special States
+    $disabled_bg = $options['disabled_day_bg'] ?? '#ec0d0d47';
+    $disabled_color = $options['disabled_day_color'] ?? '#676666';
+    $prev_next_color = $options['prev_next_month_color'] ?? '#9c9c9c';
+    $prev_next_border = $options['prev_next_month_border'] ?? '#e1e1e1';
+    
+    // Date Ranges
+    $start_range_highlight = $options['start_range_highlight'] ?? '#07c66594';
+    $range_highlight = $options['range_highlight'] ?? '#07c66594';
+    $end_range_highlight = $options['end_range_highlight'] ?? '#07c66594';
+    $range_text = $options['range_text_color'] ?? '#fff';
+    $arrival_bg = $options['arrival_bg'] ?? 'linear-gradient(to left, #fff 50%, rgb(250 188 188) 50%)';
+    $departure_bg = $options['departure_bg'] ?? 'linear-gradient(to right, #fff 50%, rgb(250 188 188) 50%)';
+    
+    // Navigation
+    $nav_hover = $options['nav_hover_color'] ?? $primary_color;
+    
+    // Generate CSS variables
+    $css_variables = ":root {
+        --rm-primary: {$primary_color};
+        --rm-text: {$text_color};
+        --rm-font: {$font_family};
+        --rm-calendar-bg: {$calendar_bg};
+        
+        --rm-day-bg: {$day_bg};
+        --rm-day-border: {$day_border};
+        --rm-day-selected: {$day_selected};
+        --rm-day-selected-text: {$day_selected_text};
+        --rm-hover-outline: {$hover_outline};
+        --rm-today-border: {$today_border};
+
+        --rm-disabled-bg: {$disabled_bg};
+        --rm-disabled-color: {$disabled_color};
+        --rm-prev-next-color: {$prev_next_color};
+        --rm-prev-next-border: {$prev_next_border};
+
+        --rm-start-range-highlight: {$start_range_highlight};
+        --rm-range-highlight: {$range_highlight};
+        --rm-end-range-highlight: {$end_range_highlight};
+        --rm-range-text: {$range_text};
+        --rm-arrival-bg: {$arrival_bg};
+        --rm-departure-bg: {$departure_bg};
+        
+        --rm-nav-hover: {$nav_hover};
+    }";
+
+    // Append custom CSS
+    if (!empty($options['custom_css'])) {
+        $css_variables .= "\n" . $options['custom_css'];
+    }
+
+    // Inject inline styles
+    wp_add_inline_style('flatpickr-styles', $css_variables);
+}
+add_action('wp_enqueue_scripts', 'flatpickr_calendar_styles');
 
 function enqueue_email_test_script() {
     $screen = get_current_screen();

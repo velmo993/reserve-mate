@@ -45,36 +45,6 @@ function handle_booking_form_submission() {
     }
 }
 
-function display_manage_bookings_page() {
-    handle_booking_form_submission();
-
-    $bookings = get_bookings();
-    $editing_index = isset($_GET['edit']) ? intval($_GET['edit']) : null;
-    $editing_booking = $editing_index ? get_booking($editing_index) : null;
-
-    ?>
-    <div class="wrap">
-        <h1>Manage Bookings</h1>
-        
-        <?php if ($editing_booking): ?>
-            <h2>Edit Booking</h2>
-            <?php display_admin_booking_form($editing_booking); ?>
-        <?php else: ?>
-            <button id="toggle-form-btn" class="button button-primary" style="margin-bottom: 20px;">
-                <?php _e('Add New Booking', 'reserve-mate'); ?>
-            </button>
-            
-            <div id="booking-form" style="display: none;">
-                <h2>Add New Booking</h2>
-                <?php display_admin_booking_form(); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php display_existing_bookings_table($bookings); ?>
-    </div>
-    <?php
-}
-
 function display_admin_booking_form($booking = null) {
     $properties = get_properties();
     $payment_settings = get_option('payment_settings', []);
@@ -196,9 +166,46 @@ function display_admin_booking_form($booking = null) {
     <?php
 }
 
-function display_existing_bookings_table($bookings) {
+function display_manage_bookings_page() {
+    handle_booking_form_submission();
+
+    $per_page = 10;
+    $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+    
+    $bookings = get_bookings($per_page, $current_page);
+    $editing_index = isset($_GET['edit']) ? intval($_GET['edit']) : null;
+    $editing_booking = $editing_index ? get_booking($editing_index) : null;
+
+    ?>
+    <div class="wrap">
+        <h1>Manage Bookings</h1>
+        
+        <?php if ($editing_booking): ?>
+            <h2>Edit Booking</h2>
+            <?php display_admin_booking_form($editing_booking); ?>
+        <?php else: ?>
+            <button id="toggle-form-btn" class="button button-primary" style="margin-bottom: 20px;">
+                <?php _e('Add New Booking', 'reserve-mate'); ?>
+            </button>
+            
+            <div id="booking-form" style="display: none;">
+                <h2>Add New Booking</h2>
+                <?php display_admin_booking_form(); ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php display_existing_bookings_table($bookings, $per_page); ?>
+    </div>
+    <?php
+}
+
+function display_existing_bookings_table($bookings, $per_page = 10) {
+    $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+    $total_items = count_bookings();
+    
     ?>
     <h2><?php _e('Existing Bookings', 'reserve-mate'); ?></h2>
+    
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
@@ -222,7 +229,7 @@ function display_existing_bookings_table($bookings) {
                             'ids' => [],
                             'properties' => [],
                             'total_cost' => 0,
-                            'booking' => $booking, // Store a reference for details
+                            'booking' => $booking,
                         ];
                     }
                     $groupedBookings[$groupKey]['ids'][] = $booking->id;
@@ -242,12 +249,12 @@ function display_existing_bookings_table($bookings) {
                         </td>
                         <td>
                             <a href="<?php echo admin_url('admin.php?page=manage-bookings&edit=' . $group['ids'][0] . '&admin_booking_nonce=' . wp_create_nonce('admin_booking_action')); ?>" class="button">
-                                <?php _e('Edit', 'reserve-mate'); ?>
+                                ✏️
                             </a>
                             <a href="<?php echo admin_url('admin.php?page=manage-bookings&delete=' . $group['ids'][0] . '&delete_nonce=' . wp_create_nonce('delete_booking')); ?>" 
                                 class="button button-danger" 
                                 onclick="return confirm('<?php echo esc_attr(__('Are you sure you want to delete this booking?', 'reserve-mate')); ?>');">
-                                <?php _e('Delete', 'reserve-mate'); ?>
+                                ❌
                             </a>
                         </td>
                     </tr>
@@ -291,5 +298,23 @@ function display_existing_bookings_table($bookings) {
             <?php endif; ?>
         </tbody>
     </table>
+    
+    <div class="tablenav bottom">
+        <div class="tablenav-pages">
+            <?php
+            $pagination_args = array(
+                'base' => add_query_arg('paged', '%#%'),
+                'format' => '',
+                'total' => ceil($total_items / $per_page),
+                'current' => $current_page,
+                'show_all' => false,
+                'prev_next' => true,
+                'prev_text' => __('&laquo; Previous'),
+                'next_text' => __('Next &raquo;'),
+            );
+            echo paginate_links($pagination_args);
+            ?>
+        </div>
+    </div>
     <?php
 }

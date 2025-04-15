@@ -142,6 +142,208 @@ function register_booking_settings() {
         'form_display_settings'
     );
     
+    add_settings_field(
+        'calendar_theme',
+        __('Calendar Theme', 'reserve-mate'),
+        'display_calendar_theme_field',
+        'booking-settings',
+        'form_display_settings'
+    );
+    
+    add_settings_field(
+        'primary_color',
+        __('Primary Color', 'reserve-mate'),
+        'display_primary_color_field',
+        'booking-settings',
+        'form_display_settings'
+    );
+    
+    add_settings_field(
+        'text_color',
+        __('Text Color', 'reserve-mate'),
+        'display_text_color_field',
+        'booking-settings',
+        'form_display_settings'
+    );
+    
+    add_settings_field(
+        'font_family',
+        __('Font Family', 'reserve-mate'),
+        'display_font_family_field',
+        'booking-settings',
+        'form_display_settings'
+    );
+    
+    add_settings_field(
+        'day_bg_color',
+        __('Day Background Color', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'day_bg_color', 'default' => '#fff']
+    );
+    
+    add_settings_field(
+        'day_border_color',
+        __('Day Border Color', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'day_border_color', 'default' => '#d2caca']
+    );
+    
+    add_settings_field(
+        'disabled_day_bg',
+        __('Disabled Day Background', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'disabled_day_bg', 'default' => 'rgba(236, 13, 13, 0.28)']
+    );
+    
+    add_settings_field(
+        'custom_css',
+        __('Custom CSS', 'reserve-mate'),
+        'display_custom_css_field',
+        'booking-settings',
+        'form_display_settings'
+    );
+    
+    add_settings_field(
+        'prev_next_month_color',
+        __('Prev/Next Month Day Text', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'prev_next_month_color', 'default' => '#9c9c9c']
+    );
+    
+    add_settings_field(
+        'prev_next_month_border',
+        __('Prev/Next Month Day Border', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'prev_next_month_border', 'default' => '#e1e1e1']
+    );
+    
+    add_settings_field(
+        'arrival_bg',
+        __('Arrival Day Background', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'arrival_bg', 'default' => 'linear-gradient(to left, #fff 50%, rgb(250 188 188) 50%)']
+    );
+    
+    add_settings_field(
+        'departure_bg',
+        __('Departure Day Background', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'departure_bg', 'default' => 'linear-gradient(to right, #fff 50%, rgb(250 188 188) 50%)']
+    );
+    
+    add_settings_field(
+        'start_range_highlight',
+        __('Start Range Highlight', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'start_range_highlight', 'default' => '#07c66594']
+    );
+    
+    add_settings_field(
+        'range_highlight',
+        __('Date Range Highlight', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'range_highlight', 'default' => '#07c66594']
+    );
+    
+    add_settings_field(
+        'end_range_highlight',
+        __('End Range Highlight', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'end_range_highlight', 'default' => '#07c66594']
+    );
+    
+    add_settings_field(
+        'day_hover_outline',
+        __('Day Hover Outline', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'day_hover_outline', 'default' => '#000']
+    );
+    
+    add_settings_field(
+        'today_border_color',
+        __('Today\'s Date Border', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'today_border_color', 'default' => '#959ea9']
+    );
+    
+    add_settings_field(
+        'nav_hover_color',
+        __('Navigation Arrow Hover', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'nav_hover_color', 'default' => '#4CAF50']
+    );
+    
+    add_settings_field(
+        'week_number_color',
+        __('Week Number Color', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'week_number_color', 'default' => '#333']
+    );
+    
+    add_settings_field(
+        'calendar_bg',
+        __('Calendar Background', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'calendar_bg', 'default' => '#fff']
+    );
+    
+    add_settings_field(
+        'day_selected',
+        __('Selected Day Background', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'day_selected', 'default' => '#07c66594']
+    );
+    
+    add_settings_field(
+        'day_selected_text',
+        __('Selected Day Text', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'day_selected_text', 'default' => '#fff']
+    );
+    
+    add_settings_field(
+        'range_text_color',
+        __('Range Text Color', 'reserve-mate'),
+        'display_color_field',
+        'booking-settings',
+        'form_display_settings',
+        ['name' => 'range_text_color', 'default' => '#fff']
+    );
+    
     /* add_settings_field(
         'auto_delete_booking_enabled',
         __('Automatically delete unpaid bookings', 'reserve-mate'),
@@ -266,20 +468,147 @@ function booking_settings_page() {
             <div id="display-tab" class="tab-content">
                 <h2><?php _e('Display Settings', 'reserve-mate'); ?></h2>
                 <table class="form-table">
-                    <?php
-                    // Display settings
-                    echo '<tr><th>';
-                    _e('Calendar Display Type', 'reserve-mate');
-                    echo '</th><td>';
-                    display_calendar_display_type_field();
-                    echo '</td></tr>';
-                    ?>
+                    <!-- Layout Settings -->
+                    <tr>
+                        <th colspan="2">
+                            <h3 style="margin:0"><?php _e('Layout', 'reserve-mate'); ?></h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Display Type', 'reserve-mate'); ?></th>
+                        <td><?php display_calendar_display_type_field(); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Theme Preset', 'reserve-mate'); ?></th>
+                        <td><?php display_calendar_theme_field(); ?></td>
+                    </tr>
+                    
+                    <!-- Color Scheme -->
+                    <tr>
+                        <th colspan="2">
+                            <h3 style="margin:1em 0 0 0"><?php _e('Color Scheme', 'reserve-mate'); ?></h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Primary Color', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('primary_color', '#4CAF50', 'Buttons, highlights'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Text Color', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('text_color', '#333', 'Main text color'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Calendar Background', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('calendar_bg', '#fff', 'Main container background'); ?></td>
+                    </tr>
+                    
+                    <!-- Day Styling -->
+                    <tr>
+                        <th colspan="2">
+                            <h3 style="margin:1em 0 0 0"><?php _e('Day Cells', 'reserve-mate'); ?></h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Day Background', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('day_bg_color', '#fff'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Day Border', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('day_border_color', '#d2caca'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Hover Outline', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('hover_outline', '#000'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Disabled Day Background', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('disabled_day_bg', '#ec0d0d47'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Disabled Day Color', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('disabled_day_color', '#676666'); ?></td>
+                    </tr>
+                    
+                    <!-- Special States -->
+                    <tr>
+                        <th colspan="2">
+                            <h3 style="margin:1em 0 0 0"><?php _e('Special States', 'reserve-mate'); ?></h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Disabled Day', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('disabled_bg', 'rgba(236,13,13,0.28)'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Today\'s Border', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('today_border', '#959ea9'); ?></td>
+                    </tr>
+                    
+                    <!-- Date Range Styling -->
+                    <tr>
+                        <th colspan="2">
+                            <h3 style="margin:1em 0 0 0"><?php _e('Date Ranges', 'reserve-mate'); ?></h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Range Highlight Start', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('start_range_highlight', '#07c66594'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Range Highlight', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('range_highlight', '#07c66594'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Range Highlight End', 'reserve-mate'); ?></th>
+                        <td><?php display_color_field_wrapper('end_range_highlight', '#07c66594'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Arrival Day', 'reserve-mate'); ?></th>
+                        <td><?php display_gradient_field_wrapper('arrival_bg', 'linear-gradient(to left, #fff 50%, rgb(250 188 188) 50%)'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Departure Day', 'reserve-mate'); ?></th>
+                        <td><?php display_gradient_field_wrapper('departure_bg', 'linear-gradient(to right, #fff 50%, rgb(250 188 188) 50%)'); ?></td>
+                    </tr>
+                    
+                    <!-- Advanced -->
+                    <tr>
+                        <th colspan="2">
+                            <h3 style="margin:1em 0 0 0"><?php _e('Advanced', 'reserve-mate'); ?></h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Font Family', 'reserve-mate'); ?></th>
+                        <td><?php display_font_family_field(); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php _e('Custom CSS', 'reserve-mate'); ?></th>
+                        <td><?php display_custom_css_field(); ?></td>
+                    </tr>
                 </table>
             </div>
             
             <?php submit_button(); ?>
         </form>
     </div>
+    <?php
+}
+
+function display_color_field_wrapper($name, $default, $description = '') {
+    display_color_field([
+        'name' => $name,
+        'default' => $default,
+        'description' => $description
+    ]);
+}
+
+function display_gradient_field_wrapper($name, $default) {
+    $options = get_option('booking_settings');
+    $value = $options[$name] ?? $default;
+    ?>
+    <input type="text" name="booking_settings[<?php echo $name; ?>]" 
+           value="<?php echo esc_attr($value); ?>" class="regular-text">
+    <p class="description">Example: <?php echo esc_html($default); ?></p>
     <?php
 }
 
@@ -548,6 +877,94 @@ function display_calendar_display_type_field() {
     <?php
 }
 
+function display_calendar_theme_field() {
+    $options = get_option('booking_settings');
+    $theme = isset($options['calendar_theme']) ? $options['calendar_theme'] : 'default';
+    $themes = [
+        'default' => __('Default (Light)', 'reserve-mate'),
+        'dark'    => __('Dark', 'reserve-mate'),
+        'material'=> __('Material Design', 'reserve-mate'),
+        'custom'  => __('Custom Styling', 'reserve-mate'),
+    ];
+    ?>
+    <select name="booking_settings[calendar_theme]" id="calendar_theme">
+        <?php foreach ($themes as $key => $label) : ?>
+            <option value="<?php echo esc_attr($key); ?>" <?php selected($theme, $key); ?>>
+                <?php echo esc_html($label); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <p class="description">
+        <?php _e('Choose a premade theme or use "Custom Styling" to override.', 'reserve-mate'); ?>
+    </p>
+    <?php
+}
+
+function display_primary_color_field() {
+    $options = get_option('booking_settings');
+    $color = isset($options['primary_color']) ? $options['primary_color'] : '#4CAF50';
+    ?>
+    <input type="color" name="booking_settings[primary_color]" value="<?php echo esc_attr($color); ?>">
+    <p class="description"><?php _e('Affects buttons, highlights, and accents.', 'reserve-mate'); ?></p>
+    <?php
+}
+
+function display_text_color_field() {
+    $options = get_option('booking_settings');
+    $color = isset($options['text_color']) ? $options['text_color'] : '#333333';
+    ?>
+    <input type="color" name="booking_settings[text_color]" value="<?php echo esc_attr($color); ?>">
+    <p class="description"><?php _e('Main text color for the calendar.', 'reserve-mate'); ?></p>
+    <?php
+}
+
+function display_font_family_field() {
+    $options = get_option('booking_settings');
+    $font = isset($options['font_family']) ? $options['font_family'] : 'inherit';
+    $fonts = [
+        'inherit' => __('System Default', 'reserve-mate'),
+        'Arial'   => 'Arial',
+        'Helvetica' => 'Helvetica',
+        'Roboto'  => 'Roboto',
+        'Open Sans' => 'Open Sans',
+        'Courier New' => 'Courier New',
+    ];
+    ?>
+    <select name="booking_settings[font_family]">
+        <?php foreach ($fonts as $key => $label) : ?>
+            <option value="<?php echo esc_attr($key); ?>" <?php selected($font, $key); ?>>
+                <?php echo esc_html($label); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <?php
+}
+
+function display_color_field($args) {
+    $options = get_option('booking_settings');
+    $value = $options[$args['name']] ?? $args['default'];
+    ?>
+    <input type="text" 
+           name="booking_settings[<?php echo esc_attr($args['name']); ?>]" 
+           value="<?php echo esc_attr($value); ?>" 
+           class="color-field regular-text"
+           placeholder="<?php echo esc_attr($args['default']); ?>"
+           data-default-color="<?php echo esc_attr($args['default']); ?>">
+    <p class="description"><?php printf(__('Default: %s', 'reserve-mate'), $args['default']); ?></p>
+    <?php
+}
+
+function display_custom_css_field() {
+    $options = get_option('booking_settings');
+    $css = isset($options['custom_css']) ? $options['custom_css'] : '';
+    ?>
+    <textarea name="booking_settings[custom_css]" rows="5" class="large-text"><?php echo esc_textarea($css); ?></textarea>
+    <p class="description">
+        <?php _e('Add custom CSS to override styles (e.g., <code>.flatpickr-calendar { border-radius: 0; }</code>).', 'reserve-mate'); ?>
+    </p>
+    <?php
+}
+
 function sanitize_booking_settings($input) {
     if (isset($input['calendar_api_key'])) {
         $input['calendar_api_key'] = fix_json($input['calendar_api_key']);
@@ -603,6 +1020,59 @@ function sanitize_booking_settings($input) {
 
     if (isset($input['calendar_display_type'])) {
         $input['calendar_display_type'] = sanitize_text_field($input['calendar_display_type']);
+    }
+    
+    if (isset($input['calendar_theme'])) {
+        $input['calendar_theme'] = sanitize_text_field($input['calendar_theme']);
+    }
+
+    if (isset($input['font_family'])) {
+        $input['font_family'] = sanitize_text_field($input['font_family']);
+    }
+    
+    $defaults = [
+        'primary_color' => '#4CAF50',
+        'text_color' => '#333',
+        'day_bg_color' => '#fff',
+        'day_border_color' => '#d2caca',
+        'disabled_day_bg' => 'rgba(236,13,13,0.28)',
+        'disabled_day_color' => '#676666',
+        'prev_next_month_color' => '#9c9c9c',
+        'prev_next_month_border' => '#e1e1e1',
+        'arrival_bg' => 'linear-gradient(to left, #fff 50%, rgb(250 188 188) 50%)',
+        'departure_bg' => 'linear-gradient(to right, #fff 50%, rgb(250 188 188) 50%)',
+        'start_range_highlight' => '#07c66594',
+        'range_highlight' => '#07c66594',
+        'end_range_highlight' => '#07c66594',
+        'day_hover_outline' => '#000',
+        'today_border_color' => '#959ea9',
+        'nav_hover_color' => '#4CAF50',
+        'week_number_color' => '#333',
+        'calendar_bg' => '#fff',
+        'day_selected' => '#07c66594',
+        'day_selected_text' => '#fff',
+        'range_text_color' => '#fff',
+    ];
+
+    $color_fields = array_keys($defaults);
+    
+    foreach ($color_fields as $field) {
+        if (isset($input[$field])) {
+            // Validate color format
+            if (preg_match('/^#([a-f0-9]{3}){1,2}$/i', $input[$field]) || 
+                preg_match('/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/i', $input[$field]) ||
+                preg_match('/^[a-z]+$/i', $input[$field]) ||
+                strpos($input[$field], 'gradient') !== false) {
+                $input[$field] = sanitize_text_field($input[$field]);
+            } else {
+                // Revert to default if invalid
+                $input[$field] = $defaults[$field];
+            }
+        }
+    }
+    
+    if (isset($input['custom_css'])) {
+        $input['custom_css'] = sanitize_textarea_field($input['custom_css']);
     }
 
     return $input;

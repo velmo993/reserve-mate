@@ -60,7 +60,7 @@ function list_taxes_in_admin() {
         <tbody>
             <?php if (!empty($taxes)) : ?>
                 <?php foreach ($taxes as $tax) : ?>
-                    <tr>
+                    <tr class="tax-tr">
                         <td><?php echo esc_html($tax->name); ?></td>
                         <td><?php echo esc_html($tax->rate); ?><?php if($tax->type === "percentage") { echo '%'; } ?></td>
                         <td><?php echo esc_html($tax->type); ?></td>
