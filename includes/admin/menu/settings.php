@@ -865,14 +865,14 @@ function display_hourly_break_duration() {
 
 function display_calendar_display_type_field() {
     $options = get_option('booking_settings');
-    $calendar_type = isset($options['calendar_display_type']) ? $options['calendar_display_type'] : 'full';
+    $calendar_type = isset($options['calendar_display_type']) ? $options['calendar_display_type'] : 'popup';
     ?>
     <select name="booking_settings[calendar_display_type]">
-        <option value="full" <?php selected($calendar_type, 'full'); ?>><?php _e('Full Calendar View', 'reserve-mate'); ?></option>
+        <option value="popup" <?php selected($calendar_type, 'popup'); ?>><?php _e('Pop-up Calendar View', 'reserve-mate'); ?></option>
         <option value="inline" <?php selected($calendar_type, 'inline'); ?>><?php _e('Inline Calendar View', 'reserve-mate'); ?></option>
     </select>
     <p class="description">
-        <?php _e('Choose between a full calendar display or an inline calendar.', 'reserve-mate'); ?>
+        <?php _e('Choose between a pop-up calendar display or an inline(always visible) calendar.', 'reserve-mate'); ?>
     </p>
     <?php
 }

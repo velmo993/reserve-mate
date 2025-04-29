@@ -50,47 +50,15 @@ function create_booking_services_table() {
     }
 }
 
-
-// Frontend calendar (flatpickr) works with this method
-function get_date_time_bookings_data() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'reservemate_hourly_bookings';
-    $booking_settings = get_option('booking_settings');
-    $min_time = isset($booking_settings['hourly_min_time']) ? $booking_settings['hourly_min_time'] : '0';
-    $max_time = isset($booking_settings['hourly_max_time']) ? $booking_settings['hourly_max_time'] : '0';
-    $interval = isset($booking_settings['hourly_booking_interval']) ? $booking_settings['hourly_booking_interval'] : '0';
-    $break_duration = isset($booking_settings['hourly_break_duration']) ? $booking_settings['hourly_break_duration'] : '0';
-    
-    // Fetch all booked datetimes
-    $bookings = $wpdb->get_results("
-        SELECT start_datetime, end_datetime 
-        FROM $table_name
-    ");
-
-    if ($wpdb->last_error) {
-        wp_send_json_error(['message' => 'Database error: ' . $wpdb->last_error]);
-    } else {
-        wp_send_json([
-            'success' => true,
-            'data' => $bookings,
-            'settings' => [
-                'min_time' => $min_time, // Minimum booking time (e.g., "08:00")
-                'max_time' => $max_time, // Maximum booking time (e.g., "20:00")
-                'interval' => $interval, // Booking interval in minutes (e.g., 30)
-                'break_duration' => $break_duration // Break between time slots in minutes
-            ],
-            'max_guests' => 10,
-        ]);
-    }
-}
-
-function save_datetime_booking_to_db($name, $email, $phone, $adults, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, $admin = false) {
+function save_datetime_booking_to_db($name, $email, $phone, $adults, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, $staff_id = null, $admin = false) {
     global $wpdb;
     $currency = get_currency();
-    // Insert the booking
+    error_log("Staff id: $staff_id");
+    // Insert the booking with staff_id
     $result = $wpdb->insert(
         $wpdb->prefix . 'reservemate_hourly_bookings',
         [
+            'staff_id' => $staff_id, // New parameter
             'name' => $name,
             'email' => $email,
             'phone' => $phone,
@@ -102,6 +70,7 @@ function save_datetime_booking_to_db($name, $email, $phone, $adults, $start_date
             'payment_method' => $payment_method,
         ],
         [
+            '%d', // staff_id
             '%s', // name
             '%s', // email
             '%s', // phone
@@ -116,6 +85,7 @@ function save_datetime_booking_to_db($name, $email, $phone, $adults, $start_date
 
     if ($result === false) {
         error_log('Database insert failed. : ' . $wpdb->last_error);
+        return false;
     } else {
         $booking_id = $wpdb->insert_id;
 
@@ -144,8 +114,16 @@ function save_datetime_booking_to_db($name, $email, $phone, $adults, $start_date
             error_log('Services is not an array: ' . print_r($services, true));
         }
 
-
         if (!$admin) {
+            // Get staff member information if applicable
+            $staff_info = '';
+            if ($staff_id) {
+                $staff = get_staff_member($staff_id);
+                if ($staff) {
+                    $staff_info = '<li><strong>Staff Member:</strong> ' . esc_html($staff['name']) . '</li>';
+                }
+            }
+            
             $services_list = '';
             foreach ($services as $service) {
                 $services_list .= '<li><strong>Service:</strong> ' . esc_html($service['name']) . ' x ' . esc_html($service['quantity']) . ', Price: ' . esc_html($service['price'] . ' ' . $currency) . '</li>';
@@ -155,16 +133,20 @@ function save_datetime_booking_to_db($name, $email, $phone, $adults, $start_date
             send_datetime_success_email_to_client($services_list, $name, $email, $phone, $adults, $start_datetime, $end_datetime, $total_cost, $payment_method, $paid_amount);
             send_datetime_success_email_to_admin($services_list, $name, $email, $phone, $adults, $start_datetime, $end_datetime, $total_cost, $payment_method, $paid_amount);
         }
+        
+        return $booking_id;
     }
 }
 
-function update_datetime_booking($name, $email, $phone, $adults, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, $booking_id) {
+// Update update_datetime_booking function to include staff_id
+function update_datetime_booking($name, $email, $phone, $adults, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, $booking_id, $staff_id = null) {
     global $wpdb;
     
     // Update the main booking record
     $wpdb->update(
         $wpdb->prefix . 'reservemate_hourly_bookings',
         [
+            'staff_id' => $staff_id, // New parameter
             'name' => $name,
             'email' => $email,
             'phone' => $phone,
@@ -177,6 +159,7 @@ function update_datetime_booking($name, $email, $phone, $adults, $start_datetime
         ],
         ['id' => $booking_id],
         [
+            '%d', // staff_id
             '%s', // name
             '%s', // email
             '%s', // phone
@@ -454,24 +437,81 @@ function send_datetime_success_email_to_admin($services_list, $name, $email, $ph
     return $response;
 }
 
-function get_datetime_bookings($per_page = 10, $page_number = 1) {
+function get_date_time_bookings_data() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'reservemate_hourly_bookings';
+    $booking_settings = get_option('booking_settings');
+    
+    // Get all active staff members
+    $staff_members = get_staff_members('active');
+    $total_staff = count($staff_members);
+    
+    // Get all bookings grouped by time slot
+    $query = "SELECT 
+                start_datetime, 
+                end_datetime,
+                COUNT(DISTINCT staff_id) as staff_count
+              FROM $table_name
+              GROUP BY start_datetime, end_datetime";
+    
+    $bookings = $wpdb->get_results($query);
+    
+    // Filter to only include fully booked time slots (all staff booked)
+    $fully_booked_slots = array_filter($bookings, function($booking) use ($total_staff) {
+        return $booking->staff_count >= $total_staff;
+    });
+    
+    // Get settings
+    $settings = [
+        'min_time' => $booking_settings['hourly_min_time'] ?? '08:00',
+        'max_time' => $booking_settings['hourly_max_time'] ?? '20:00',
+        'interval' => $booking_settings['hourly_booking_interval'] ?? 60,
+        'break_duration' => $booking_settings['hourly_break_duration'] ?? 0
+    ];
+    
+    wp_send_json([
+        'success' => true,
+        'data' => array_values($fully_booked_slots), // Only send fully booked slots
+        'settings' => $settings,
+        'staff' => array_map(function($staff) {
+            return ['id' => $staff['id'], 'name' => $staff['name']];
+        }, $staff_members)
+    ]);
+}
+
+function get_datetime_bookings($per_page = 10, $page_number = 1, $staff_id = null) {
     global $wpdb;
 
     $bookings_table = $wpdb->prefix . 'reservemate_hourly_bookings';
     $services_table = $wpdb->prefix . 'reservemate_booking_services';
     $service_names_table = $wpdb->prefix . 'reservemate_services';
+    $staff_table = $wpdb->prefix . 'reservemate_staff_members';
 
     // Calculate offset
     $offset = ($page_number - 1) * $per_page;
-
-    // Get paginated bookings
-    $bookings = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT * FROM $bookings_table ORDER BY created_at DESC LIMIT %d OFFSET %d",
-            $per_page,
-            $offset
-        )
+    
+    // Build the WHERE clause if staff_id is provided
+    $where_clause = "";
+    $where_params = [];
+    
+    if ($staff_id) {
+        $where_clause = "WHERE b.staff_id = %d";
+        $where_params[] = $staff_id;
+    }
+    
+    // Prepare the query with pagination
+    $query = $wpdb->prepare(
+        "SELECT b.*, s.name as staff_name 
+         FROM $bookings_table b
+         LEFT JOIN $staff_table s ON b.staff_id = s.id
+         $where_clause
+         ORDER BY b.created_at DESC 
+         LIMIT %d OFFSET %d",
+        array_merge($where_params, [$per_page, $offset])
     );
+    
+    // Get paginated bookings
+    $bookings = $wpdb->get_results($query);
     
     // Then get services for each booking
     foreach ($bookings as $booking) {
@@ -491,30 +531,187 @@ function get_datetime_bookings($per_page = 10, $page_number = 1) {
     return $bookings;
 }
 
-// Add a function to count total bookings
-function count_datetime_bookings() {
+// Count bookings with staff filter
+function count_datetime_bookings($staff_id = null) {
     global $wpdb;
     $bookings_table = $wpdb->prefix . 'reservemate_hourly_bookings';
-    return $wpdb->get_var("SELECT COUNT(*) FROM $bookings_table");
+    
+    if ($staff_id) {
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $bookings_table WHERE staff_id = %d",
+            $staff_id
+        ));
+    } else {
+        return $wpdb->get_var("SELECT COUNT(*) FROM $bookings_table");
+    }
 }
 
+// Get a single booking with staff information
 function get_datetime_booking($booking_id) {
     global $wpdb;
 
     $bookings_table = $wpdb->prefix . 'reservemate_hourly_bookings';
     $services_table = $wpdb->prefix . 'reservemate_booking_services';
     $service_names_table = $wpdb->prefix . 'reservemate_services';
+    $staff_table = $wpdb->prefix . 'reservemate_staff_members';
 
     $query = $wpdb->prepare("
-        SELECT b.*, s.service_id, s.quantity, s.price, sv.name as service_name
+        SELECT b.*, s.name as staff_name
         FROM $bookings_table b
-        LEFT JOIN $services_table s ON b.id = s.booking_id
-        LEFT JOIN $service_names_table sv ON s.service_id = sv.id
+        LEFT JOIN $staff_table s ON b.staff_id = s.id
         WHERE b.id = %d
     ", intval($booking_id));
+    
+    $booking = $wpdb->get_row($query);
+    
+    // Get services for this booking
+    if ($booking) {
+        $services = $wpdb->get_results($wpdb->prepare("
+            SELECT bs.service_id, bs.quantity, bs.price, s.name as service_name
+            FROM $services_table bs
+            LEFT JOIN $service_names_table s ON bs.service_id = s.id
+            WHERE bs.booking_id = %d
+        ", $booking_id));
+        
+        $booking->services = $services;
+    }
 
-    return $wpdb->get_row($query);
+    return $booking;
 }
+
+// Get available time slots for a specific staff member and service
+function get_available_time_slots($staff_id, $service_id, $date) {
+    global $wpdb;
+    $booking_settings = get_option('booking_settings');
+    
+    // Get service details
+    $service = get_service($service_id);
+    
+    // Check if this staff offers this service and get overrides
+    $staff_service = $wpdb->get_row($wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}reservemate_staff_services 
+         WHERE staff_id = %d AND service_id = %d",
+        $staff_id, $service_id
+    ));
+    
+    // If staff doesn't offer this service, return empty
+    if (!$staff_service) {
+        return [];
+    }
+    
+    // Use duration override if available
+    $duration = $staff_service->duration_override ?: $service->duration;
+    
+    // Get staff availability for the date
+    $availability = get_staff_availability($staff_id, $date);
+    $schedule = $availability['schedule'];
+    $bookings = $availability['bookings'];
+    
+    // If no schedule for this day, return empty
+    if (empty($schedule)) {
+        return [];
+    }
+    
+    // Convert schedule to time slots
+    $time_slots = [];
+    $interval = isset($booking_settings['hourly_booking_interval']) ? 
+                intval($booking_settings['hourly_booking_interval']) : 30;
+    $break_duration = isset($booking_settings['hourly_break_duration']) ? 
+                     intval($booking_settings['hourly_break_duration']) : 0;
+    
+    foreach ($schedule as $period) {
+        $start = strtotime($period['start']);
+        $end = strtotime($period['end']);
+        
+        // Generate slots
+        while ($start + ($duration * 60) <= $end) {
+            $slot_start = date('H:i', $start);
+            $slot_end = date('H:i', $start + ($duration * 60));
+            
+            $time_slots[] = [
+                'start' => $slot_start,
+                'end' => $slot_end,
+                'available' => true // Will check against bookings later
+            ];
+            
+            // Move to next slot with interval
+            $start += ($interval * 60);
+        }
+    }
+    
+    // Mark booked slots as unavailable
+    foreach ($bookings as $booking) {
+        $booking_start = strtotime($booking['start_datetime']);
+        $booking_end = strtotime($booking['end_datetime']);
+        
+        foreach ($time_slots as &$slot) {
+            $slot_date_start = strtotime("$date {$slot['start']}");
+            $slot_date_end = strtotime("$date {$slot['end']}");
+            
+            // Check if this slot overlaps with booking
+            if (
+                ($slot_date_start >= $booking_start && $slot_date_start < $booking_end) ||
+                ($slot_date_end > $booking_start && $slot_date_end <= $booking_end) ||
+                ($slot_date_start <= $booking_start && $slot_date_end >= $booking_end)
+            ) {
+                $slot['available'] = false;
+            }
+        }
+    }
+    
+    // Filter out unavailable slots
+    $available_slots = array_filter($time_slots, function($slot) {
+        return $slot['available'];
+    });
+    
+    return array_values($available_slots); // Reset keys
+}
+
+// Add AJAX handler for getting available staff for a service
+function ajax_get_staff_for_service() {
+    // Check nonce for security
+    if (!isset($_POST['security']) || !wp_verify_nonce($_POST['security'], 'booking_nonce')) {
+        wp_send_json_error(['message' => 'Security check failed']);
+        exit;
+    }
+    
+    $service_id = isset($_POST['service_id']) ? intval($_POST['service_id']) : 0;
+    
+    if ($service_id) {
+        $staff = get_staff_for_service($service_id);
+        wp_send_json_success(['staff' => $staff]);
+    } else {
+        wp_send_json_error(['message' => 'Invalid service ID']);
+    }
+    
+    exit;
+}
+add_action('wp_ajax_get_staff_for_service', 'ajax_get_staff_for_service');
+add_action('wp_ajax_nopriv_get_staff_for_service', 'ajax_get_staff_for_service');
+
+// Add AJAX handler for getting available time slots
+function ajax_get_available_time_slots() {
+    // Check nonce for security
+    if (!isset($_POST['security']) || !wp_verify_nonce($_POST['security'], 'booking_nonce')) {
+        wp_send_json_error(['message' => 'Security check failed']);
+        exit;
+    }
+    
+    $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
+    $service_id = isset($_POST['service_id']) ? intval($_POST['service_id']) : 0;
+    $date = isset($_POST['date']) ? sanitize_text_field($_POST['date']) : '';
+    
+    if ($staff_id && $service_id && $date) {
+        $time_slots = get_available_time_slots($staff_id, $service_id, $date);
+        wp_send_json_success(['time_slots' => $time_slots]);
+    } else {
+        wp_send_json_error(['message' => 'Missing required parameters']);
+    }
+    
+    exit;
+}
+add_action('wp_ajax_get_available_time_slots', 'ajax_get_available_time_slots');
+add_action('wp_ajax_nopriv_get_available_time_slots', 'ajax_get_available_time_slots');
 
 function delete_datetime_booking($booking_id) {
     global $wpdb;

@@ -169,6 +169,23 @@ function display_admin_datetime_booking_form($booking = null) {
             </tr>
             <input type="hidden" id="services-field" name="services-field">
             <tr>
+                <th><label for="staff_id">Staff Member</label></th>
+                <td>
+                    <select name="staff_id" id="staff_id" required>
+                        <option value="">-- Select Staff --</option>
+                        <?php 
+                        $staff_members = get_staff_members('active');
+                        foreach ($staff_members as $staff): 
+                            $selected = ($booking->staff_id ?? 0) == $staff['id'] ? 'selected' : '';
+                        ?>
+                            <option value="<?php echo $staff['id']; ?>" <?php echo $selected; ?>>
+                                <?php echo esc_html($staff['name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <th><label for="total_cost">Total Cost</label></th>
                 <td><input type="number" step="0.01" name="total_cost" id="total_cost" value="<?php echo esc_attr($booking->total_cost ?? '0'); ?>" required></td>
             </tr>
@@ -274,6 +291,9 @@ function display_existing_datetime_bookings_table($bookings, $per_page = 10) {
                                         <?php _e('No services', 'reserve-mate'); ?>
                                     <?php endif; ?>
                                 </span>
+                            </div>
+                            <div class="table-details-flex">
+                                <strong><?php _e('Staff:', 'reserve-mate'); ?></strong><span class="booking-data"><?php echo $booking->staff_name ? esc_html($booking->staff_name) : '--' ?></span>
                             </div>
                             <div class="table-details-flex">
                                 <strong><?php _e('Payment Method:', 'reserve-mate'); ?></strong><span class="booking-data"><?php echo esc_html($booking->payment_method); ?></span>

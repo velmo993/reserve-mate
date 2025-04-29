@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') or die('No direct access!');
 
-function display_daterange_booking_form($property_id, $property_ids, $property_count, $property) {
+function display_daterange_booking_form($property_id, $property_ids, $property_count, $property, $inline_calendar) {
     ob_start();
     ?>
     
@@ -37,10 +37,13 @@ function display_daterange_booking_form($property_id, $property_ids, $property_c
         
         <div class="form-inputs booking-form-content">
             <div class="day-selector-wrap form-field">
-                <label for="name">Select Date:</label>
-                <input type="text" id="date-range" class="flatpick-r-daterange" placeholder="Check Availability" required>
-                <img src="<?php echo RESERVE_MATE_PLUGIN_URL; ?>assets/images/calendar-color-icon.png" alt="Calendar Icon" class="calendar-color-icon">
-                <!-- <div id="date-range" class="flatpick-r-daterange"></div> -->
+                <?php if($inline_calendar !== "inline") : ?>
+                    <label for="name">Select Date:</label>
+                    <input type="text" id="date-range" class="flatpick-r-daterange" placeholder="Check Availability" required>
+                    <img src="<?php echo RESERVE_MATE_PLUGIN_URL; ?>assets/images/calendar-color-icon.png" alt="Calendar Icon" class="calendar-color-icon">
+                <?php else : ?>
+                    <div id="date-range" class="flatpick-r-daterange"></div>
+                <?php endif; ?>
                 <!-- FlatPicker js calendar comes here -->
             </div>
             <div class="form-field">

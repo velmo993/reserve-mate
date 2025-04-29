@@ -52,11 +52,14 @@ $booking_settings = [
 if ($booking_settings['hourly_booking_enabled'] === '1') {
     // Hourly booking is enabled
     require_once(plugin_dir_path(__FILE__) . 'db/service.php');
+    require_once(plugin_dir_path(__FILE__) . 'db/staff.php');
     require_once(plugin_dir_path(__FILE__) . 'db/date-time-booking.php');
     register_activation_hook(__FILE__, function() {
         create_hourly_bookings_table();
         create_services_table();
+        create_staff_members_table();
         create_booking_services_table();
+        create_staff_services_table();
     });
 }
     
@@ -98,6 +101,7 @@ function enqueue_admin_styles() {
 }
 
 function enqueue_admin_scripts() {
+    wp_enqueue_media();
     wp_enqueue_style('flatpickr-css', plugins_url('assets/css/flatpickr.min.css', __FILE__));
     wp_enqueue_script('flatpickr-js', plugins_url('assets/js/flatpickr.min.js', __FILE__), array(), null, true);
     wp_enqueue_script('flatpickr-hu', plugins_url('assets/l10n/hu.js', __FILE__), ['flatpickr-js'], null, true);
@@ -129,13 +133,15 @@ function enqueue_flatpickr_scripts() {
     ];
     $selected_timezone = isset($options['calendar_timezones']) ? $options['calendar_timezones'] : 'UTC';
     $calendar_locale = isset($options['calendar_locale']) ? $options['calendar_locale'] : 'en-US';
+    $inline_calendar = isset($options['calendar_display_type']) ? $options['calendar_display_type'] : 'popup';
     
     wp_localize_script('custom-flatpickr', 'flatpickrVars', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
         'bookingSettings' => $booking_settings,
         'nonce'    => wp_create_nonce('custom_flatpickr_nonce'),
         'timezone' => $selected_timezone,
-        'locale'   => $calendar_locale
+        'locale'   => $calendar_locale,
+        'inline_calendar' => $inline_calendar
     ));
 }
 

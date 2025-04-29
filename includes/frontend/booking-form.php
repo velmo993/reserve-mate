@@ -13,6 +13,12 @@ function isDateTimeEnabled() {
     return $datetime_select_enabled;
 }
 
+function isInlineCalendar() {
+    $booking_settings = get_option('booking_settings');
+    $inline_calendar = isset($booking_settings['calendar_display_type']) ? $booking_settings['calendar_display_type'] : 'full';
+    return $inline_calendar;
+}
+
 $enabled = isDateTimeEnabled();
 
 if(!$enabled) {
@@ -45,6 +51,8 @@ function display_booking_form($atts) {
     $property_ids = get_property_ids();
     $property_count = count($property_ids);
     $datetime_select_enabled = isDateTimeEnabled();
+    $inline_calendar = isInlineCalendar();
+    
     ob_start();
     ?>
     
@@ -66,9 +74,9 @@ function display_booking_form($atts) {
     </div>
     <div class="booking-form-wrapper">
         <?php if(!$datetime_select_enabled) : ?>
-            <?php echo display_daterange_booking_form($property_id, $property_ids, $property_count, $property); ?>
+            <?php echo display_daterange_booking_form($property_id, $property_ids, $property_count, $property, $inline_calendar); ?>
         <?php else : ?>
-            <?php echo display_datetime_booking_form(); ?>
+            <?php echo display_datetime_booking_form($inline_calendar); ?>
         <?php endif; ?>
         
         <?php echo display_payment_form(); ?>

@@ -26,6 +26,7 @@ function display_payment_form() {
             <input type="hidden" id="pets-field" name="pets-field" value="">
             <input type="hidden" id="start-date-field" name="start-date-field" value="">
             <input type="hidden" id="end-date-field" name="end-date-field" value="">
+            <input type="hidden" id="staff-id-field" name="staff-id-field" value="">
             <input type="hidden" id="total-cost-field" name="total-cost-field" value="">
             <input type="hidden" id="actual-payment-field" name="actual-payment-field" value="">
             <div class="card-for-test hidden">

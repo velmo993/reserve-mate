@@ -405,6 +405,109 @@ jQuery(document).ready(function($) {
         
     }
     
+    function initStaffSettingsPage() {
+        $('#toggle-form-btn').on('click', function() {
+            const $form = $('#staff-form');
+            const isHidden = $form.is(':hidden');
+            
+            $form.slideToggle(500, function() {
+                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+            });
+            $(this).text(isHidden ? 'Hide Form' : 'Add New Staff Member');
+        });
+        
+        const days = [
+            {formIndex: 0, name: 'Sunday'},
+            {formIndex: 1, name: 'Monday'},
+            {formIndex: 2, name: 'Tuesday'},
+            {formIndex: 3, name: 'Wednesday'},
+            {formIndex: 4, name: 'Thursday'},
+            {formIndex: 5, name: 'Friday'},
+            {formIndex: 6, name: 'Saturday'}
+        ];
+        
+        // Initialize working hours for each day
+        days.forEach(day => {
+            // Toggle working hours visibility
+            $(`.day-enabled[data-day="${day.formIndex}"]`).on('change', function() {
+                $(`.time-periods[data-day="${day.formIndex}"]`).toggle(this.checked);
+            });
+            
+            // Add new time period
+            $(`.add-period[data-day="${day.formIndex}"]`).on('click', function() {
+                const periodContainer = $(this).closest('.time-periods');
+                const dayIndex = periodContainer.data('day');
+                const periodCount = periodContainer.find('.time-period').length;
+                
+                const newPeriod = $(`
+                    <div class="time-period">
+                        <select name="working_hours[${dayIndex}][${periodCount}][start]" class="time-select">
+                            ${generateTimeOptions()}
+                        </select>
+                        to
+                        <select name="working_hours[${dayIndex}][${periodCount}][end]" class="time-select">
+                            ${generateTimeOptions()}
+                        </select>
+                        <button type="button" class="remove-period button-secondary">Remove</button>
+                    </div>
+                `);
+                
+                periodContainer.append(newPeriod);
+            });
+        });
+        
+        // Handle removing time periods
+        $(document).on('click', '.remove-period', function() {
+            $(this).closest('.time-period').remove();
+        });
+        
+        // Helper function to generate time options
+        function generateTimeOptions() {
+            let options = '';
+            for (let hour = 0; hour < 24; hour++) {
+                for (let min = 0; min < 60; min += 30) {
+                    const timeStr = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+                    options += `<option value="${timeStr}">${timeStr}</option>`;
+                }
+            }
+            return options;
+        }
+        
+        
+        $('.select-image-btn').click(function(e) {
+            e.preventDefault();
+            
+            var imageField = $('#profile_image');
+            var imagePreview = $(this).siblings('.image-preview');
+            
+            var mediaFrame = wp.media({
+                title: 'Select Profile Image',
+                library: {
+                    type: 'image'
+                },
+                multiple: false
+            });
+            
+            mediaFrame.on('select', function() {
+                var attachment = mediaFrame.state().get('selection').first().toJSON();
+                imageField.val(attachment.id);
+                imagePreview.html('<img src="' + attachment.url + '" style="max-width: 150px;">');
+                $('.remove-image-btn').show();
+            });
+            
+            mediaFrame.open();
+        });
+        
+        // Remove image
+        $('.remove-image-btn').click(function(e) {
+            e.preventDefault();
+            $('#profile_image').val('');
+            $('.image-preview').empty();
+            $(this).hide();
+        });
+        
+    }
+    
     function calculateTotalCost(selectedServices) {
         let totalCost = 0;
         selectedServices.forEach(service => {
@@ -453,5 +556,7 @@ jQuery(document).ready(function($) {
         initPaymentsPage();
     } else if (window.location.search.includes('page=manage-datetime-bookings')) {
         initServiceBookingsPage();
+    } else if (window.location.search.includes('page=manage-staff')) {
+        initStaffSettingsPage();
     }
 });

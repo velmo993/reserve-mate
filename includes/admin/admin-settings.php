@@ -10,6 +10,7 @@ require_once plugin_dir_path(__FILE__) . 'menu/ical-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/property-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/service-settings.php';
 require_once plugin_dir_path(__FILE__) . 'menu/tax-settings.php';
+require_once plugin_dir_path(__FILE__) . 'menu/staff-settings.php';
 require_once plugin_dir_path(__FILE__) . 'mail/test-email.php';
 
 function add_admin_menu() {
@@ -36,7 +37,7 @@ function add_admin_menu() {
     );
     
     if ($hourly_booking_enabled) {
-        // Add "Services & Bookings" menu item if hourly booking is enabled
+        // Add "Services & Bookings & Staff" menu item if hourly booking is enabled
         add_submenu_page(
             'reserve-mate-settings', 
             __('Bookings', 'reserve-mate'),
@@ -52,6 +53,14 @@ function add_admin_menu() {
             'manage_options', 
             'manage-services', 
             'manage_services_page'
+        );
+        add_submenu_page(
+            'reserve-mate-settings', // Parent slug (main plugin menu)
+            __('Staff Members', 'reserve-mate'), // Page title
+            __('Staff Members', 'reserve-mate'), // Menu title
+            'manage_options', // Capability
+            'manage-staff', // Menu slug
+            'render_staff_management_page' // Callback function
         );
     } else {
         // Add "Properties & Bookings" menu item if hourly booking is disabled

@@ -57,7 +57,8 @@ document.addEventListener("flatpickrInstance", function () {
         const guests = document.getElementById('adults').value;
         startDateTime = startDateTime.value;
         endDateTime = endDateTime.value;
-    
+        const staff = document.getElementById('staff-id').value;
+        
         // Get selected services from Select2
         const selectedServices = jQuery('#services').select2('data'); // Get selected services as an array of objects
         const serviceIds = selectedServices.map(service => service.id); // Extract service IDs
@@ -76,8 +77,9 @@ document.addEventListener("flatpickrInstance", function () {
             startDateTime,
             endDateTime,
             totalCost,
-            serviceIds, // Add selected service IDs
-            serviceNames, // Add selected service names
+            serviceIds,
+            serviceNames,
+            staff,
             currency: ajaxScript.currency
         };
     
@@ -106,7 +108,7 @@ document.addEventListener("flatpickrInstance", function () {
         bookingDetails.guests = bookingDetails.guests.trim();
         bookingDetails.startDateTime = bookingDetails.startDateTime.trim();
         bookingDetails.endDateTime = bookingDetails.endDateTime.trim();
-    
+        
         // Validate fields
         if (!bookingDetails.name) errors.push('name');
         if (!validateEmail(bookingDetails.email)) errors.push('email');
@@ -149,6 +151,7 @@ document.addEventListener("flatpickrInstance", function () {
         document.getElementById("adults-field").value = bookingDetails.guests;
         document.getElementById("start-date-field").value = bookingDetails.startDateTime;
         document.getElementById("end-date-field").value = bookingDetails.endDateTime;
+        document.getElementById("staff-id-field").value = bookingDetails.staff;
         document.getElementById("total-cost-field").value = document.getElementById('actual-payment-field').value = bookingDetails.totalCost;
         const servicesField = document.getElementById("services-field");
         servicesField.value = JSON.stringify(bookingDetails.serviceIds);
