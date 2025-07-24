@@ -19,13 +19,13 @@
 /* Hover & Focus States */
 .flatpickr-day:hover,
 .flatpickr-day:focus {
-  outline: 2px solid var(--rm-hover-outline, #000) !important;
-  background: var(--rm-day-hover-bg, #f0f0f0) !important;
+  outline: 2px solid var(--rm-hover-outline, #3B82F6) !important;
+  background: var(--rm-day-hover-bg, #fff) !important;
 }
 
 /* Selected Day */
 .flatpickr-day.selected {
-  background: var(--rm-day-selected, var(--rm-primary, #4CAF50)) !important;
+  background: var(--rm-day-selected, var(--rm-primary, #3B82F6)) !important;
   color: var(--rm-day-selected-text, #fff) !important;
   border-color: transparent !important;
 }
@@ -48,15 +48,15 @@
 
 /* Date Range Styles */
 .startRange {
-    background: var(--rm-start-range-highlight, #07c66594) !important;
+    background: var(--rm-start-range-highlight, #3B82F6) !important;
 }
 
 .inRange {
-    background: var(--rm-range-highlight, #07c66594) !important;
+    background: var(--rm-range-highlight, #3B82F6) !important;
 }
 
 .endRange {
-    background: var(--rm-end-range-highlight, #07c66594) !important;
+    background: var(--rm-end-range-highlight, #3B82F6) !important;
 }
 
 .startRange,
@@ -85,7 +85,7 @@
 /* Navigation Arrows */
 .flatpickr-prev-month:hover svg,
 .flatpickr-next-month:hover svg {
-  fill: var(--rm-nav-hover, var(--rm-primary, #4CAF50)) !important;
+  fill: var(--rm-nav-hover, var(--rm-primary, #3B82F6)) !important;
 }
 
 /* Week Numbers */

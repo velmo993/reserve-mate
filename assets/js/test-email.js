@@ -1,5 +1,4 @@
 jQuery(document).ready(function($) {
-    // Test client email button
     $('#test_client_email').on('click', function() {
         var testEmail = $('#test_email').val();
         var resultSpan = $('#email_test_result');
@@ -27,7 +26,6 @@ jQuery(document).ready(function($) {
         });
     });
     
-    // Test admin email button
     $('#test_admin_email').on('click', function() {
         var testEmail = $('#test_email').val();
         var resultSpan = $('#email_test_result');

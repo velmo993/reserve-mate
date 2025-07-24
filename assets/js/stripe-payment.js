@@ -1,24 +1,29 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener('stripeFormRendered', function () {
         initializeStripe();
     });
-
+    
     let stripeInstance = null;
     let elementsInstance = null;
     let cardInstance = null;
     let form = null;
     let submitButton = null;
 
-    // Define the submit handler as a named function
     async function handleStripeSubmit(event) {
         event.preventDefault();
 
-        // Disable the submit button to prevent multiple submissions
         submitButton.disabled = true;
-        submitButton.value = 'Processing...'; // Update button text
+        submitButton.value = 'Processing...';
+        
+        const agreement = document.querySelector('#stripe-payment-form .agreement');
+        if (!agreement || !agreement.checked) {
+            alert('You must accept the privacy policy to continue.');
+            submitButton.value = 'Pay Now';
+            return false;
+        }
 
         try {
+            // Create payment intent only when user clicks Pay Now
             const clientSecret = await fetchClientSecret();
             if (!clientSecret) {
                 throw new Error('Failed to fetch client secret.');
@@ -30,8 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (error) {
                 document.getElementById('card-errors').textContent = error.message;
+                submitButton.disabled = false;
+                submitButton.value = 'Pay Now';
             } else if (paymentIntent.status === "succeeded") {
-                // Optionally, submit the form or redirect the user
                 form.submit();
                 // window.location.href = '/successful-booking';
             }
@@ -39,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // console.error("Error during payment processing:", err);
             document.getElementById('card-errors').textContent = 'An unexpected error occurred. Please try again.';
             
-            // Re-enable the submit button
             submitButton.disabled = false;
             submitButton.value = 'Pay Now';
         }
@@ -47,11 +52,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function fetchClientSecret(updatedPaymentCost = '') {
         const totalPaymentCost = document.getElementById('actual-payment-field').value;
-        const response = await fetch(ajaxScript.ajaxurl, { // WordPress global AJAX URL
+        const response = await fetch(stripe_vars.ajaxurl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                action: 'create_payment_intent', // Match the action in functions.php
+                action: 'create_payment_intent',
                 totalPaymentCost: totalPaymentCost,
             }),
         });
@@ -65,27 +70,28 @@ document.addEventListener("DOMContentLoaded", function () {
             // console.error('Error fetching clientSecret:', data.data.error);
         }
     }
-
+    
     async function initializeStripe(updatedPaymentCost = '') {
-        // Unmount existing card element if it exists
         if (cardInstance) {
             cardInstance.unmount();
             cardInstance = null;
         }
-
+        
         if (elementsInstance) {
             elementsInstance = null;
         }
-
+        
         if (stripeInstance) {
             stripeInstance = null;
         }
-
+    
         const cardElement = document.querySelector('#card-element');
         if (!cardElement) return;
-
-        // Initialize Stripe
-        stripeInstance = Stripe(stripe_vars.stripePublicKey);
+    
+        stripeInstance = Stripe(stripe_vars.stripePublicKey, {
+            betas: ['elements_enable_deferred_intent_beta_1'],
+        });
+    
         elementsInstance = stripeInstance.elements();
         cardInstance = elementsInstance.create('card', {
             style: {
@@ -99,35 +105,23 @@ document.addEventListener("DOMContentLoaded", function () {
             hidePostalCode: true,
         });
         cardInstance.mount('#card-element');
-
-        // Fetch and set clientSecret before processing payment
-        const clientSecret = await fetchClientSecret(updatedPaymentCost);
-        if (!clientSecret) {
-            document.getElementById('card-errors').textContent = 'Payment initialization failed.';
-            return;
-        }
-
-        // Get the form and submit button
+        
         form = document.querySelector('#payment-form');
-        submitButton = form.querySelector('input[type="submit"]');
+        submitButton = form.querySelector('#submit-stripe-payment');
 
-        // Remove existing submit event listener to avoid duplicates
         form.removeEventListener('submit', handleStripeSubmit);
-
-        // Add the new submit event listener
         form.addEventListener('submit', handleStripeSubmit);
 
         cardElement.parentElement.style.padding = '1rem 0';
     }
+    
 
     window.reInitStripe = async function reinitializeStripe() {
         const updatedPaymentCost = document.getElementById('actual-payment-field').value;
 
-        // Reinitialize Stripe with the new clientSecret
         initializeStripe(updatedPaymentCost);
     };
 
-    // Cleanup on page unload
     window.addEventListener('beforeunload', function () {
         if (cardInstance) {
             cardInstance.unmount();

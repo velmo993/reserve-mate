@@ -1,468 +1,724 @@
 jQuery(document).ready(function($) {
-    // Utility Functions (Shared across pages)
-    function setupDetailsToggle(toggleClass, dataIdPrefix) {
-        let $currentOpenDetails = null;
-        let $currentOpenSummaryRow = null;
-
-        $(toggleClass).each(function() {
-            const $button = $(this);
-            const toggleDetails = function(event) {
-                if (event.type === 'touchstart') {
-                    event.preventDefault();
-                }
+    'use strict';
     
-                const entityId = $button.attr(`data-${dataIdPrefix}-id`);
-                const $detailsRow = $('#details-' + entityId);
-                const $summaryRow = $button.closest('tr');
-
-                // If no details are open or a different details is clicked
-                if (!$currentOpenDetails || $currentOpenDetails[0] !== $detailsRow[0]) {
-                    // Close any currently open details first
-                    if ($currentOpenDetails) {
-                        const $previousButton = $(toggleClass + `[data-${dataIdPrefix}-id="${$currentOpenDetails.attr('id').replace('details-', '')}"]`);
-                        $previousButton.html('<i>▼</i>');
-                        $currentOpenDetails.hide();
-                        
-                        // Remove highlight from previous row
-                        if ($currentOpenSummaryRow) {
-                            $currentOpenSummaryRow.removeClass('details-row-active');
-                            $currentOpenDetails.removeClass('details-section-active');
-                        }
+    const ReserveMateAdmin = {
+        config: {
+            currentOpenDetails: null,
+            currentOpenSummaryRow: null,
+            fieldCounter: 0
+        },
+        
+        init: function() {
+            this.initGlobalFeatures();
+            this.initPageSpecificFeatures();
+        },
+        
+        initGlobalFeatures: function() {
+            this.setupTabNavigation();
+            this.setupCalendarSettingsToggle();
+        },
+        
+        initPageSpecificFeatures: function() {
+            const urlParams = window.location.search;
+            
+            if (urlParams.includes('reserve-mate-services')) {
+                this.initServicesPage();
+            } else if (urlParams.includes('page=reserve-mate-settings')) {
+                this.initSettingsPage();
+            } else if (urlParams.includes('page=reserve-mate-payments')) {
+                this.initPaymentsPage();
+            } else if (urlParams.includes('reserve-mate-bookings')) {
+                this.initServiceBookingsPage();
+            } else if (urlParams.includes('reserve-mate-staff')) {
+                this.initStaffSettingsPage();
+            }
+        },
+        
+        setupDetailsToggle: function(toggleClass, dataIdPrefix) {
+            const self = this;
+            
+            $(toggleClass).each(function() {
+                const $button = $(this);
+                
+                $button.off('click touchstart').on('click touchstart', function(event) {
+                    if (event.type === 'touchstart') {
+                        event.preventDefault();
                     }
-
-                    // Open new details
-                    $detailsRow.show();
-                    $button.html('<i>▲</i>');
-                    $currentOpenDetails = $detailsRow;
                     
-                    // Add highlight to current row and details section
-                    $summaryRow.addClass('details-row-active');
-                    $detailsRow.addClass('details-section-active');
-                    $currentOpenSummaryRow = $summaryRow;
+                    self.handleDetailsToggle($button, dataIdPrefix);
+                });
+            });
+        },
+        
+        handleDetailsToggle: function($button, dataIdPrefix) {
+            const entityId = $button.attr(`data-${dataIdPrefix}-id`);
+            const $detailsRow = $('#details-' + entityId);
+            const $summaryRow = $button.closest('tr');
+            
+            if (!this.config.currentOpenDetails || this.config.currentOpenDetails[0] !== $detailsRow[0]) {
+                this.openNewDetails($button, $detailsRow, $summaryRow, dataIdPrefix);
+            } else {
+                this.closeDetails($button, $detailsRow, $summaryRow);
+            }
+        },
+        
+        openNewDetails: function($button, $detailsRow, $summaryRow, dataIdPrefix) {
+            const self = this;
+            
+            const openDetails = function() {
+                $detailsRow.show();
+                $detailsRow.find('.table-details-container').hide().slideDown();
+                $button.html('<span class="dashicons dashicons-arrow-up-alt"></span>');
+                self.config.currentOpenDetails = $detailsRow;
+                
+                $summaryRow.addClass('details-row-active');
+                $detailsRow.addClass('details-section-active');
+                self.config.currentOpenSummaryRow = $summaryRow;
+            };
+            
+            if (this.config.currentOpenDetails) {
+                this.closeCurrentDetails(dataIdPrefix, openDetails);
+            } else {
+                openDetails();
+            }
+        },
+        
+        closeCurrentDetails: function(dataIdPrefix, callback) {
+            const toggleClass = dataIdPrefix === 'service' ? '.toggle-details-service' : '.toggle-details-booking';
+            const $previousButton = $(toggleClass + `[data-${dataIdPrefix}-id="${this.config.currentOpenDetails.attr('id').replace('details-', '')}"]`);
+            
+            $previousButton.html('<span class="dashicons dashicons-arrow-down-alt"></span>');
+            
+            if (this.config.currentOpenSummaryRow) {
+                this.config.currentOpenSummaryRow.removeClass('details-row-active');
+                this.config.currentOpenDetails.removeClass('details-section-active');
+            }
+            
+            this.config.currentOpenDetails.find('.table-details-container').slideUp(callback);
+        },
+        
+        closeDetails: function($button, $detailsRow, $summaryRow) {
+            $detailsRow.find('.table-details-container').slideUp(function() {
+                $detailsRow.hide();
+            });
+            $button.html('<span class="dashicons dashicons-arrow-down-alt"></span>');
+            $summaryRow.removeClass('details-row-active');
+            $detailsRow.removeClass('details-section-active');
+            this.config.currentOpenDetails = null;
+            this.config.currentOpenSummaryRow = null;
+        },
+        
+        setupTabNavigation: function() {
+            $('.tab-button').off('click').on('click', function() {
+                $('.tab-button, .tab-content').removeClass('active');
+                
+                $(this).addClass('active');
+                const target = $(this).attr('data-target');
+                $(target).addClass('active');
+                
+                if (window.location.search.includes('reserve-mate-bookings')) {
+                    try {
+                        localStorage.setItem('activeTab', target);
+                    } catch (e) {
+                        console.warn('localStorage not available:', e);
+                    }
+                }
+            });
+        },
+
+        initTabManagement: function(storageKey, defaultTab) {
+            let activeTab = defaultTab;
+            
+            try {
+                activeTab = localStorage.getItem(storageKey) || defaultTab;
+            } catch (e) {
+                console.warn('localStorage not available:', e);
+            }
+            
+            // Hide all forms except the active one
+            $('.nav-tab').removeClass('nav-tab-active');
+            $('.tab-content').removeClass('active').hide();
+            
+            // Show the active tab and its corresponding form
+            $(`a[data-tab="${activeTab}"]`).addClass('nav-tab-active');
+            $(`#${activeTab}`).addClass('active').show();
+            
+            $('.nav-tab').off('click').on('click', function(e) {
+                e.preventDefault();
+                
+                const tabId = $(this).data('tab');
+                
+                // Hide all forms
+                $('.nav-tab').removeClass('nav-tab-active');
+                $('.tab-content').removeClass('active').hide();
+                
+                // Show the selected tab's form
+                $(this).addClass('nav-tab-active');
+                $(`#${tabId}`).addClass('active').show();
+                
+                try {
+                    localStorage.setItem(storageKey, tabId);
+                } catch (e) {
+                    console.warn('localStorage not available:', e);
+                }
+            });
+        },
+        
+        setupCalendarSettingsToggle: function() {
+            const toggleCalendarSettings = function() {
+                const $checkbox = $('#save_to_google_calendar');
+                const fields = ['calendar_api_key', 'calendar_id', 'calendar_timezones'];
+                
+                fields.forEach(function(fieldId) {
+                    $(`[name="rm_google_calendar_options[${fieldId}]"]`).prop('disabled', !$checkbox.prop('checked'));
+                });
+            };
+            
+            $('#save_to_google_calendar').off('click').on('click', function(e) {
+                e.preventDefault();
+                toggleCalendarSettings();
+            });
+        },
+        
+        initServicesPage: function() {
+            this.setupDetailsToggle('.toggle-details-service', 'service');
+            this.setupServiceFormToggle();
+            this.setupBulkActions("service");
+        },
+        
+        setupServiceFormToggle: function() {
+            $('#toggle-form-btn').off('click').on('click', function() {
+                const $form = $('#service-form');
+                const isHidden = $form.is(':hidden');
+                
+                $form.slideToggle(500, function() {
+                    $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+                });
+                $(this).text(isHidden ? 'Hide Form' : 'Add New Service');
+            });
+        },
+        
+        initSettingsPage: function() {
+            this.initTabManagement('rm_booking_options_active_tab', 'general-tab');
+            this.setupTimeValidation();
+            this.setupColorPickers();
+            this.setupDisabledDates();
+            this.setupFormFields();
+            this.setupBookingModeToggle();
+            this.initDateTimePickers();
+        },
+        
+        setupTimeValidation: function() {
+            $('#booking_min_time, #booking_max_time').off('change').on('change', function() {
+                const minTime = $('#booking_min_time').val();
+                const maxTime = $('#booking_max_time').val();
+                if (minTime > maxTime) {
+                    $('#booking_max_time').val(minTime);
+                }
+            });
+        },
+        
+        setupColorPickers: function() {
+            $('.color-field').each(function() {
+                if ($(this).hasClass('wp-color-picker')) {
+                    return;
+                }
+                
+                $(this).wpColorPicker({
+                    defaultColor: $(this).data('default-color'),
+                    change: function(event, ui) {
+                        // Handle color changes if needed
+                    },
+                    clear: function() {
+                        // Handle clearing if needed
+                    }
+                });
+            });
+        },
+        
+        setupDisabledDates: function() {
+            this.setupDisabledDatesToggle();
+            this.setupDisabledDateRules();
+        },
+        
+        setupDisabledDatesToggle: function() {
+            $('#disabled-dates-btn').off('click').on('click', function() {
+                const $icon = $(this).find('.dashicons');
+                const $container = $('.disabled-dates-container');
+                
+                $icon.toggleClass('dashicons-arrow-down-alt dashicons-arrow-up-alt');
+                
+                if ($container.is(':hidden')) {
+                    $container.slideDown(700);
                 } else {
-                    // Clicking the same details closes it
-                    $detailsRow.hide();
-                    $button.html('<i>▼</i>');
-                    $summaryRow.removeClass('details-row-active');
-                    $detailsRow.removeClass('details-section-active');
-                    $currentOpenDetails = null;
-                    $currentOpenSummaryRow = null;
+                    $container.slideUp(700);
+                }
+            });
+        },
+        
+        setupDisabledDateRules: function() {
+            const self = this;
+            
+            $('#add-disabled-date-rule').off('click').on('click', function() {
+                const index = Date.now();
+                
+                $.ajax({
+                    url: reserve_mate_admin.ajax_url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'get_disabled_date_rule',
+                        index: index,
+                        security: reserve_mate_admin.nonce
+                    },
+                    success: function(response) {
+                        if (response.success && response.data) {
+                            $('#disabled-dates-rules').append(response.data);
+                            self.initDateTimePickers();
+                        } else {
+                            console.error("Invalid response format", response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error:", status, error);
+                    }
+                });
+            });
+            
+            $(document).off('click', '.remove-disabled-date-rule').on('click', '.remove-disabled-date-rule', function() {
+                $(this).closest('.disabled-date-rule').remove();
+            });
+            
+            $(document).off('change', '.disabled-date-type').on('change', '.disabled-date-type', function() {
+                const $container = $(this).closest('.disabled-date-rule').find('.disabled-date-options');
+                $container.find('> div').hide();
+                $container.find('.disabled-date-' + $(this).val()).show();
+            });
+            
+            $(document).off('change', '.disabled-date-time input[name$="[date]"]').on('change', '.disabled-date-time input[name$="[date]"]', function() {
+                const $weeklyOptions = $(this).closest('.disabled-date-time').find('.weekly-options');
+                if ($(this).val() !== '') {
+                    $weeklyOptions.hide();
+                } else {
+                    $weeklyOptions.show();
+                }
+            });
+        },
+        
+        initDateTimePickers: function() {
+            this.initTimePickers();
+            this.initDatePickers();
+        },
+        
+        initTimePickers: function() {
+            if ($.fn.timepicker) {
+                $('.timepicker').timepicker({
+                    timeFormat: 'HH:mm',
+                    interval: 30,
+                    minTime: '00:00',
+                    maxTime: '23:30',
+                    dynamic: false,
+                    dropdown: true,
+                    scrollbar: true
+                });
+            } else if (typeof flatpickr === 'function') {
+                flatpickr('.timepicker', {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true
+                });
+            }
+        },
+        
+        initDatePickers: function() {
+            if ($.fn.datepicker) {
+                $('.datepicker').datepicker({
+                    dateFormat: 'yy-mm-dd',
+                    minDate: 0
+                });
+            }
+            
+            if (typeof flatpickr === 'function') {
+                flatpickr('.datepicker', {
+                    dateFormat: 'Y-m-d',
+                    minDate: 'today'
+                });
+            }
+        },
+        
+        setupFormFields: function() {
+            this.config.fieldCounter = parseInt($('#field-count').val(), 10) || 0;
+            this.setupFormFieldToggle();
+            this.setupFormFieldRemoval();
+            this.setupFormFieldOptions();
+            this.setupAddNewField();
+            this.setupFormFieldSorting();
+            this.setupFormFieldIdUpdates();
+        },
+        
+        setupFormFieldToggle: function() {
+            $('.form-fields-list').off('click', '.edit-field').on('click', '.edit-field', function() {
+                $(this).closest('.form-field-item').find('.field-details').slideToggle();
+            });
+        },
+        
+        setupFormFieldOptions: function() {
+            $('.form-fields-list').off('change', 'select[name*="[type]"]').on('change', 'select[name*="[type]"]', function() {
+                const type = $(this).val();
+                const optionsRow = $(this).closest('table').find('.field-options-row');
+                
+                if (type === 'select' || type === 'radio' || type === 'checkbox') {
+                    optionsRow.show();
+                } else {
+                    optionsRow.hide();
+                }
+            });
+        },
+        
+        setupAddNewField: function() {
+            const self = this;
+            
+            $('.add-new-field').off('click').on('click', function() {
+                const template = $('#field-template').html();
+                const existingFields = $('.form-fields-list .form-field-item').length;
+                const newIndex = existingFields;
+                
+                let lastOrder = 0;
+                $('.form-fields-list input[name*="[order]"]').each(function() {
+                    const order = parseInt($(this).val(), 10);
+                    if (order > lastOrder) {
+                        lastOrder = order;
+                    }
+                });
+                
+                const nextOrder = lastOrder + 1;
+                const processedTemplate = template
+                    .replace(/\{\{index\}\}/g, newIndex)
+                    .replace(/\{\{order\}\}/g, nextOrder);
+                
+                $('.form-fields-list').append(processedTemplate);
+                
+                self.reindexFields();
+            });
+        },
+        
+        reindexFields: function() {
+            $('.form-fields-list .form-field-item').each(function(index) {
+                const $item = $(this);
+                $item.attr('data-index', index);
+                
+                $item.find('input, select, textarea').each(function() {
+                    const $input = $(this);
+                    const name = $input.attr('name');
+                    if (name && name.includes('[form_fields]')) {
+                        const newName = name.replace(/\[form_fields\]\[\d+\]/, '[form_fields][' + index + ']');
+                        $input.attr('name', newName);
+                    }
+                });
+                
+                $item.find('.description').each(function() {
+                    const $desc = $(this);
+                    const text = $desc.text();
+                    if (text.includes('Use as variable:')) {
+                        const fieldId = $item.find('input[name*="[id]"]').val() || 'field_' + index;
+                        $desc.html('Unique identifier for the field (no spaces). Use as variable: {' + fieldId + '}');
+                    }
+                });
+            });
+        },
+        
+        setupFormFieldRemoval: function() {
+            const self = this;
+            $('.form-fields-list').off('click', '.remove-field').on('click', '.remove-field', function() {
+                if (confirm('Are you sure you want to remove this field?')) {
+                    $(this).closest('.form-field-item').remove();
+                    self.reindexFields();
+                }
+            });
+        },
+        
+        setupFormFieldSorting: function() {
+            if ($.fn.sortable) {
+                $('.form-fields-list').sortable({
+                    handle: '.field-drag-handle',
+                    update: function(event, ui) {
+                        $('.form-fields-list .form-field-item').each(function(index) {
+                            $(this).find('input[name*="[order]"]').val(index + 1);
+                        });
+                    }
+                });
+            }
+        },
+        
+        setupFormFieldIdUpdates: function() {
+            $('.form-fields-list').off('input', '.field-id-input').on('input', '.field-id-input', function() {
+                const $input = $(this);
+                const fieldId = $input.val();
+                const $description = $input.siblings('.description');
+                $description.html('Unique identifier for the field (no spaces). Use as variable: {' + fieldId + '}');
+            });
+            
+            $('.form-fields-list').off('input', '.field-label-input').on('input', '.field-label-input', function() {
+                const $input = $(this);
+                const label = $input.val();
+                const $fieldItem = $input.closest('.form-field-item');
+                $fieldItem.find('.field-title').text(label);
+            });
+        },
+        
+        setupBookingModeToggle: function() {
+            const $bookingMode = $('input[name="rm_booking_options[booking_mode]"]');
+            const $maxDateContainer = $('#fixed-date-field');
+            const $maxDaysContainer = $('#rolling-days-field');
+            const $maxDateInput = $maxDateContainer.find('input');
+            const $maxDaysInput = $maxDaysContainer.find('input');
+            
+            const toggleBookingModeFields = function() {
+                if ($bookingMode.filter(':checked').val() === 'fixed') {
+                    $maxDateContainer.show();
+                    $maxDaysContainer.hide();
+                    // Enable the visible field and disable the hidden one
+                    $maxDateInput.prop('disabled', false);
+                    $maxDaysInput.prop('disabled', true);
+                } else {
+                    $maxDateContainer.hide();
+                    $maxDaysContainer.show();
+                    // Enable the visible field and disable the hidden one
+                    $maxDateInput.prop('disabled', true);
+                    $maxDaysInput.prop('disabled', false);
                 }
             };
-    
-            $button.on('click', toggleDetails);
-            $button.on('touchstart', toggleDetails);
-        });
-    }
-
-    function setupTabNavigation() {
-        $('.tab-button').on('click', function() {
-            $('.tab-button, .tab-content').removeClass('active');
-
-            $(this).addClass('active');
-            const target = $(this).attr('data-target');
-            $(target).addClass('active');
-
-            // Persist active tab in local storage if on manage-bookings page
-            if (window.location.search.includes('page=manage-bookings')) {
-                localStorage.setItem('activeTab', target);
-            }
-        });
-    }
-
-    // Page-specific Initializations
-    function initBookingsPage() {
-        const activeTab = localStorage.getItem('activeTab');
-        const $propertySelect = $("#property_id");
-
-        if (activeTab) {
-            $('.tab-button, .tab-content').removeClass('active');
-            $(activeTab).addClass('active');
-            $('.tab-button[data-target="' + activeTab + '"]').addClass('active');
-        }
-
-        setupDetailsToggle('.toggle-details-booking', 'booking');
-        
-        $propertySelect.on("change", function() {
-            updatePropertyFields($(this));
-        });
-        
-        $('#toggle-form-btn').on('click', function() {
-            const $form = $('#booking-form');
-            const isHidden = $form.is(':hidden');
             
-            $form.slideToggle(500, function() {
-                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
-            });
-            $(this).text(isHidden ? 'Hide Form' : 'Add New Booking');
-        });
-
-        // Initial property fields setup
-        updatePropertyFields($propertySelect);
-    }
-    
-    function updatePropertyFields($propertySelect) {
-        const $selectedOption = $propertySelect.find('option:selected');
-        const $adultsSelect = $("#adults");
-        const $childrenSelect = $("#children");
-        const $petsSelect = $("#pets");
-        const $childrenRow = $(".children-row");
-        const $petsRow = $(".pets-row");
-
-        if ($selectedOption.length) {
-            const maxAdults = parseInt($selectedOption.attr("data-max-adults")) || 1;
-            const maxChildren = parseInt($selectedOption.attr("data-max-children")) || 0;
-            const maxPets = parseInt($selectedOption.attr("data-max-pets")) || 0;
-            const allowChildren = $selectedOption.attr("data-allow-children") === "1";
-            const allowPets = $selectedOption.attr("data-allow-pets") === "1";
+            toggleBookingModeFields();
+            $bookingMode.off('change').on('change', toggleBookingModeFields);
+        },
         
-            // Update Adults Dropdown
-            $adultsSelect.empty();
-            for (let i = 1; i <= maxAdults; i++) {
-                $adultsSelect.append(`<option value="${i}">${i}</option>`);
-            }
-    
-            // Update Children Dropdown
-            $childrenSelect.empty();
-            if (allowChildren) {
-                $childrenRow.show();
-                for (let i = 0; i <= maxChildren; i++) {
-                    $childrenSelect.append(`<option value="${i}">${i}</option>`);
-                }
-            } else {
-                $childrenRow.hide();
-            }
-    
-            // Update Pets Dropdown
-            $petsSelect.empty();
-            if (allowPets) {
-                $petsRow.show();
-                for (let i = 0; i <= maxPets; i++) {
-                    $petsSelect.append(`<option value="${i}">${i}</option>`);
-                }
-            } else {
-                $petsRow.hide();
-            }
-        }
-    }
-
-    function initPropertiesPage() {
-        const $allowChildren = $("#allow_children");
-        const $allowPets = $("#allow_pets");
-        const $seasonalRulesBtn = $("#seasonal-rules-btn");
-        const $seasonalRulesContainer = $(".seasonal-rules-container");
+        initPaymentsPage: function() {
+            this.initTabManagement('rm_payment_options_active_tab', 'online-tab');
+        },
         
-        function toggleFields($allowChildren, $allowPets) {
-            $(".children-field").each(function() {
-                $allowChildren.prop('checked') ? 
-                    $(this).removeClass('hidden') : 
-                    $(this).addClass('hidden');
+        initServiceBookingsPage: function() {
+            this.setupBookingStatusStyles();
+            this.addDataLabels();
+            this.setupDetailsToggle('.toggle-details-booking', 'booking');
+            this.setupServiceSelect();
+            this.setupBookingFormToggle();
+            this.setupDateTimePickers();
+            this.setupCostCalculation();
+            this.setupBulkActions("booking");
+        },
+        
+        setupBookingStatusStyles: function() {
+            $('button.status-toggle-button').each(function() {
+                const $button = $(this);
+                $button
+                    .toggleClass('confirmed-style', $button.find('.booking-status.confirmed').length > 0)
+                    .toggleClass('pending-style', $button.find('.booking-status.pending').length > 0);
             });
-
-            $(".pets-field").each(function() {
-                $allowPets.prop('checked') ? 
-                    $(this).removeClass('hidden') : 
-                    $(this).addClass('hidden');
-            });
-        }
-
-        // Add this function to handle initial state when editing a property
-        function initializeFieldVisibility() {
-            toggleFields($allowChildren, $allowPets);
-        }
-
-        function toggleSeasonalRules($seasonalRulesContainer, $seasonalRulesBtn) {
-            $seasonalRulesContainer.each(function() {
-                const $container = $(this);
-                const isHidden = $container.hasClass('hidden');
+        },
+        
+        addDataLabels: function() {
+            if (window.innerWidth > 600) {
+                return;
+            }
+            
+            const headers = Array.from(document.querySelectorAll('.existing-bookings-table thead th'))
+                .map(th => th.textContent.trim());
+            
+            document.querySelectorAll('.existing-bookings-table tbody tr:not(.table-details)').forEach(row => {
+                const cells = row.querySelectorAll('td');
                 
-                $container.slideToggle(500, function() {
-                    $container.toggleClass('hidden');
-                    $seasonalRulesBtn.html(isHidden ? '<i>▲</i>' : '<i>▼</i>');
+                cells.forEach((cell, index) => {
+                    if (!headers[index] || index === cells.length - 1) return;
+                    
+                    const label = document.createElement('span');
+                    label.className = 'mobile-label';
+                    label.textContent = headers[index];
+                    
+                    cell.insertBefore(label, cell.firstChild);
                 });
             });
-        }
+        },
         
-        // Call initialization on page load
-        initializeFieldVisibility();
-
-        $allowChildren.on("change", function() {
-            toggleFields($allowChildren, $allowPets);
-        });
-        $allowPets.on("change", function() {
-            toggleFields($allowChildren, $allowPets);
-        });
-        $seasonalRulesBtn.on("click", function(e) {
-            e.preventDefault();
-            toggleSeasonalRules($seasonalRulesContainer, $seasonalRulesBtn);
-        });
-        
-        // Flatpickr time inputs
-        ['check_in_time_start', 'check_in_time_end', 
-         'check_out_time_start', 'check_out_time_end'].forEach(function(inputName) {
-            flatpickr(`input[name='${inputName}']`, {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true
-            });
-        });
-        
-        setupDetailsToggle('.toggle-details-property', 'property');
-        
-        $('#toggle-form-btn').on('click', function() {
-            const $form = $('#property-form');
-            const isHidden = $form.is(':hidden');
+        setupServiceSelect: function() {
+            const $serviceSelect = $("#services");
             
-            $form.slideToggle(500, function() {
-                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
-            });
-            $(this).text(isHidden ? 'Hide Form' : 'Add New Property');
-        });
-        
-        
-        
-        
-        // Toggle disabled dates section
-        $('#disabled-dates-btn').on('click', function() {
-            $('.disabled-dates-container').toggleClass('hidden');
-            $(this).find('i').text($('.disabled-dates-container').hasClass('hidden') ? '▼' : '▲');
-        });
-        
-        // Add new disabled date rule
-        $('#add-disabled-date-rule').on('click', function() {
-
-            var index = Date.now();
+            if ($.fn.select2) {
+                $serviceSelect.select2({
+                    placeholder: "Select service(s)",
+                    multiple: true,
+                    allowClear: true,
+                });
+            }
             
-            $.ajax({
-                url: reserve_mate_admin.ajax_url,
-                type: 'POST',
-                dataType: 'json', // Ensure we're expecting JSON
-                data: {
-                    action: 'get_disabled_date_rule',
-                    index: index,
-                    security: reserve_mate_admin.nonce
-                },
-                success: function(response) {
-                    if (response.success && response.data) {
-                        $('#disabled-dates-rules').append(response.data);
-                        initDatePickers();
-                    } else {
-                        console.error("Invalid response format", response);
+            $('.status-toggle-button').off('click').on('click', function(e) {
+                if (!confirm('Are you sure you want to change the status?')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        },
+        
+        setupBookingFormToggle: function() {
+            $('#toggle-form-btn').off('click').on('click', function() {
+                const $form = $('#booking-form');
+                const isHidden = $form.is(':hidden');
+                
+                $form.slideToggle(500, function() {
+                    $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
+                });
+                $(this).text(isHidden ? 'Hide Form' : 'Add New Booking');
+            });
+        },
+        
+        setupDateTimePickers: function() {
+            if ($.fn.datetimepicker) {
+                $('#start_datetime, #end_datetime').datetimepicker({
+                    format: 'Y-m-d H:i',
+                    step: 15,
+                    onShow: function(ct) {
+                        this.setOptions({
+                            minDate: new Date()
+                        });
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX Error:", status, error);
-                }
-            });
-        });
-        
-        // Remove disabled date rule
-        $(document).on('click', '.remove-disabled-date-rule', function() {
-            $(this).closest('.disabled-date-rule').remove();
-        });
-        
-        // Change disabled date type
-        $(document).on('change', '.disabled-date-type', function() {
-            var $container = $(this).closest('.disabled-date-rule').find('.disabled-date-options');
-            $container.find('> div').hide();
-            $container.find('.disabled-date-' + $(this).val()).show();
-        });
-        
-        // Initialize date pickers
-        function initDatePickers() {
-        $('.datepicker').datepicker({
-                dateFormat: 'yy-mm-dd',
-                minDate: 0
-            });
-        }
-        
-        initDatePickers();
-        
-    
-    }
-
-    function initServicesPage() {
-        setupDetailsToggle('.toggle-details-service', 'service');
-
-        $('#toggle-form-btn').on('click', function() {
-            const $form = $('#service-form');
-            const isHidden = $form.is(':hidden');
-            
-            $form.slideToggle(500, function() {
-                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
-            });
-            $(this).text(isHidden ? 'Hide Form' : 'Add New Service');
-        });
-    }
-    
-    function initTabManagement(storageKey, defaultTab) {
-        const activeTab = localStorage.getItem(storageKey) || defaultTab;
-        
-        // Activate the saved tab
-        $('.nav-tab').removeClass('nav-tab-active');
-        $('.tab-content').removeClass('active');
-        
-        $(`a[data-tab="${activeTab}"]`).addClass('nav-tab-active');
-        $(`#${activeTab}`).addClass('active');
-        
-        // Handle tab clicks
-        $('.nav-tab').on('click', function(e) {
-            e.preventDefault();
-            
-            const tabId = $(this).data('tab');
-            
-            // Update tabs
-            $('.nav-tab').removeClass('nav-tab-active');
-            $(this).addClass('nav-tab-active');
-            
-            // Update content
-            $('.tab-content').removeClass('active');
-            $(`#${tabId}`).addClass('active');
-            
-            // Save to localStorage
-            localStorage.setItem(storageKey, tabId);
-        });
-    }
-    
-    function initSettingsPage() {
-        initTabManagement('booking_settings_active_tab', 'general-tab');
-        
-        $('.color-field').each(function() {
-            // Create color picker
-            $(this).wpColorPicker({
-                defaultColor: $(this).data('default-color'),
-                change: function(event, ui) {
-                    // Handle color changes
-                },
-                clear: function() {
-                    // Handle clearing
-                }
-            });
-        });
-    }
-    
-    function initPaymentsPage() {
-        initTabManagement('payment_settings_active_tab', 'online-tab');
-    }
-    
-    function initServiceBookingsPage() {
-        const activeTab = localStorage.getItem('activeTab');
-        const $serviceSelect = $("#services");
-    
-        if (activeTab) {
-            $('.tab-button, .tab-content').removeClass('active');
-            $(activeTab).addClass('active');
-            $('.tab-button[data-target="' + activeTab + '"]').addClass('active');
-        }
-        
-        setupDetailsToggle('.toggle-details-booking', 'booking');
-        
-        // Initialize select2 for multiple service selection
-        $serviceSelect.select2({
-            placeholder: "Select service(s)",
-            multiple: true,
-            allowClear: true,
-        });
-        
-        $('#toggle-form-btn').on('click', function() {
-            const $form = $('#booking-form');
-            const isHidden = $form.is(':hidden');
-            
-            $form.slideToggle(500, function() {
-                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
-            });
-            $(this).text(isHidden ? 'Hide Form' : 'Add New Booking');
-        });
-        
-        // Set up datetime pickers for start and end datetime
-        $('#start_datetime, #end_datetime').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            onShow: function(ct) {
-                this.setOptions({
-                    minDate: new Date()
+                });
+                
+                $('#end_datetime').datetimepicker({
+                    onShow: function(ct) {
+                        const startDate = $('#start_datetime').val() ? 
+                            $('#start_datetime').datetimepicker('getValue') : new Date();
+                        this.setOptions({
+                            minDate: startDate
+                        });
+                    }
                 });
             }
-        });
+        },
         
-        // End datetime should be after start datetime
-        $('#end_datetime').datetimepicker({
-            onShow: function(ct) {
-                const startDate = $('#start_datetime').val() ? 
-                    $('#start_datetime').datetimepicker('getValue') : new Date();
-                this.setOptions({
-                    minDate: startDate
+        setupCostCalculation: function() {
+            const self = this;
+            
+            $('#services, #guests').off('change').on('change', function() {
+                const selectedServices = $("#services").select2('data');
+                self.calculateTotalCost(selectedServices);
+            });
+        },
+        
+        calculateTotalCost: function(selectedServices) {
+            let totalCost = 0;
+            selectedServices.forEach(service => {
+                const servicePrice = parseFloat($(`#services option[value="${service.id}"]`).data('price'));
+                if (!isNaN(servicePrice)) {
+                    totalCost += servicePrice;
+                }
+            });
+            $("#total_cost").val(totalCost);
+            return totalCost;
+        },
+        
+        setupBulkActions: function(context) {
+            const checkboxes = `input[name="${context}_ids[]"]`;
+            const formId = `${context}s-bulk-form`;
+            const selectAllTop = `#cb-select-all-${context}-1`;
+            const selectAllBottom = `#cb-select-all-${context}-2`;
+            
+            // Select all functionality for both top and bottom checkboxes
+            $(`${selectAllTop}, ${selectAllBottom}`).off('change').on('change', function() {
+                const isChecked = $(this).prop('checked');
+                $(checkboxes).prop('checked', isChecked);
+                
+                // Sync both select-all checkboxes
+                if (this.id === `cb-select-all-${context}-1`) {
+                    $(selectAllBottom).prop('checked', isChecked);
+                } else {
+                    $(selectAllTop).prop('checked', isChecked);
+                }
+            });
+            
+            // Form submission handling
+            $(`#${formId}`).off('submit').on('submit', function(e) {
+                const action = $('#bulk-action-selector-top').val();
+                if (action === 'delete') {
+                    const checkedCount = $(`${checkboxes}:checked`).length;
+                    if (checkedCount === 0) {
+                        alert(`Please select at least one ${context} to delete.`);
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    if (!confirm(`Are you sure you want to delete the selected ${context}s?`)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        },
+        
+        initStaffSettingsPage: function() {
+            this.setupStaffFormToggle();
+            this.setupWorkingHours();
+            this.setupImageUpload();
+            this.setupBulkActions("staff");
+        },
+        
+        setupStaffFormToggle: function() {
+            $('#toggle-form-btn').off('click').on('click', function() {
+                const $form = $('#staff-form');
+                const isHidden = $form.is(':hidden');
+                
+                $form.slideToggle(500, function() {
+                    $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
                 });
-            }
-        });
+                $(this).text(isHidden ? 'Hide Form' : 'Add New Staff Member');
+            });
+        },
         
-        // Calculate total cost when service, guests, or dates change
-        $('#services, #guests').on('change', function() {
-            const selectedServices = $("#services").select2('data'); // Get selected services as an array of objects
-            calculateTotalCost(selectedServices);
-        });
-        
-    }
-    
-    function initStaffSettingsPage() {
-        $('#toggle-form-btn').on('click', function() {
-            const $form = $('#staff-form');
-            const isHidden = $form.is(':hidden');
+        setupWorkingHours: function() {
+            const self = this;
+            const days = [
+                {formIndex: 0, name: 'Sunday'},
+                {formIndex: 1, name: 'Monday'},
+                {formIndex: 2, name: 'Tuesday'},
+                {formIndex: 3, name: 'Wednesday'},
+                {formIndex: 4, name: 'Thursday'},
+                {formIndex: 5, name: 'Friday'},
+                {formIndex: 6, name: 'Saturday'}
+            ];
             
-            $form.slideToggle(500, function() {
-                $(this).closest('.form-section').toggleClass('form-expanded', !isHidden);
-            });
-            $(this).text(isHidden ? 'Hide Form' : 'Add New Staff Member');
-        });
-        
-        const days = [
-            {formIndex: 0, name: 'Sunday'},
-            {formIndex: 1, name: 'Monday'},
-            {formIndex: 2, name: 'Tuesday'},
-            {formIndex: 3, name: 'Wednesday'},
-            {formIndex: 4, name: 'Thursday'},
-            {formIndex: 5, name: 'Friday'},
-            {formIndex: 6, name: 'Saturday'}
-        ];
-        
-        // Initialize working hours for each day
-        days.forEach(day => {
-            // Toggle working hours visibility
-            $(`.day-enabled[data-day="${day.formIndex}"]`).on('change', function() {
-                $(`.time-periods[data-day="${day.formIndex}"]`).toggle(this.checked);
+            days.forEach(day => {
+                $(`.day-enabled[data-day="${day.formIndex}"]`).off('change').on('change', function() {
+                    $(`.time-periods[data-day="${day.formIndex}"]`).toggle(this.checked);
+                });
+                
+                $(`.add-period[data-day="${day.formIndex}"]`).off('click').on('click', function() {
+                    const periodContainer = $(this).closest('.time-periods');
+                    const dayIndex = periodContainer.data('day');
+                    const periodCount = periodContainer.find('.time-period').length;
+                    
+                    const newPeriod = $(`
+                        <div class="time-period">
+                            <select name="working_hours[${dayIndex}][${periodCount}][start]" class="time-select">
+                                ${self.generateTimeOptions()}
+                            </select>
+                            to
+                            <select name="working_hours[${dayIndex}][${periodCount}][end]" class="time-select">
+                                ${self.generateTimeOptions()}
+                            </select>
+                            <button type="button" class="remove-period button-secondary">Remove</button>
+                        </div>
+                    `);
+                    
+                    periodContainer.append(newPeriod);
+                });
             });
             
-            // Add new time period
-            $(`.add-period[data-day="${day.formIndex}"]`).on('click', function() {
-                const periodContainer = $(this).closest('.time-periods');
-                const dayIndex = periodContainer.data('day');
-                const periodCount = periodContainer.find('.time-period').length;
-                
-                const newPeriod = $(`
-                    <div class="time-period">
-                        <select name="working_hours[${dayIndex}][${periodCount}][start]" class="time-select">
-                            ${generateTimeOptions()}
-                        </select>
-                        to
-                        <select name="working_hours[${dayIndex}][${periodCount}][end]" class="time-select">
-                            ${generateTimeOptions()}
-                        </select>
-                        <button type="button" class="remove-period button-secondary">Remove</button>
-                    </div>
-                `);
-                
-                periodContainer.append(newPeriod);
+            $(document).off('click', '.remove-period').on('click', '.remove-period', function() {
+                $(this).closest('.time-period').remove();
             });
-        });
+        },
         
-        // Handle removing time periods
-        $(document).on('click', '.remove-period', function() {
-            $(this).closest('.time-period').remove();
-        });
-        
-        // Helper function to generate time options
-        function generateTimeOptions() {
+        generateTimeOptions: function() {
             let options = '';
             for (let hour = 0; hour < 24; hour++) {
                 for (let min = 0; min < 60; min += 30) {
@@ -471,92 +727,45 @@ jQuery(document).ready(function($) {
                 }
             }
             return options;
-        }
+        },
         
-        
-        $('.select-image-btn').click(function(e) {
-            e.preventDefault();
-            
-            var imageField = $('#profile_image');
-            var imagePreview = $(this).siblings('.image-preview');
-            
-            var mediaFrame = wp.media({
-                title: 'Select Profile Image',
-                library: {
-                    type: 'image'
-                },
-                multiple: false
+        setupImageUpload: function() {
+            $('.select-image-btn').off('click').on('click', function(e) {
+                e.preventDefault();
+                
+                const imageField = $('#profile_image');
+                const imagePreview = $(this).siblings('.image-preview');
+                
+                if (typeof wp !== 'undefined' && wp.media) {
+                    const mediaFrame = wp.media({
+                        title: 'Select Profile Image',
+                        library: {
+                            type: 'image'
+                        },
+                        multiple: false
+                    });
+                    
+                    mediaFrame.on('select', function() {
+                        const attachment = mediaFrame.state().get('selection').first().toJSON();
+                        imageField.val(attachment.id);
+                        imagePreview.html('<img src="' + attachment.url + '" style="max-width: 150px;">');
+                        $('.remove-image-btn').show();
+                    });
+                    
+                    mediaFrame.open();
+                } else {
+                    console.warn('WordPress media library not available');
+                }
             });
             
-            mediaFrame.on('select', function() {
-                var attachment = mediaFrame.state().get('selection').first().toJSON();
-                imageField.val(attachment.id);
-                imagePreview.html('<img src="' + attachment.url + '" style="max-width: 150px;">');
-                $('.remove-image-btn').show();
-            });
-            
-            mediaFrame.open();
-        });
-        
-        // Remove image
-        $('.remove-image-btn').click(function(e) {
-            e.preventDefault();
-            $('#profile_image').val('');
-            $('.image-preview').empty();
-            $(this).hide();
-        });
-        
-    }
-    
-    function calculateTotalCost(selectedServices) {
-        let totalCost = 0;
-        selectedServices.forEach(service => {
-            const servicePrice = parseFloat(jQuery(`#services option[value="${service.id}"]`).data('price')); // Get price from data attribute
-            totalCost += servicePrice;
-        });
-        $("#total_cost").val(totalCost);
-        return totalCost;
-    }
-    
-    function initGlobalFeatures() {
-        setupTabNavigation();
-
-        // Calendar settings toggle
-        function toggleCalendarSettings() {
-            const $checkbox = $('#save_to_google_calendar');
-            const fields = [
-                'calendar_api_key',
-                'calendar_id',
-                'calendar_timezones'
-            ];
-        
-            fields.forEach(function(fieldId) {
-                $(`[name="booking_settings[${fieldId}]"]`).prop('disabled', !$checkbox.prop('checked'));
+            $('.remove-image-btn').off('click').on('click', function(e) {
+                e.preventDefault();
+                $('#profile_image').val('');
+                $('.image-preview').empty();
+                $(this).hide();
             });
         }
-        
-        $('#save_to_google_calendar').on('click', function(e) {
-            e.preventDefault();
-            toggleCalendarSettings();
-        });
-    }
-
-    // Page-specific Initialization
-    initGlobalFeatures();
-
-    if (window.location.search.includes('page=manage-bookings')) {
-        initBookingsPage();
-    } else if (window.location.search.includes('page=manage-properties')) {
-        initPropertiesPage();
-    } else if (window.location.search.includes('page=manage-services')) {
-        initServicesPage();
-    } else if (window.location.search.includes('page=reserve-mate-settings')) {
-        initSettingsPage();
-    } else if (window.location.search.includes('page=payment-settings')) {
-        initPaymentsPage();
-    } else if (window.location.search.includes('page=manage-datetime-bookings')) {
-        initServiceBookingsPage();
-    } else if (window.location.search.includes('page=manage-staff')) {
-        initStaffSettingsPage();
-    }
+    };
+    
+    ReserveMateAdmin.init();
 });

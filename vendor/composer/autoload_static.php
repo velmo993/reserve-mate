@@ -4,20 +4,20 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875
+class ComposerStaticInit552232c04c3ac3b6664bb0e098970415
 {
-    public static $files = array (
-        '1f87db08236948d07391152dccb70f04' => __DIR__ . '/..' . '/google/apiclient-services/autoload.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
             'Stripe\\' => 7,
         ),
-        'G' => 
+        'R' => 
         array (
-            'Google\\Service\\' => 15,
+            'ReserveMate\\Shared\\' => 19,
+            'ReserveMate\\Frontend\\' => 21,
+            'ReserveMate\\Api\\' => 16,
+            'ReserveMate\\Admin\\' => 18,
+            'ReserveMate\\' => 12,
         ),
     );
 
@@ -26,9 +26,25 @@ class ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875
         array (
             0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
-        'Google\\Service\\' => 
+        'ReserveMate\\Shared\\' => 
         array (
-            0 => __DIR__ . '/..' . '/google/apiclient-services/src',
+            0 => __DIR__ . '/../..' . '/classes/shared',
+        ),
+        'ReserveMate\\Frontend\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes/frontend',
+        ),
+        'ReserveMate\\Api\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes/api',
+        ),
+        'ReserveMate\\Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes/admin',
+        ),
+        'ReserveMate\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes',
         ),
     );
 
@@ -43,64 +59,45 @@ class ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875
     );
 
     public static $classMap = array (
-        'Google\\Service\\Calendar' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar.php',
-        'Google\\Service\\Calendar\\Acl' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Acl.php',
-        'Google\\Service\\Calendar\\AclRule' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/AclRule.php',
-        'Google\\Service\\Calendar\\AclRuleScope' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/AclRuleScope.php',
-        'Google\\Service\\Calendar\\Calendar' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Calendar.php',
-        'Google\\Service\\Calendar\\CalendarList' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/CalendarList.php',
-        'Google\\Service\\Calendar\\CalendarListEntry' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/CalendarListEntry.php',
-        'Google\\Service\\Calendar\\CalendarListEntryNotificationSettings' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/CalendarListEntryNotificationSettings.php',
-        'Google\\Service\\Calendar\\CalendarNotification' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/CalendarNotification.php',
-        'Google\\Service\\Calendar\\Channel' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Channel.php',
-        'Google\\Service\\Calendar\\ColorDefinition' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ColorDefinition.php',
-        'Google\\Service\\Calendar\\Colors' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Colors.php',
-        'Google\\Service\\Calendar\\ConferenceData' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceData.php',
-        'Google\\Service\\Calendar\\ConferenceParameters' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceParameters.php',
-        'Google\\Service\\Calendar\\ConferenceParametersAddOnParameters' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceParametersAddOnParameters.php',
-        'Google\\Service\\Calendar\\ConferenceProperties' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceProperties.php',
-        'Google\\Service\\Calendar\\ConferenceRequestStatus' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceRequestStatus.php',
-        'Google\\Service\\Calendar\\ConferenceSolution' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceSolution.php',
-        'Google\\Service\\Calendar\\ConferenceSolutionKey' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/ConferenceSolutionKey.php',
-        'Google\\Service\\Calendar\\CreateConferenceRequest' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/CreateConferenceRequest.php',
-        'Google\\Service\\Calendar\\EntryPoint' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EntryPoint.php',
-        'Google\\Service\\Calendar\\Error' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Error.php',
-        'Google\\Service\\Calendar\\Event' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Event.php',
-        'Google\\Service\\Calendar\\EventAttachment' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventAttachment.php',
-        'Google\\Service\\Calendar\\EventAttendee' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventAttendee.php',
-        'Google\\Service\\Calendar\\EventBirthdayProperties' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventBirthdayProperties.php',
-        'Google\\Service\\Calendar\\EventCreator' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventCreator.php',
-        'Google\\Service\\Calendar\\EventDateTime' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventDateTime.php',
-        'Google\\Service\\Calendar\\EventExtendedProperties' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventExtendedProperties.php',
-        'Google\\Service\\Calendar\\EventFocusTimeProperties' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventFocusTimeProperties.php',
-        'Google\\Service\\Calendar\\EventGadget' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventGadget.php',
-        'Google\\Service\\Calendar\\EventOrganizer' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventOrganizer.php',
-        'Google\\Service\\Calendar\\EventOutOfOfficeProperties' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventOutOfOfficeProperties.php',
-        'Google\\Service\\Calendar\\EventReminder' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventReminder.php',
-        'Google\\Service\\Calendar\\EventReminders' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventReminders.php',
-        'Google\\Service\\Calendar\\EventSource' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventSource.php',
-        'Google\\Service\\Calendar\\EventWorkingLocationProperties' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventWorkingLocationProperties.php',
-        'Google\\Service\\Calendar\\EventWorkingLocationPropertiesCustomLocation' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventWorkingLocationPropertiesCustomLocation.php',
-        'Google\\Service\\Calendar\\EventWorkingLocationPropertiesOfficeLocation' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/EventWorkingLocationPropertiesOfficeLocation.php',
-        'Google\\Service\\Calendar\\Events' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Events.php',
-        'Google\\Service\\Calendar\\FreeBusyCalendar' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/FreeBusyCalendar.php',
-        'Google\\Service\\Calendar\\FreeBusyGroup' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/FreeBusyGroup.php',
-        'Google\\Service\\Calendar\\FreeBusyRequest' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/FreeBusyRequest.php',
-        'Google\\Service\\Calendar\\FreeBusyRequestItem' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/FreeBusyRequestItem.php',
-        'Google\\Service\\Calendar\\FreeBusyResponse' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/FreeBusyResponse.php',
-        'Google\\Service\\Calendar\\Resource\\Acl' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Acl.php',
-        'Google\\Service\\Calendar\\Resource\\CalendarList' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/CalendarList.php',
-        'Google\\Service\\Calendar\\Resource\\Calendars' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Calendars.php',
-        'Google\\Service\\Calendar\\Resource\\Channels' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Channels.php',
-        'Google\\Service\\Calendar\\Resource\\Colors' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Colors.php',
-        'Google\\Service\\Calendar\\Resource\\Events' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Events.php',
-        'Google\\Service\\Calendar\\Resource\\Freebusy' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Freebusy.php',
-        'Google\\Service\\Calendar\\Resource\\Settings' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Resource/Settings.php',
-        'Google\\Service\\Calendar\\Setting' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Setting.php',
-        'Google\\Service\\Calendar\\Settings' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/Settings.php',
-        'Google\\Service\\Calendar\\TimePeriod' => __DIR__ . '/..' . '/google/apiclient-services/src/Calendar/TimePeriod.php',
         'ICal\\Event' => __DIR__ . '/..' . '/johngrogg/ics-parser/src/ICal/Event.php',
         'ICal\\ICal' => __DIR__ . '/..' . '/johngrogg/ics-parser/src/ICal/ICal.php',
+        'ReserveMate\\Admin\\Controllers\\BookingController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/BookingController.php',
+        'ReserveMate\\Admin\\Controllers\\IcalController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/IcalController.php',
+        'ReserveMate\\Admin\\Controllers\\NotificationController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/NotificationController.php',
+        'ReserveMate\\Admin\\Controllers\\PageController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/PageController.php',
+        'ReserveMate\\Admin\\Controllers\\PaymentController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/PaymentController.php',
+        'ReserveMate\\Admin\\Controllers\\ServiceController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/ServiceController.php',
+        'ReserveMate\\Admin\\Controllers\\SettingController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/SettingController.php',
+        'ReserveMate\\Admin\\Controllers\\StaffController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/StaffController.php',
+        'ReserveMate\\Admin\\Controllers\\TaxController' => __DIR__ . '/../..' . '/classes/Admin/Controllers/TaxController.php',
+        'ReserveMate\\Admin\\Helpers\\Booking' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Booking.php',
+        'ReserveMate\\Admin\\Helpers\\GoogleCalendar' => __DIR__ . '/../..' . '/classes/Admin/Helpers/GoogleCalendar.php',
+        'ReserveMate\\Admin\\Helpers\\GoogleCalendarSync' => __DIR__ . '/../..' . '/classes/Admin/Helpers/GoogleCalendarSync.php',
+        'ReserveMate\\Admin\\Helpers\\Notification' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Notification.php',
+        'ReserveMate\\Admin\\Helpers\\Payment' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Payment.php',
+        'ReserveMate\\Admin\\Helpers\\Service' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Service.php',
+        'ReserveMate\\Admin\\Helpers\\Staff' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Staff.php',
+        'ReserveMate\\Admin\\Helpers\\Tables' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Tables.php',
+        'ReserveMate\\Admin\\Helpers\\Tax' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Tax.php',
+        'ReserveMate\\Admin\\Helpers\\Traits\\TableCreator' => __DIR__ . '/../..' . '/classes/Admin/Helpers/Traits/TableCreator.php',
+        'ReserveMate\\Admin\\Menu' => __DIR__ . '/../..' . '/classes/Admin/Menu.php',
+        'ReserveMate\\Admin\\Views\\BookingViews' => __DIR__ . '/../..' . '/classes/Admin/Views/BookingViews.php',
+        'ReserveMate\\Admin\\Views\\ICalViews' => __DIR__ . '/../..' . '/classes/Admin/Views/ICalViews.php',
+        'ReserveMate\\Admin\\Views\\NotificationViews' => __DIR__ . '/../..' . '/classes/Admin/Views/NotificationViews.php',
+        'ReserveMate\\Admin\\Views\\PaymentViews' => __DIR__ . '/../..' . '/classes/Admin/Views/PaymentViews.php',
+        'ReserveMate\\Admin\\Views\\ServiceViews' => __DIR__ . '/../..' . '/classes/Admin/Views/ServiceViews.php',
+        'ReserveMate\\Admin\\Views\\SettingViews' => __DIR__ . '/../..' . '/classes/Admin/Views/SettingViews.php',
+        'ReserveMate\\Admin\\Views\\StaffViews' => __DIR__ . '/../..' . '/classes/Admin/Views/StaffViews.php',
+        'ReserveMate\\Admin\\Views\\TaxViews' => __DIR__ . '/../..' . '/classes/Admin/Views/TaxViews.php',
+        'ReserveMate\\AssetManager' => __DIR__ . '/../..' . '/classes/AssetManager.php',
+        'ReserveMate\\Frontend\\Controllers\\BookingController' => __DIR__ . '/../..' . '/classes/Frontend/Controllers/BookingController.php',
+        'ReserveMate\\Frontend\\Controllers\\PaymentController' => __DIR__ . '/../..' . '/classes/Frontend/Controllers/PaymentController.php',
+        'ReserveMate\\Frontend\\Views\\BookingViews' => __DIR__ . '/../..' . '/classes/Frontend/Views/BookingViews.php',
+        'ReserveMate\\Frontend\\Views\\PaymentViews' => __DIR__ . '/../..' . '/classes/Frontend/Views/PaymentViews.php',
+        'ReserveMate\\ReserveMate' => __DIR__ . '/../..' . '/classes/ReserveMate.php',
+        'ReserveMate\\ScriptManager' => __DIR__ . '/../..' . '/classes/ScriptManager.php',
+        'ReserveMate\\Shared\\Helpers\\BookingHelpers' => __DIR__ . '/../..' . '/classes/Shared/Helpers/BookingHelpers.php',
+        'ReserveMate\\Shared\\Helpers\\PaymentHelpers' => __DIR__ . '/../..' . '/classes/Shared/Helpers/PaymentHelpers.php',
         'Stripe\\Account' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Account.php',
         'Stripe\\AccountLink' => __DIR__ . '/..' . '/stripe/stripe-php/lib/AccountLink.php',
         'Stripe\\AccountSession' => __DIR__ . '/..' . '/stripe/stripe-php/lib/AccountSession.php',
@@ -477,10 +474,10 @@ class ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit1b3d901ba37fd40284fa73bd39d47875::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit552232c04c3ac3b6664bb0e098970415::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit552232c04c3ac3b6664bb0e098970415::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit552232c04c3ac3b6664bb0e098970415::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit552232c04c3ac3b6664bb0e098970415::$classMap;
 
         }, null, ClassLoader::class);
     }

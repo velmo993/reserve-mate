@@ -1,181 +1,1907 @@
 # Copyright (C) 2025 velmoweb.com
-# This file is distributed under the same license as the Reserve Mate plugin.
+# This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Reserve Mate 1.0.1\n"
+"Project-Id-Version: Reserve Mate 1.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/reserve-mate\n"
-"POT-Creation-Date: 2025-01-29T10:53:49+00:00\n"
-"PO-Revision-Date: 2025-01-29 16:05+0100\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: hu_HU\n"
+"Last-Translator: username\n"
+"Language-Team: Magyar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"POT-Creation-Date: 2025-07-17T11:05:47+00:00\n"
+"PO-Revision-Date: 2025-07-17 11:24+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
 "X-Domain: reserve-mate\n"
+"\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.2.27"
 
 #. Plugin Name of the plugin
-#: booking-system.php
+#: reserve-mate.php
 msgid "Reserve Mate"
-msgstr "Reserve Mate"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: reserve-mate.php
+msgid "https://github.com/velmo993/reserve-mate"
+msgstr ""
 
 #. Description of the plugin
-#: booking-system.php
-msgid "A customizable booking system with Google Calendar integration and payment options."
-msgstr "Egy testreszabható foglalási rendszer Google Naptár integrációval és fizetési lehetőségekkel."
+#: reserve-mate.php
+msgid "A plugin for managing reservations."
+msgstr ""
 
 #. Author of the plugin
-#: booking-system.php
+#: reserve-mate.php
 msgid "velmoweb.com"
-msgstr "velmoweb.com"
+msgstr ""
 
-# Booking System Settings page
-msgid "Booking System Settings"
-msgstr "Foglalási rendszer beállításai"
+#. Author URI of the plugin
+#: reserve-mate.php
+msgid "https://example.com"
+msgstr ""
 
-msgid "Settings saved."
-msgstr "Beállítások mentve."
+#: classes/Admin/Controllers/BookingController.php:108
+msgid "Booking saved."
+msgstr ""
 
-msgid "Google Calendar"
-msgstr "Google naptár"
+#: classes/Admin/Controllers/BookingController.php:140
+msgid "Booking deleted."
+msgstr ""
 
-msgid "Google Calendar API Credentials (JSON)"
-msgstr "Google naptár API hitelesítő adatok (JSON)"
+#: classes/Admin/Controllers/BookingController.php:155
+msgid "Bookings deleted."
+msgstr ""
 
-msgid "Google Calendar ID"
-msgstr "Google naptár azonosító ID"
+#: classes/Admin/Controllers/BookingController.php:167
+msgid "Status changed."
+msgstr ""
 
-msgid "Calendar Timezone"
-msgstr "Naptár időzóna"
+#: classes/Admin/Controllers/ServiceController.php:65
+msgid "Service created."
+msgstr ""
 
-msgid "Currency"
-msgstr "Valuta"
+#: classes/Admin/Controllers/ServiceController.php:80
+msgid "Service removed."
+msgstr ""
 
-msgid "Latest Checkin Time"
-msgstr "Legkésőbbi bejelentkezési idő"
+#: classes/Admin/Controllers/ServiceController.php:98
+msgid "Services removed."
+msgstr ""
 
-msgid "Latest Checkout Time"
-msgstr "Legkésőbbi kijelentkezési idő"
+#: classes/Admin/Controllers/SettingController.php:45
+msgid "Booking Notifications"
+msgstr ""
 
-# Payment Settings page
-msgid "Payment Settings"
-msgstr "Fizetési beállítások"
-
-msgid "Enable Stripe"
-msgstr "Stripe engedélyezése"
-
-msgid "Stripe Secret Key"
-msgstr "Stripe secret Key"
-
-msgid "Stripe Public Key"
-msgstr "Stripe public Key"
-
-msgid "Enable PayPal"
-msgstr "PayPal engedélyezése"
-
-msgid "PayPal Client ID"
-msgstr "PayPal ügyfélazonosító ID"
-
-# Manage Messages page
-msgid "Manage Messages"
-msgstr "Üzenetek kezelése"
-
+#: classes/Admin/Controllers/SettingController.php:53
 msgid "Booking Successful Message"
-msgstr "Foglalás sikeres üzenet"
+msgstr ""
 
+#: classes/Admin/Controllers/SettingController.php:61
 msgid "Send Booking Email to Guest"
-msgstr "E-mail küldése a vendégnek"
+msgstr ""
 
+#: classes/Admin/Controllers/SettingController.php:69
+msgid "Email From Name"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:77
+msgid "Email From Address"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:85
 msgid "Email Subject"
-msgstr "E-mail tárgya"
+msgstr ""
 
+#: classes/Admin/Controllers/SettingController.php:93
 msgid "Email Content"
-msgstr "E-mail tartalma"
+msgstr ""
 
-# iCal Settings page
+#: classes/Admin/Controllers/SettingController.php:101
+msgid "SMTP Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:108
+msgid "SMTP Host"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:116
+msgid "SMTP Port"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:124
+msgid "Encryption"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:132
+msgid "SMTP Username"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:140
+msgid "SMTP Password"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:148
+msgid "Test Email Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:155
+msgid "Test Email Address"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:175
+#: classes/Admin/Views/PaymentViews.php:29
+msgid "Stripe Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:182
+#: classes/Admin/Views/PaymentViews.php:34
+msgid "Enable Stripe"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:190
+#: classes/Admin/Views/PaymentViews.php:40
+msgid "Stripe Secret Key"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:198
+#: classes/Admin/Views/PaymentViews.php:46
+msgid "Stripe Public Key"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:207
+#: classes/Admin/Views/PaymentViews.php:53
+msgid "PayPal Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:214
+#: classes/Admin/Views/PaymentViews.php:58
+msgid "Enable PayPal"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:222
+#: classes/Admin/Views/PaymentViews.php:64
+msgid "PayPal Client ID"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:231
+#: classes/Admin/Views/PaymentViews.php:137
+msgid "Deposit Payment Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:238
+#: classes/Admin/Views/PaymentViews.php:142
+msgid "Deposit Payment Type"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:246
+#: classes/Admin/Views/PaymentViews.php:148
+msgid "Deposit Payment Percentage"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:254
+#: classes/Admin/Views/PaymentViews.php:154
+msgid "Deposit Payment Fixed Amount"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:262
+#: classes/Admin/Helpers/Payment.php:109
+#: classes/Admin/Views/PaymentViews.php:160
+msgid "Apply Deposit Payment to"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:271
+msgid "Pay On Arrival Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:278
+msgid "Enable Pay On Arrival"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:287
+msgid "Bank Transfer Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:294
+#: classes/Admin/Views/PaymentViews.php:92
+msgid "Enable Bank Transfer"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:302
+#: classes/Admin/Views/PaymentViews.php:98
+msgid "Bank Account Number"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:310
+#: classes/Admin/Views/PaymentViews.php:104
+msgid "Bank Account Identifier (IBAN/Routing Number)"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:318
+#: classes/Admin/Views/PaymentViews.php:110
+msgid "Bank SWIFT/BIC Code"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:326
+#: classes/Admin/Views/PaymentViews.php:116
+msgid "Bank Name"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:334
+#: classes/Admin/Views/PaymentViews.php:122
+msgid "Recipient Name"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:342
+#: classes/Admin/Views/PaymentViews.php:128
+msgid "Additional Bank Information"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:361
+#: classes/Admin/Views/SettingViews.php:26
+msgid "Google Calendar"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:368
+#: classes/Admin/Views/SettingViews.php:144
+msgid "Select Calendar"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:376
+#: classes/Admin/Views/SettingViews.php:132
+msgid "Google Calendar Integration"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:396
+#: classes/Admin/Views/SettingViews.php:37
+msgid "General Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:403
+#: classes/Admin/Views/SettingViews.php:42
+msgid "Currency"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:411
+msgid "Calendar Timezone"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:419
+msgid "Calendar Locale"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:438
+#: classes/Admin/Views/SettingViews.php:25
+#: classes/Admin/Views/SettingViews.php:69
+msgid "Booking Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:445
+#: classes/Admin/Views/SettingViews.php:72
+msgid "Enable Booking Approval"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:453
+#: classes/Admin/Views/SettingViews.php:77
+msgid "First Available Time"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:461
+#: classes/Admin/Views/SettingViews.php:82
+msgid "Last Available Time"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:469
+#: classes/Admin/Views/SettingViews.php:87
+msgid "Booking Interval (Minutes)"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:477
+#: classes/Admin/Views/SettingViews.php:102
+msgid "Buffer Time (Minutes)"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:485
+msgid "Minimum Lead Time"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:493
+msgid "Earliest Bookable Date"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:501
+msgid "Latest Bookable Date"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:509
+#: classes/Admin/Views/SettingViews.php:117
+msgid "Booking Limits"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:517
+#: classes/Admin/Views/SettingViews.php:122
+msgid "Disable Dates"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:536
+#: classes/Admin/Views/SettingViews.php:27
+#: classes/Admin/Views/SettingViews.php:179
+msgid "Service Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:543
+msgid "Maximum Selectable Services"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:562
+#: classes/Admin/Views/SettingViews.php:198
+msgid "Form Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:569
+msgid "Booking Form Fields"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:588
+msgid "Style Settings"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:595
+msgid "Calendar Display Type"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:603
+msgid "Time Slot Display Format"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:611
+#: classes/Admin/Views/SettingViews.php:236
+msgid "Primary Color"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:619
+#: classes/Admin/Views/SettingViews.php:240
+msgid "Text Color"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:627
+msgid "Font Family"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:635
+msgid "Day Background Color"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:644
+msgid "Day Border Color"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:653
+#: classes/Admin/Views/SettingViews.php:260
+msgid "Disabled Day Background"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:662
+msgid "Prev/Next Month Day Text"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:671
+msgid "Prev/Next Month Day Border"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:680
+msgid "Arrival Day Background"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:689
+msgid "Departure Day Background"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:698
+msgid "Start Range Highlight"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:707
+msgid "Date Range Highlight"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:716
+msgid "End Range Highlight"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:725
+msgid "Day Hover Outline"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:734
+msgid "Today's Date Border"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:743
+msgid "Navigation Arrow Hover"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:752
+msgid "Week Number Color"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:761
+msgid "Calendar Background"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:770
+msgid "Selected Day Background"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:779
+msgid "Selected Day Text"
+msgstr ""
+
+#: classes/Admin/Controllers/SettingController.php:788
+msgid "Range Text Color"
+msgstr ""
+
+#: classes/Admin/Controllers/StaffController.php:106
+msgid "Staff member deleted."
+msgstr ""
+
+#: classes/Admin/Controllers/TaxController.php:49
+msgid "Tax created."
+msgstr ""
+
+#: classes/Admin/Controllers/TaxController.php:63
+msgid "Tax deleted."
+msgstr ""
+
+#. translators: 1: number of bookings, 2: time period (day/week/month), 3: maximum allowed bookings
+#: classes/Admin/Helpers/Booking.php:583
+msgid "You already have %1$d bookings this %2$s (limit: %3$d)."
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:113
+msgid "Payment Instructions"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:115 classes/Admin/Views/BookingViews.php:302
+msgid "Total Cost:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:119
+msgid "Deposit Amount to Pay Now:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:120
+msgid "Remaining Balance:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:122
+msgid "Full Amount to Pay:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:125
+msgid "Bank Transfer Details"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:126
+msgid "Recipient Name:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:127
+msgid "Bank Name:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:128
+msgid "Account Number:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:131
+msgid "IBAN/Routing Number:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:135
+msgid "SWIFT/BIC:"
+msgstr ""
+
+#: classes/Admin/Helpers/Email.php:139
+msgid "Payment Reference:"
+msgstr ""
+
+#: classes/Admin/Helpers/GoogleCalendar.php:55
+msgid "Google Calendar connected successfully!"
+msgstr ""
+
+#: classes/Admin/Helpers/GoogleCalendar.php:60
+msgid "Failed to connect Google Calendar. Please try again."
+msgstr ""
+
+#: classes/Admin/Helpers/GoogleCalendar.php:376
+msgid ""
+"Your previously selected calendar is no longer accessible. We have switched "
+"to your primary calendar. You can change this in the settings if needed."
+msgstr ""
+
+#: classes/Admin/Helpers/GoogleCalendar.php:386
+msgid "Calendar selection updated successfully!"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:23
+msgid "Enter the message shown after a successful booking."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:31
+msgid "Send email to client after the booking is made."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:39
+msgid "This name will appear as the sender in booking emails."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:47
+msgid "This email will be used as the sender email in booking emails."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:48
+msgid ""
+"Note: For best deliverability, this email should match the SMTP username."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:61
+msgid "Booking ID"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:62
+msgid "Booking date"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:63
+msgid "Booking time"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:64
+msgid "Booking time end"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:65
+msgid "Client email"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:66
+msgid "Client name"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:67
+msgid "Paid amount"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:68
+msgid "Payment method"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:69
+msgid "Client phone"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:70
+msgid "Booking price"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:71
+msgid "Service name"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:72
+msgid "Website name"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:73
+msgid "Website URL"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:74
+msgid "Selected staff member"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:86
+msgid "Available Variables:"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:102
+msgid ""
+"Enter the message sent to the client after booking. You can use HTML and the "
+"variables above."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:107
+msgid "Configure SMTP settings for sending emails."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:114
+msgid "Enter your SMTP host (e.g., smtp.gmail.com)."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:121
+msgid "Enter your SMTP port (e.g., 587 for TLS)."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:131
+msgid "Select the encryption method TLS/SSL (TLS recommended)."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:138
+msgid "Enter your SMTP username (usually your email address)."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:151
+msgid "Enter your SMTP password."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:155
+msgid "Test your email configuration by sending test emails."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:163
+msgid "Enter the email address where test emails will be sent."
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:167
+msgid "Send Client test email"
+msgstr ""
+
+#: classes/Admin/Helpers/Notification.php:168
+msgid "Send Admin test email"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:37
+msgid "Enable Stripe as a payment method."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:44
+msgid ""
+"Enter your Stripe Secret Key. This is required to process payments via "
+"Stripe."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:52
+msgid ""
+"Enter your Stripe Publishable Key. This is used to securely collect payment "
+"details on the frontend."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:59
+msgid "Enable PayPal as a payment method."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:66
+msgid ""
+"Enter your PayPal Client ID. This is required to process payments via PayPal."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:75
+msgid "None"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:76 classes/Admin/Views/TaxViews.php:33
+msgid "Percentage"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:77 classes/Admin/Views/TaxViews.php:34
+msgid "Fixed Amount"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:79
+msgid ""
+"Choose the type of deposit payment required (e.g., a percentage of the total "
+"or a fixed amount)."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:87
+msgid "Enter the percentage of the total amount to be paid in deposit."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:95
+msgid "Enter the fixed amount to be paid in deposit."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:102
+msgid "Stripe (Card Payment)"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:103
+msgid "PayPal"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:104
+#: classes/Admin/Views/PaymentViews.php:87
+#: classes/Frontend/Views/PaymentViews.php:137
+msgid "Bank Transfer"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:105
+#: classes/Admin/Views/PaymentViews.php:75
+#: classes/Admin/Views/PaymentViews.php:80
+#: classes/Frontend/Views/PaymentViews.php:125
+msgid "Pay On Arrival"
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:119
+msgid "Select which payment methods should use the deposit payment option."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:125
+msgid "Allow clients to pay on arrival (at the appointment)."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:131
+msgid "Enable bank transfer as a payment method."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:138
+msgid ""
+"Provide the recipient's bank account number. This is typically used for "
+"domestic transfers."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:146
+msgid ""
+"Provide your IBAN for international transfers or Routing Number for domestic "
+"transfers."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:154
+msgid ""
+"Required for international transfers. This is the unique identifier for the "
+"recipient's bank."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:162
+msgid "The name of the bank where the recipient holds their account."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:170
+msgid ""
+"The name of the person or company receiving the funds. Must match the name "
+"on the bank account."
+msgstr ""
+
+#: classes/Admin/Helpers/Payment.php:178
+msgid ""
+"Optional: Add any reference or note to help the recipient identify the "
+"payment (e.g., invoice number, order ID)."
+msgstr ""
+
+#: classes/Admin/Menu.php:36 classes/Admin/Menu.php:37
+msgid "Home"
+msgstr ""
+
+#: classes/Admin/Menu.php:44 classes/Admin/Menu.php:45
+#: classes/Admin/Views/DashboardViews.php:74
+msgid "Settings"
+msgstr ""
+
+#: classes/Admin/Menu.php:52 classes/Admin/Menu.php:53
+#: classes/ReserveMate.php:190
+msgid "Bookings"
+msgstr ""
+
+#: classes/Admin/Menu.php:60 classes/Admin/Menu.php:61
+#: classes/Admin/Views/DashboardViews.php:66
+msgid "Services"
+msgstr ""
+
+#: classes/Admin/Menu.php:68 classes/Admin/Menu.php:69
+#: classes/Admin/Views/DashboardViews.php:82
+msgid "Staff Members"
+msgstr ""
+
+#: classes/Admin/Menu.php:76 classes/Admin/Menu.php:77
+msgid "Payments"
+msgstr ""
+
+#: classes/Admin/Menu.php:84 classes/Admin/Menu.php:85
+#: classes/Admin/Views/DashboardViews.php:98
+msgid "Taxes"
+msgstr ""
+
+#: classes/Admin/Menu.php:92 classes/Admin/Menu.php:93
+#: classes/Admin/Views/DashboardViews.php:106
+msgid "Notifications"
+msgstr ""
+
+#: classes/Admin/Menu.php:100 classes/Admin/Menu.php:101
+#: classes/Admin/Views/ICalViews.php:10
 msgid "iCal Settings"
-msgstr "iCal beállítások"
+msgstr ""
 
-msgid "Export iCal URL:"
-msgstr "iCal URL exportálása:"
+#: classes/Admin/Views/BookingViews.php:19
+msgid "Add New Booking"
+msgstr ""
 
-msgid "Import iCal"
-msgstr "iCal importálása"
+#: classes/Admin/Views/BookingViews.php:118
+msgid "Update Booking"
+msgstr ""
 
-msgid "Import"
-msgstr "Importálás"
+#: classes/Admin/Views/BookingViews.php:118
+msgid "Save Booking"
+msgstr ""
 
-# Additional Strings for Buttons or Notifications
-msgid "Save Messages"
-msgstr "Üzenetek mentése"
-
-msgid "Importing iCal..."
-msgstr "iCal importálása..."
-
-msgid "Messages updated successfully."
-msgstr "Üzenetek sikeresen frissítve."
-
-#: includes/admin/settings.php:25
-msgid "Property Name"
-msgstr "Ingatlan neve"
-
-#: includes/admin/settings.php:30
-msgid "Adults(Max)"
-msgstr "Felnőttek (Max)"
-
-#: includes/admin/settings.php:35
-msgid "Adult Rate (%s)"
-msgstr "Ár felnőttnek (%s)"
-
-#: includes/admin/settings.php:50
-msgid "Children Allowed"
-msgstr "Gyermekek engedélyezése"
-
-#: includes/admin/settings.php:55
-msgid "Children(Max)"
-msgstr "Gyermekek (Max)"
-
-#: includes/admin/settings.php:60
-msgid "Child Rate (%s)"
-msgstr "Ár gyereknek (%s)"
-
-#: includes/admin/settings.php:75
-msgid "Pets Allowed"
-msgstr "Háziállatok engedélyezése"
-
-#: includes/admin/settings.php:80
-msgid "Pets(Max)"
-msgstr "Háziállatok (Max)"
-
-#: includes/admin/settings.php:85
-msgid "Pet Rate (%s)"
-msgstr "Ár háziállatnak (%s)"
-
-#: includes/admin/settings.php:100
-msgid "Minimum Stay"
-msgstr "Minimális tartózkodás"
-
-#: includes/admin/settings.php:105
-msgid "Maximum Stay"
-msgstr "Maximális tartózkodás"
-
-#: includes/admin/settings.php:120
-msgid "Seasonal Rules"
-msgstr "Szezonális szabályok"
-
-#: includes/admin/settings.php:135
-msgid "Partial Booking Days / Half Days"
-msgstr "Részleges foglalási napok / Fél napok"
-
-#: includes/admin/settings.php:150
-msgid "Update Property"
-msgstr "Ingatlan frissítése"
-
-#: includes/admin/settings.php:155
-msgid "Save Property"
-msgstr "Ingatlan mentése"
-
-#: includes/admin/settings.php:160
+#: classes/Admin/Views/BookingViews.php:120
+#: classes/Admin/Views/ServiceViews.php:98
 msgid "Cancel"
-msgstr "Mégse"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:134
+msgid "Existing Bookings"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:140
+#: classes/Admin/Views/ServiceViews.php:113
+msgid "Select bulk action"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:142
+#: classes/Admin/Views/ServiceViews.php:115
+msgid "Bulk Actions"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:143
+#: classes/Admin/Views/ServiceViews.php:116
+msgid "Delete"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:145
+#: classes/Admin/Views/ServiceViews.php:118
+msgid "Apply"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:157
+msgid "Clear Search"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:159
+msgid "Search bookings..."
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:160
+msgid "Search"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:172
+#: classes/Admin/Views/ServiceViews.php:128
+msgid "ID"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:176
+#: classes/Admin/Views/DashboardViews.php:132
+msgid "Customer"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:179
+#: classes/Admin/Views/DashboardViews.php:133
+msgid "Date & Time"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:185
+msgid "Total Cost"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:191
+msgid "Paid"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:198
+#: classes/Admin/Views/DashboardViews.php:136
+msgid "Status"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:203
+#: classes/Admin/Views/ServiceViews.php:132
+msgid "Details"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:204
+#: classes/Admin/Views/ServiceViews.php:133 classes/Admin/Views/TaxViews.php:50
+msgid "Actions"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:216
+#: classes/Admin/Views/DashboardViews.php:147
+#: classes/Admin/Views/DashboardViews.php:161
+#: classes/Admin/Views/DashboardViews.php:175
+msgid "N/A"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:259
+#: classes/Admin/Views/ServiceViews.php:158
+#: classes/Admin/Views/StaffViews.php:80
+msgid "Are you sure?"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:270
+msgid "Services:"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:283
+msgid "No services"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:291
+msgid "Staff:"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:297
+msgid "Payment Method:"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:310
+msgid "Paid:"
+msgstr ""
+
+#: classes/Admin/Views/BookingViews.php:321
+msgid "No bookings found."
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:17
+msgid "ReserveMate Dashboard"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:25
+msgid "Total Bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:32
+msgid "Pending Bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:39
+msgid "Today's Bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:46
+msgid "This Month"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:55
+msgid "Quick Actions"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:58
+msgid "Manage Bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:59
+msgid "View, edit, and manage all your bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:67
+msgid "Configure your services and pricing"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:75
+msgid "Configure plugin settings and preferences"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:83
+#: classes/Admin/Views/DashboardViews.php:91
+#: classes/Admin/Views/DashboardViews.php:99
+#: classes/Admin/Views/DashboardViews.php:107
+msgid "View and manage staff"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:90
+#: classes/Admin/Views/PaymentViews.php:15
+msgid "Payment Settings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:114
+msgid "Documentation"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:115
+msgid "Learn how to use ReserveMate effectively"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:127
+msgid "Recent Bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:134
+#: classes/Admin/Views/ServiceViews.php:129
+msgid "Service"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:139
+msgid "Staff"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:194
+msgid "View All Bookings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:211
+msgid "Welcome to ReserveMate!"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:212
+msgid ""
+"Thank you for installing ReserveMate. Get started by configuring your "
+"settings and creating your first service."
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:215
+msgid "Configure Settings"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:218
+msgid "Dismiss"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:281
+msgid "Pending"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:282
+msgid "Confirmed"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:283
+msgid "Cancelled"
+msgstr ""
+
+#: classes/Admin/Views/DashboardViews.php:284
+msgid "Completed"
+msgstr ""
+
+#: classes/Admin/Views/ICalViews.php:11
+msgid "Export iCal URL:"
+msgstr ""
+
+#: classes/Admin/Views/ICalViews.php:14
+msgid "Import iCal"
+msgstr ""
+
+#: classes/Admin/Views/ICalViews.php:18
+msgid "Import"
+msgstr ""
+
+#: classes/Admin/Views/NotificationViews.php:11
+msgid "Notifications updated successfully."
+msgstr ""
+
+#: classes/Admin/Views/NotificationViews.php:13
+msgid "Manage Notifications"
+msgstr ""
+
+#: classes/Admin/Views/NotificationViews.php:18
+msgid "Save notifications"
+msgstr ""
+
+#: classes/Admin/Views/PaymentViews.php:13
+#: classes/Admin/Views/SettingViews.php:19
+msgid "Settings saved."
+msgstr ""
+
+#: classes/Admin/Views/PaymentViews.php:18
+msgid "Online Payments"
+msgstr ""
+
+#: classes/Admin/Views/PaymentViews.php:19
+msgid "Offline Payments"
+msgstr ""
+
+#: classes/Admin/Views/PaymentViews.php:20
+msgid "Deposit Payment"
+msgstr ""
+
+#: classes/Admin/Views/PaymentViews.php:27
+msgid "Online Payment Methods"
+msgstr ""
+
+#: classes/Admin/Views/PaymentViews.php:73
+msgid "Offline Payment Methods"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:19
+msgid "Add New Service"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:39
+msgid "Service Name"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:42
+msgid "Enter the name of the service"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:46
+msgid "Description"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:49
+msgid "Provide a brief description of the service."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:53
+msgid "Duration (Minutes)"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:56
+msgid "Enter the duration of the service in minutes."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:60
+#: classes/Admin/Views/ServiceViews.php:131
+msgid "Price"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:63
+msgid "Enter the price of the service."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:67
+msgid "Max Capacity"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:70
+msgid "Maximum number of participants or customers allowed for this service."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:74
+msgid "Allow Multiple Bookings"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:77
+msgid "Allow customers to book multiple slots for this service."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:81
+msgid "Time Slots"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:84
+msgid "Enter available time slots (e.g., 09:00-10:00, 10:30-11:30)."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:88
+msgid "Additional Notes"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:91
+msgid "Add any additional notes or instructions for this service."
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:96
+msgid "Update Service"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:96
+msgid "Save Service"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:107
+msgid "Existing Services"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:130
+msgid "Duration"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:145
+msgid "minutes"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:169
+msgid "Description:"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:175
+msgid "Max Capacity:"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:181
+msgid "Allow Multiple Bookings:"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:182
+#: includes/admin/tabs/bookings-tab.php:10
+msgid "Yes"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:182
+#: includes/admin/tabs/bookings-tab.php:9
+msgid "No"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:187
+msgid "Time Slots:"
+msgstr ""
+
+#: classes/Admin/Views/ServiceViews.php:193
+msgid "Additional Notes:"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:21
+msgid "Booking System Settings"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:24
+msgid "General"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:28
+msgid "Forms"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:29
+msgid "Datepicker Styles"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:48
+msgid "Timezone"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:54
+msgid "Date and Time Format"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:60
+#: classes/Admin/Views/SettingViews.php:126
+#: classes/Admin/Views/SettingViews.php:189
+#: classes/Admin/Views/SettingViews.php:205
+#: classes/Admin/Views/SettingViews.php:314
+msgid "Save Settings"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:92
+msgid "First Available Day"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:97
+msgid "Last Available Day"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:107
+msgid "Minimum Lead Time (Minutes)"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:112
+msgid "Time Slot Format"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:141
+msgid "Calendar Settings"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:153
+msgid "How it works"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:157
+msgid "1. Connect"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:158
+msgid "Click the connect button to link your Google Calendar account securely."
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:162
+msgid "2. Choose Calendar"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:163
+msgid "Select which calendar you want to use for your bookings."
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:167
+msgid "3. Auto-Sync"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:168
+msgid "All new bookings will automatically appear in your Google Calendar."
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:183
+msgid "Max Service Number"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:201
+msgid "Customize Form Fields"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:217
+msgid "Datepicker Layout"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:221
+msgid "Display Type"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:225
+msgid "Theme Preset"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:232
+msgid "Datepicker Colors"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:244
+msgid "Datepicker Background"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:248
+msgid "Day Background"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:252
+msgid "Day Border"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:256
+msgid "Hover Outline"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:264
+msgid "Disabled Day Color"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:271
+msgid "Datepicker Special States"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:275
+msgid "Disabled Day"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:279
+msgid "Today's Border"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:286
+msgid "Datepicker Date Ranges"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:290
+msgid "Range Highlight Start"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:294
+msgid "Range Highlight"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:298
+msgid "Range Highlight End"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:302
+msgid "Arrival Day"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:306
+msgid "Departure Day"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:310
+msgid "Datepicker Font Family"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:326
+msgid "Show range (8:00 - 9:00)"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:327
+msgid "Show start time only (8:00)"
+msgstr ""
+
+#: classes/Admin/Views/SettingViews.php:330
+msgid "Choose how time slots should be displayed in the booking interface."
+msgstr ""
+
+#: classes/Admin/Views/StaffViews.php:176
+msgid "Select Image"
+msgstr ""
+
+#: classes/Admin/Views/StaffViews.php:181
+msgid "Remove Image"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:12
+msgid "Tax Settings"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:29
+msgid "Add New Tax"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:30 classes/Admin/Views/TaxViews.php:47
+msgid "Tax Name"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:31 classes/Admin/Views/TaxViews.php:48
+msgid "Rate"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:36
+msgid "Add Tax"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:43
+msgid "Existing Taxes"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:49
+msgid "Type"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:64
+msgid "Are you sure you want to delete this?"
+msgstr ""
+
+#: classes/Admin/Views/TaxViews.php:73
+msgid "No taxes added yet."
+msgstr ""
+
+#: classes/Frontend/Handlers/AjaxHandler.php:270
+msgid "Invalid request data."
+msgstr ""
+
+#: classes/Frontend/Handlers/AjaxHandler.php:274
+msgid "Empty date."
+msgstr ""
+
+#: classes/Frontend/Views/BookingViews.php:144
+msgid "Terms & Conditions"
+msgstr ""
+
+#: classes/Frontend/Views/BookingViews.php:145
+msgid "Privacy Policy"
+msgstr ""
+
+#: classes/Frontend/Views/BookingViews.php:153
+msgid "Book Now"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:73
+msgid "Test Mode:"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:74
+msgid "Use card: 4242 4242 4242 4242, MM/YY: 04/26, CVC: 123"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:86
+msgid "Pay with Card"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:92
+msgid "Pay Now"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:104
+msgid "Pay with PayPal"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:118
+msgid "Other Payment Options"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:126
+msgid "Complete your booking and pay at the venue"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:138
+msgid "Transfer payment directly to our bank account"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:156
+msgid "Booking Confirmed!"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:157
+msgid ""
+"Thank you for your booking. We have received your payment and your "
+"reservation is confirmed."
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:161
+msgid "Booking Details"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:164
+msgid "Booking ID:"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:167
+msgid "Name:"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:170
+#: includes/admin/tabs/bookings-tab.php:221
+msgid "Date:"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:173
+msgid "Total:"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:181
+msgid "Print Confirmation"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:184
+#: classes/Frontend/Views/PaymentViews.php:216
+msgid "Back to Home"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:202
+msgid "Payment Failed"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:203
+msgid "There was an issue processing your payment. Please try again."
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:207
+msgid "Error:"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:213
+msgid "Try Again"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:244
+msgid "Bank Transfer Instructions"
+msgstr ""
+
+#: classes/Frontend/Views/PaymentViews.php:249
+msgid "Bank transfer details will be provided after booking confirmation."
+msgstr ""
+
+#: classes/ReserveMate.php:156
+msgid "Security check failed"
+msgstr ""
+
+#: classes/ReserveMate.php:161
+msgid "Insufficient permissions"
+msgstr ""
+
+#: classes/ReserveMate.php:191
+msgid "Booking"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:14
+msgid ""
+"When enabled, bookings will require manual approval before being confirmed."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:28
+msgid "Start of the first time interval."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:42
+msgid "End of the last time interval."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:53
+msgid ""
+"Default booking interval in minutes (e.g., 15, 30, 60).<br />Service "
+"durations override this value."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:64
+msgid ""
+"Add buffer time / break duration (in minutes) between time slots. For "
+"example, 5 minutes."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:75
+msgid ""
+"Minimum time required before a booking can be made (in minutes). For example,"
+" 60 minutes means customers can't book within 1 hour of current time."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:86
+msgid "First available date for booking. Leave empty for default (today)."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:99
+msgid "Fixed End Date"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:103
+msgid "Rolling Window (X days from today)"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:109
+msgid "Fixed last available date."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:114
+msgid "Rolling window days ahead."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:129
+msgid "Maximum Bookings Per Customer"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:134
+msgid "Per Day:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:141
+msgid "Per Week:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:148
+msgid "Per Month:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:165
+msgid "Set dates or time periods that are not available for booking."
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:182
+msgid "Add New Rule"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:205
+msgid "Specific Date"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:206
+msgid "Date Range"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:207
+msgid "Weekly Pattern"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:208
+msgid "Time Interval"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:213
+msgid "Remove"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:226
+#: includes/admin/tabs/bookings-tab.php:242
+msgid "Repeat yearly"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:233
+msgid "From:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:237
+msgid "To:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:250
+msgid "Monday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:251
+msgid "Tuesday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:252
+msgid "Wednesday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:253
+msgid "Thursday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:254
+msgid "Friday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:255
+msgid "Saturday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:256
+msgid "Sunday"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:271
+msgid "Specific Date (Optional):"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:275
+msgid "Leave empty to apply to selected days of week below"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:281
+msgid "Start Time:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:285
+msgid "End Time:"
+msgstr ""
+
+#: includes/admin/tabs/bookings-tab.php:291
+msgid "Select days to apply this time interval:"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:14
+msgid "Please connect to Google Calendar first to select a calendar."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:27
+msgid ""
+"Your Google Calendar connection has expired. Please reconnect to continue "
+"using calendar integration."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:30
+msgid "Reconnect Google Calendar"
+msgstr ""
+
+#. translators: %s is the error message from the calendar loading process
+#: includes/admin/tabs/calendar-tab.php:47
+msgid "Error loading calendars: %s"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:56
+msgid "No calendars found."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:82
+msgid " (Primary)"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:87
+msgid "Select which Google Calendar to use for booking events."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:91
+msgid "Updating calendar selection..."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:120
+msgid "Calendar changed!"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:127
+#: includes/admin/tabs/calendar-tab.php:134
+msgid "Error updating calendar selection"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:247
+msgid "Google Calendar Connected"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:248
+msgid "Your bookings will automatically sync with your Google Calendar."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:263
+msgid "Active Calendar:"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:267
+#: includes/admin/tabs/calendar-tab.php:424
+#: includes/admin/tabs/calendar-tab.php:429
+msgid "Disconnect"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:274
+#: includes/admin/tabs/calendar-tab.php:288
+#: includes/admin/tabs/calendar-tab.php:394
+#: includes/admin/tabs/calendar-tab.php:399
+msgid "Connect Google Calendar"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:275
+msgid ""
+"Automatically sync your bookings with Google Calendar. No setup required - "
+"just click connect!"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:279
+msgid "Automatic booking sync"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:280
+msgid "Prevent double-bookings"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:281
+msgid "Access from any device"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:282
+msgid "No API keys required"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:292
+msgid ""
+"You'll be redirected to Google to authorize access. We only request calendar "
+"permissions."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:380
+msgid "Connecting..."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:393
+msgid "Error initiating connection. Please try again."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:398
+#: includes/admin/tabs/calendar-tab.php:428
+msgid "Connection error. Please try again."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:408
+msgid "Are you sure you want to disconnect Google Calendar?"
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:410
+msgid "Disconnecting..."
+msgstr ""
+
+#: includes/admin/tabs/calendar-tab.php:423
+msgid "Error disconnecting. Please try again."
+msgstr ""
+
+#: includes/admin/tabs/general-tab.php:127
+msgid "Select the locale for date formatting throughout the booking system."
+msgstr ""
+
+#: includes/admin/tabs/services-tab.php:12
+msgid "Maximum number of services that can be selected simultaneously."
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:9
+msgid "Pop-up Calendar View"
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:10
+msgid "Inline Calendar View"
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:13
+msgid ""
+"Choose between a pop-up calendar display or an inline(always visible) "
+"calendar."
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:23
+msgid "Default (Light)"
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:24
+msgid "Dark"
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:25
+msgid "Material Design"
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:26
+msgid "Custom Styling"
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:37
+msgid "Choose a premade theme or use \"Custom Styling\" to override."
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:47
+msgid "Affects buttons, highlights, and accents."
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:56
+msgid "Main text color for the calendar."
+msgstr ""
+
+#: includes/admin/tabs/styles-tab.php:64
+msgid "System Default"
+msgstr ""
+
+#. translators: %s is the default color value
+#: includes/admin/tabs/styles-tab.php:95
+msgid "Default: %s"
+msgstr ""

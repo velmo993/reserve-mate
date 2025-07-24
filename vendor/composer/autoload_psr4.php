@@ -7,5 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
-    'Google\\Service\\' => array($vendorDir . '/google/apiclient-services/src'),
+    'ReserveMate\\Shared\\' => array($baseDir . '/classes/shared'),
+    'ReserveMate\\Frontend\\' => array($baseDir . '/classes/frontend'),
+    'ReserveMate\\Api\\' => array($baseDir . '/classes/api'),
+    'ReserveMate\\Admin\\' => array($baseDir . '/classes/admin'),
+    'ReserveMate\\' => array($baseDir . '/classes'),
 );
