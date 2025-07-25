@@ -44,11 +44,17 @@ if (!class_exists('ReserveMate')) :
          */
         private function define_hooks() {
             add_action('init', [$this, 'init']);
-            add_action('init', [$this, 'register_gutenberg_block']);
             add_action('admin_init', [$this, 'admin_init']);
             add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_scripts']);
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
             add_action('plugins_loaded', [$this, 'load_textdomain']);
+            
+            // Register page builder supports
+            add_action('init', [$this, 'register_gutenberg_block']);
+            add_action('init', [$this, 'register_beaver_builder_module']);
+            add_action('elementor/widgets/widgets_registered', [$this, 'register_elementor_widget']);
+            add_action('et_builder_ready', [$this, 'register_divi_module']);
+            add_action('vc_before_init', [$this, 'register_wpbakery_element']);
             
             // Add activation redirect hook
             add_action('admin_init', [$this, 'handle_activation_redirect']);
@@ -291,6 +297,57 @@ if (!class_exists('ReserveMate')) :
                 'render_callback' => ['ReserveMate\Frontend\Controllers\BookingController', 'display_booking_form'],
                 'attributes' => []
             ]);
+        }
+        
+        /**
+         * Register elementor widget
+         */
+        public function register_elementor_widget() {
+            if (!did_action('elementor/loaded')) {
+                return;
+            }
+            
+            require_once RM_PLUGIN_PATH . 'includes/elementor/booking-widget.php';
+            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \ReserveMate\Elementor\BookingWidget());
+        }
+        
+        /**
+         * Register divi module
+         */
+        public function register_divi_module() {
+            if (class_exists('ET_Builder_Module')) {
+                require_once RM_PLUGIN_PATH . 'includes/divi/booking-module.php';
+            }
+        }
+        
+        /**
+         * Register beaver builder module
+         */
+        public function register_beaver_builder_module() {
+            if (!class_exists('FLBuilder')) {
+                return;
+            }
+    
+            $module_file = RM_PLUGIN_PATH . 'includes/beaver-builder/booking-module.php';
+            if (file_exists($module_file)) {
+                require_once $module_file;
+            }
+        }
+        
+        /**
+         * Register wpbakery element
+         */
+        public function register_wpbakery_element() {
+            if (function_exists('vc_map')) {
+                vc_map([
+                    'name' => __('Reserve Mate Booking Form', 'reserve-mate'),
+                    'base' => 'reserve_mate_booking_form',
+                    'category' => __('Content', 'reserve-mate'),
+                    'description' => __('Add booking form', 'reserve-mate'),
+                    'icon' => 'icon-wpb-ui-accordion',
+                    'params' => []
+                ]);
+            }
         }
 
     }
