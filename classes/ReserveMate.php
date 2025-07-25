@@ -44,10 +44,10 @@ if (!class_exists('ReserveMate')) :
          */
         private function define_hooks() {
             add_action('init', [$this, 'init']);
+            add_action('init', [$this, 'register_gutenberg_block']);
             add_action('admin_init', [$this, 'admin_init']);
             add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_scripts']);
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
-            
             add_action('plugins_loaded', [$this, 'load_textdomain']);
             
             // Add activation redirect hook
@@ -211,6 +211,14 @@ if (!class_exists('ReserveMate')) :
                 return;
             }
             ScriptManager::get_instance()->enqueue_admin_scripts();
+            if (is_admin()) {
+                wp_enqueue_script(
+                    'reserve-mate-gutenberg-block',
+                    RM_PLUGIN_URL . 'assets/js/gutenberg-block.js',
+                    ['wp-blocks', 'wp-element', 'wp-editor'],
+                    time()
+                );
+            }
         }
         
         /**
@@ -269,6 +277,20 @@ if (!class_exists('ReserveMate')) :
                 $options['form_fields'] = $default_fields;
                 update_option('rm_form_options', $options);
             }
+        }
+        
+        /**
+         * Register gutenberg block
+         */
+        public function register_gutenberg_block() {
+            if (!function_exists('register_block_type')) {
+                return;
+            }
+            
+            register_block_type('reserve-mate/booking-form', [
+                'render_callback' => ['ReserveMate\Frontend\Controllers\BookingController', 'display_booking_form'],
+                'attributes' => []
+            ]);
         }
 
     }
