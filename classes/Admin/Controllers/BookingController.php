@@ -99,7 +99,7 @@ class BookingController {
         // Save or update booking
         if (isset($_GET['edit'])) {
             $editing_index = isset($_GET['edit']) ? intval($_GET['edit']) : null;
-            Booking::update_booking($name, $email, $phone, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, $editing_index, $staff_id = null);
+            Booking::update_booking($name, $email, $phone, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, $editing_index, $staff_id);
         } else {
             Booking::save_booking_to_db($name, $email, $phone, $start_datetime, $end_datetime, $total_cost, $payment_method, $services, $paid_amount, true);
         }

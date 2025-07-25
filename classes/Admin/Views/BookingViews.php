@@ -32,6 +32,7 @@ class BookingViews {
     <?php }
     
     public static function booking_form($services, $booking = null, $staff_members = null) {
+        error_log(print_r($services, true));
         $enabled_payment_methods = self::get_enabled_payment_methods();
         $selected_payment_method = $booking->payment_method ?? '';
         $booking_services = $booking && $booking->id ? Booking::get_booking_services($booking->id) : [];
@@ -66,7 +67,21 @@ class BookingViews {
                             <option></option>
                             <?php if($services) : ?>
                                 <?php foreach ($services as $service): ?>
-                                    <option value="<?php echo $service->id; ?>" data-price="<?php echo $service->price; ?>"><?php echo $service->name; ?></option>
+                                    <?php 
+                                    $selected = '';
+                                    if ($booking_services) {
+                                        error_log(print_r($booking_services,true));
+                                        foreach ($booking_services as $booking_service) {
+                                            if ($booking_service->service_id == $service->id) {
+                                                $selected = 'selected';
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                    <option value="<?php echo $service->id; ?>" data-price="<?php echo $service->price; ?>" <?php echo $selected; ?>>
+                                        <?php echo esc_html($service->name); ?>
+                                    </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </select>
